@@ -1,16 +1,16 @@
 {
-    "name": "quip-survey-builder",
-    "version": "0.0.1",
-    "description": "eio.surveybuilder Quip App",
-    "license": "UNLICENSED",
-    "scripts": {
-        "start": "NODE_ENV=development webpack-dev-server --https",
-        "build": "NODE_ENV=production webpack; create-quip-app pack ./app"
-    },
-    "author": "",
-    "devDependencies": {
-        "create-quip-app": "0.0.41",
-        "quip-apps-webpack-config": ">=0.0.39"
-    },
-    "dependencies": {}
+  "name": "quip-survey-builder",
+  "version": "0.0.1",
+  "description": "eio.surveybuilder Quip App",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "NODE_ENV=development webpack-dev-server --https",
+    "build": "NODE_ENV=production webpack; create-quip-app pack ./app"
+  },
+  "author": "",
+  "devDependencies": {
+    "create-quip-app": "0.0.41",
+    "quip-apps-webpack-config": ">=0.0.39"
+  },
+  "dependencies": {}
 }

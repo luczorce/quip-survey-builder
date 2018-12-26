@@ -1,7 +1,41 @@
 import Styles from "./App.less";
 
 export default class App extends React.Component {
-    render() {
-        return <div className={Styles.hello}>Hello, world!</div>;
+  constructor(props) {
+    super();
+
+    this.state = {
+      // can be either building or loading
+      currentUse: null
+    };
+  }
+
+  startBuildingSurvey = () => {
+    this.setState({currentUse: 'building'});
+  }
+
+  loadSurveyOptions = () => {
+    this.setState({currentUse: 'loading'});
+  }
+
+  render() {
+    let canvas;
+
+    if (this.state.currentUse === 'building') {
+      canvas = <div>build a bear</div>;
+    } else if (this.state.currentUse === 'loading') {
+      canvas = <div>retrieve a bear</div>;
     }
+
+    return <div>
+      <nav>
+        <button type="button" onClick={this.startBuildingSurvey}>build a survey</button>
+        <button type="button" onClick={this.loadSurveyOptions} disabled>load a survey</button>
+      </nav>
+
+      <section>
+        { canvas }    
+      </section>
+    </div>;
+  }
 }
