@@ -7,19 +7,9 @@ export default class App extends React.Component {
 
     this.state = {
       // can be either building or loading
-      currentUse: props.record.get('purpose') || null
+      currentUse: props.record.get('purpose') || null,
+      questions: props.record.get('questions') || []
     };
-  }
-
-  getQuestions = () => {
-    const { record } = this.props;
-    let questions = record.get('questions');
-    
-    if (!questions) {
-      questions = [];
-    }
-
-    return questions;
   }
 
   loadSurveyOptions = () => {
@@ -40,35 +30,35 @@ export default class App extends React.Component {
     const { record } = this.props;
 
     record.set('questions', questions);
-  }
-
-  getNavElement = () => {
-    return <nav>
-      <button type="button" onClick={this.startBuildingSurvey}>build a survey</button>
-      <button type="button" onClick={this.loadSurveyOptions} disabled>load a survey</button>
-    </nav>;
+    this.setState({questions: questions});
   }
 
   render() {
     let header, canvas;
 
     if (this.state.currentUse === 'building') {
-      let questions = this.getQuestions();
+      header = <header>
+        <h2 className="quip-text-h2">Building Survey</h2>
+        
+        <label>
+          <span>survey name</span>
+          <input type="text" value={this.state.surveyName} />
+        </label>
+      </header>;
 
-      header = <h2 className="quip-text-h2">Currently Building Survey</h2>;
-      canvas = <Builder questions={questions} updateQuestions={this.updateQuestions}/>;
+      canvas = <Builder questions={this.state.questions} updateQuestions={this.updateQuestions}/>;
     } else if (this.state.currentUse === 'loading') {
       canvas = <div>retrieve a bear</div>;
     } else {
-      header = this.getNavElement();
+      header = <nav>
+        <button type="button" onClick={this.startBuildingSurvey}>build a survey</button>
+        <button type="button" onClick={this.loadSurveyOptions} disabled>load a survey</button>
+      </nav>;
     }
 
     return <div>
       { header }
-
-      <section>
-        { canvas }    
-      </section>
+      { canvas }
     </div>;
   }
 }

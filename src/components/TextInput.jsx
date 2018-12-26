@@ -1,48 +1,44 @@
-import { debounce } from 'throttle-debounce';
-
 export default class TextInput extends React.Component {
   static propTypes = {
     question: React.PropTypes.string,
     index: React.PropTypes.number,
-    updated: React.PropTypes.func
+    guid: React.PropTypes.number,
+    updated: React.PropTypes.func,
+    deleted: React.PropTypes.func
   }
 
-  constructor(props) {
-    super();
-
-    this.updateParentQuestion = debounce(300, this.updateParentQuestion);
-
-    this.state = {
-      value: props.question
-    };
+  deleteQuestion = () => {
+    this.props.deleted(this.props.guid);
   }
 
-  questionUpdated = (event) => {
-    this.setState({value: event.target.value});
-
+  questionValueUpdate = (event) => {
     let updatedQuestion = {
       index: this.props.index, 
       question: event.target.value,
+      guid: this.props.guid,
       type: 'textInput'
     };
 
-    this.updateParentQuestion(updatedQuestion);
+    this.updateQuestion(updatedQuestion);
   }
 
-  updateParentQuestion(updatedQuestion) {
+  updateQuestion(updatedQuestion) {
     this.props.updated(updatedQuestion);
   }
 
   render() {
-    return <div key={'text-input-' + this.props.index}>
-      <p><em>text input</em></p>
+    return <li key={this.props.guid}>
+      <p>
+        <em>text input</em>
+        <button type="button" onClick={this.deleteQuestion}>delete question</button>
+      </p>
       
       <label>
         <span>question</span>
-
-        <input type="text" value={this.state.value} placeholder="(Who did you talk to last?)" onChange={this.questionUpdated} />
+        <input type="text" value={this.props.question} placeholder="(Who did you talk to last?)" onChange={this.questionValueUpdate} />
       </label>
+      
       <div>index: {this.props.index + 1}</div>
-    </div>;
+    </li>;
   }
 }
