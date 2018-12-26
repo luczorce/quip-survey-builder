@@ -1,4 +1,5 @@
 import Styles from "./App.less";
+import Builder from './components/Builder.jsx';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -22,7 +23,7 @@ export default class App extends React.Component {
     let canvas;
 
     if (this.state.currentUse === 'building') {
-      canvas = <div>build a bear</div>;
+      canvas = <Builder />;
     } else if (this.state.currentUse === 'loading') {
       canvas = <div>retrieve a bear</div>;
     }
