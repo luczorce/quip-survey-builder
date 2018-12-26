@@ -1,3 +1,5 @@
+import TextInput from './TextInput.jsx';
+
 export default class Builder extends React.Component {
   constructor(props) {
     super();
@@ -19,24 +21,28 @@ export default class Builder extends React.Component {
     this.setState({questions: updatedQuestions});
   }
 
+  // this is used in a map function to iterate
+  // and transform state question data into 
+  // the appropriate type of form data to render
+  buildSurveyElements = (element, index) => {
+    if (element.type === 'textInput') {
+      return <TextInput question={element.question} index={index} />;
+    }
+  }
+
   saveSurvey = () => {
     console.log('saving survey');
   }
 
   render() {
-    let inputs;
+    let builderCanvas;
 
     if (this.state.questions.length) {
-      // inputs = <p>here are all the questions</p>
-      let sections = this.state.questions.map((question, index) => {
-        if (question.type === 'textInput') {
-          return <p key={index}>(text input {index + 1}) question: <input type="text" /></p>
-        }
-      });
+      let formElements = this.state.questions.map(this.buildSurveyElements);
 
-      inputs = <div>{ sections }</div>
+      builderCanvas = <section>{ formElements }</section>
     } else {
-      inputs = <p>add questions...</p>
+      builderCanvas = <p>add questions...</p>
     }
 
     return <div>
@@ -47,9 +53,7 @@ export default class Builder extends React.Component {
         <button type="button" onClick={this.saveSurvey} disabled>save survey</button>
       </nav>
 
-      <section>
-        { inputs }
-      </section>
+      { builderCanvas }
     </div>;
   }
 }
