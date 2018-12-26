@@ -1,3 +1,4 @@
+import Style from "../App.less";
 import TextInput from './TextInput.jsx';
 
 export default class Builder extends React.Component {
@@ -24,7 +25,7 @@ export default class Builder extends React.Component {
   // the appropriate type of form data to render
   buildSurveyElements = (element, index) => {
     if (element.type === 'textInput') {
-      return <TextInput question={element.question} index={index} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} />;
+      return <TextInput question={element.question} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} />;
     }
   }
 
@@ -35,14 +36,9 @@ export default class Builder extends React.Component {
     this.props.updateQuestions(questions);
   }
 
-  saveSurvey = () => {
-    console.log('saving survey');
-  }
-
   updateQuestion = (updatedValue) => {
-    let index = updatedValue.index;
     let questions = this.props.questions;
-    delete updatedValue.index;
+    let index = questions.findIndex(q => q.guid === updatedValue.guid);
 
     questions[index] = updatedValue;
 
@@ -53,17 +49,18 @@ export default class Builder extends React.Component {
     let builderCanvas;
 
     if (this.props.questions.length) {
-      builderCanvas = <ol>{this.props.questions.map(this.buildSurveyElements)}</ol>
+      builderCanvas = <ol>
+        {this.props.questions.map(this.buildSurveyElements)}
+      </ol>;
     } else {
-      builderCanvas = <p>add questions...</p>
+      builderCanvas = <p>add questions...</p>;
     }
 
     return <section>
-      <nav>
+      <nav className={Style.flexirow}>
         <strong>add to form:</strong>
 
         <button type="button" onClick={this.addTextInput}>short text</button>
-        <button type="button" onClick={this.saveSurvey} disabled>save survey</button>
       </nav>
 
       { builderCanvas }

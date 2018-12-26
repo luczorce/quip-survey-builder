@@ -1,4 +1,5 @@
-import Styles from "./App.less";
+import Style from "./App.less";
+import FormStyle from "./components/Form.less";
 import Builder from './components/Builder.jsx';
 
 export default class App extends React.Component {
@@ -19,6 +20,10 @@ export default class App extends React.Component {
     this.setState({currentUse: 'loading'});
   }
 
+  saveSurvey = () => {
+    console.log('saving survey');
+  }
+
   startBuildingSurvey = () => {
     const { record } = this.props;
     
@@ -37,20 +42,20 @@ export default class App extends React.Component {
     let header, canvas;
 
     if (this.state.currentUse === 'building') {
-      header = <header>
-        <h2 className="quip-text-h2">Building Survey</h2>
-        
-        <label>
+      header = <header className={Style.buildingHeader}>
+        <label className={FormStyle.formInput}>
           <span>survey name</span>
           <input type="text" value={this.state.surveyName} />
         </label>
+
+        <button type="button" onClick={this.saveSurvey} disabled>save survey</button>
       </header>;
 
       canvas = <Builder questions={this.state.questions} updateQuestions={this.updateQuestions}/>;
     } else if (this.state.currentUse === 'loading') {
       canvas = <div>retrieve a bear</div>;
     } else {
-      header = <nav>
+      header = <nav className={Style.flexirow}>
         <button type="button" onClick={this.startBuildingSurvey}>build a survey</button>
         <button type="button" onClick={this.loadSurveyOptions} disabled>load a survey</button>
       </nav>;
