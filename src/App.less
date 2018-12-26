@@ -1,1 +1,12 @@
+.flexirow {
+  display: flex;
 
+  button:not(:first-child) {
+    margin-left: 5px;
+  }
+}
+
+.buildingHeader {
+  margin-bottom: 25px;
+  .flexirow();
+}

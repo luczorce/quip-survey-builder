@@ -1,0 +1,57 @@
+@color_default: #e5e5e5;
+@color_highlight: #29b6f2;
+@default_text_color: #333;
+
+.focus {
+  // HACK overwrite some heavy-handed quip styles
+  border-color: @color_highlight !important;
+  outline: 1px @color_highlight;
+  box-shadow: 0px 2px 5px #cecece;
+}
+
+.formInput {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1 0 auto;
+
+  input[type=text] {
+    flex: 1 0 auto;
+    margin-left: 5px;
+
+    &:focus {
+      .focus();
+    }
+  }
+}
+
+.formSection {
+  border: 1px @color_default solid;
+  border-radius: 6px;
+  padding: 5px 10px 10px;
+  margin-bottom: 15px;
+}
+
+.buttonLink {
+  background: none;
+  outline: none;
+  border: none;
+  text-decoration: underline;
+  color: #666;
+}
+
+.sectionDeleter {
+  display: inline;
+  font-size: 0.85em;
+  .buttonLink();
+
+  &:focus,
+  &:hover {
+    color: red;
+  }
+
+  &:focus:after {
+    // content: "&times;";
+    content: "\00d7";
+  }
+}

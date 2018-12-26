@@ -12,5 +12,7 @@
     "create-quip-app": "0.0.41",
     "quip-apps-webpack-config": ">=0.0.39"
   },
-  "dependencies": {}
+  "dependencies": {
+    "throttle-debounce": "^2.0.1"
+  }
 }
