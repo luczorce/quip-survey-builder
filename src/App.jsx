@@ -7,32 +7,64 @@ export default class App extends React.Component {
 
     this.state = {
       // can be either building or loading
-      currentUse: null
+      currentUse: props.record.get('purpose') || null
     };
   }
 
-  startBuildingSurvey = () => {
-    this.setState({currentUse: 'building'});
+  getQuestions = () => {
+    const { record } = this.props;
+    let questions = record.get('questions');
+    
+    if (!questions) {
+      questions = [];
+    }
+
+    return questions;
   }
 
   loadSurveyOptions = () => {
+    const { record } = this.props;
+    
+    record.set('purpose', 'loading');
     this.setState({currentUse: 'loading'});
   }
 
+  startBuildingSurvey = () => {
+    const { record } = this.props;
+    
+    record.set('purpose', 'building');
+    this.setState({currentUse: 'building'});
+  }
+
+  updateQuestions = (questions) => {
+    const { record } = this.props;
+
+    record.set('questions', questions);
+  }
+
+  getNavElement = () => {
+    return <nav>
+      <button type="button" onClick={this.startBuildingSurvey}>build a survey</button>
+      <button type="button" onClick={this.loadSurveyOptions} disabled>load a survey</button>
+    </nav>;
+  }
+
   render() {
-    let canvas;
+    let header, canvas;
 
     if (this.state.currentUse === 'building') {
-      canvas = <Builder />;
+      let questions = this.getQuestions();
+
+      header = <h2 className="quip-text-h2">Currently Building Survey</h2>;
+      canvas = <Builder questions={questions} updateQuestions={this.updateQuestions}/>;
     } else if (this.state.currentUse === 'loading') {
       canvas = <div>retrieve a bear</div>;
+    } else {
+      header = this.getNavElement();
     }
 
     return <div>
-      <nav>
-        <button type="button" onClick={this.startBuildingSurvey}>build a survey</button>
-        <button type="button" onClick={this.loadSurveyOptions} disabled>load a survey</button>
-      </nav>
+      { header }
 
       <section>
         { canvas }    

@@ -1,11 +1,16 @@
+import { debounce } from 'throttle-debounce';
+
 export default class TextInput extends React.Component {
   static propTypes = {
     question: React.PropTypes.string,
-    index: React.PropTypes.number
+    index: React.PropTypes.number,
+    updated: React.PropTypes.func
   }
 
   constructor(props) {
     super();
+
+    this.updateParentQuestion = debounce(300, this.updateParentQuestion);
 
     this.state = {
       value: props.question
@@ -13,9 +18,19 @@ export default class TextInput extends React.Component {
   }
 
   questionUpdated = (event) => {
-    // TODO add a debounce?
-    console.log('text input updated');
     this.setState({value: event.target.value});
+
+    let updatedQuestion = {
+      index: this.props.index, 
+      question: event.target.value,
+      type: 'textInput'
+    };
+
+    this.updateParentQuestion(updatedQuestion);
+  }
+
+  updateParentQuestion(updatedQuestion) {
+    this.props.updated(updatedQuestion);
   }
 
   render() {

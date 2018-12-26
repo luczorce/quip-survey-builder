@@ -5,7 +5,7 @@ export default class Builder extends React.Component {
     super();
 
     this.state = {
-      questions: []
+      questions: props.questions
     };
   }
 
@@ -19,6 +19,7 @@ export default class Builder extends React.Component {
     updatedQuestions.push(question);
 
     this.setState({questions: updatedQuestions});
+    this.props.updateQuestions(updatedQuestions);
   }
 
   // this is used in a map function to iterate
@@ -26,12 +27,24 @@ export default class Builder extends React.Component {
   // the appropriate type of form data to render
   buildSurveyElements = (element, index) => {
     if (element.type === 'textInput') {
-      return <TextInput question={element.question} index={index} />;
+      return <TextInput question={element.question} index={index} updated={this.updateQuestion} />;
     }
   }
 
   saveSurvey = () => {
     console.log('saving survey');
+  }
+
+  updateQuestion = (updatedValue) => {
+    const which = updatedValue.index;
+
+    let updatedQuestions = this.state.questions;
+
+    delete updatedValue.index;
+    updatedQuestions[which] = updatedValue;
+
+    this.setState({questions: updatedQuestions});
+    this.props.updateQuestions(updatedQuestions);
   }
 
   render() {
