@@ -5,12 +5,18 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "NODE_ENV=development webpack-dev-server --https",
-    "build": "NODE_ENV=production webpack; create-quip-app pack ./app"
+    "watch": "NODE_ENV=development webpack --watch",
+    "serve": "http-server app -p 8888 --ssl",
+    "build": "NODE_ENV=production webpack; create-quip-app pack ./app",
+    "prepssl": "openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem"
   },
   "author": "",
   "devDependencies": {
     "create-quip-app": "0.0.41",
-    "quip-apps-webpack-config": ">=0.0.39"
+    "dotenv": "^6.2.0",
+    "http-server": "^0.11.1",
+    "quip-apps-webpack-config": ">=0.0.39",
+    "replace-in-file-webpack-plugin": "^1.0.6"
   },
   "dependencies": {
     "throttle-debounce": "^2.0.1"

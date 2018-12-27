@@ -4,10 +4,19 @@ _This is an app to create surveys inside Quip, then distribute them to fellow Qu
 
 ## Local Development
 
-Follow the instructions on deploying your [first quip app](https://salesforce.quip.com/dev/liveapps/).
+Follow the instructions on deploying your [first quip app](https://salesforce.quip.com/dev/liveapps/). There will be some differences, though:
+
+1. Create a `.env` file, which contains an API_KEY key/value pair. This will allow us to communicate with our api
+2. `npm run prepssl` and feel free to leave answers blank... we're setting up keys to use to serve this live app with ssl
+3. `npm run watch` to start webpack watching and rebuilding the liveapp as we go
+4. `npm run serve` in another terminal window to serve the contents from files (as oppposed to from memory, which webpack-dev-sever does)
+   * **why, tho?**
+   * in order to protect the api key, we want to store it in an environment variable
+   * in order to use that environment variable, we replace a special, cheeky string on compilation so our client code can access it's value
+   * this happens to files, but not to the compiled code _in memory_, so we were unable to use the special value with webpack-dev-server
 
 ## Helpful Links
 
-* [reference](https://salesforce.quip.com/dev/liveapps/documentation)
-* [common themes](https://salesforce.quip.com/dev/liveapps/recipes)
+* [quip app reference](https://salesforce.quip.com/dev/liveapps/documentation)
+* [quip app common themes](https://salesforce.quip.com/dev/liveapps/recipes)
 * [starting your first quip app](https://salesforce.quip.com/dev/liveapps/)

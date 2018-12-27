@@ -11,7 +11,12 @@ export default class App extends React.Component {
       currentUse: props.record.get('purpose') || null,
       questions: props.record.get('questions') || []
     };
+
+    const API_KEY = '%%api_secret%%';
+    
+    console.log(API_KEY);
   }
+
 
   loadSurveyOptions = () => {
     const { record } = this.props;
