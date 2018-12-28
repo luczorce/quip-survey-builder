@@ -4,7 +4,8 @@ import TextInput from './TextInput.jsx';
 export default class Builder extends React.Component {
   static propTypes = {
     questions: React.PropTypes.array,
-    updateQuestions: React.PropTypes.func
+    updateQuestions: React.PropTypes.func,
+    lockQuestions: React.PropTypes.bool
   };
 
   addTextInput = () => {
@@ -25,7 +26,7 @@ export default class Builder extends React.Component {
   // the appropriate type of form data to render
   buildSurveyElements = (element, index) => {
     if (element.type === 'textInput') {
-      return <TextInput question={element.question} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} />;
+      return <TextInput question={element.question} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
     }
   }
 
@@ -60,7 +61,7 @@ export default class Builder extends React.Component {
       <nav className={Style.flexirow}>
         <strong>add to form:</strong>
 
-        <button type="button" onClick={this.addTextInput}>short text</button>
+        <quip.apps.ui.Button type="button"onClick={this.addTextInput} disabled={this.props.lockQuestions} text="short text" />
       </nav>
 
       { builderCanvas }

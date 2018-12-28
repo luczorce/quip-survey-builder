@@ -50,8 +50,13 @@
     color: red;
   }
 
-  &:focus:after {
+  &:focus:after,
+  &:hover:not[disabled]:after {
     // content: "&times;";
     content: "\00d7";
+  }
+
+  &:disabled:hover {
+    color: #666;
   }
 }
