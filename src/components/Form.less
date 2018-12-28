@@ -25,6 +25,36 @@
   }
 }
 
+.formAnswerInput {
+  span {
+    // font-size: 1.1em; // get some feedback on these ideas
+    color: #555;
+  }
+
+  input[type=text] {
+    display: block;
+    width: 100%;
+    margin: 0.5em auto 1.5em;
+    padding: 6px;
+
+    &:focus {
+      .focus();
+    }
+  }
+}
+
+.formSelect {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1 0 auto;
+
+  select {
+    flex: 1 0 auto;
+    margin-left: 5px;
+  }
+}
+
 .formSection {
   border: 1px @color_default solid;
   border-radius: 6px;

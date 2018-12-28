@@ -20,10 +20,6 @@ export default class TextInput extends React.Component {
       type: 'textInput'
     };
 
-    this.updateQuestion(updatedQuestion);
-  }
-
-  updateQuestion(updatedQuestion) {
     this.props.updated(updatedQuestion);
   }
 
