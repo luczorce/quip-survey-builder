@@ -1,8 +1,9 @@
 import Style from "./App.less";
 import FormStyle from "./components/Form.less";
 import Builder from './components/Builder.jsx';
+import SurveyList from './components/SurveyList.jsx';
 import ErrorMessage from './components/ErrorMessage.jsx';
-import { saveSurveyName, saveSurveyQuestions } from './survey-communication.js';
+import { getSavedSurveys, saveSurveyName, saveSurveyQuestions } from './survey-communication.js';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -19,15 +20,36 @@ export default class App extends React.Component {
       currentUse: props.record.get('purpose') || null,
       questions: props.record.get('questions') || [],
       surveyName: props.record.get('surveyName') || '',
-      saveSurveyDisabled: saveSurveyDisabled
+      saveSurveyDisabled: saveSurveyDisabled,
+      availableSurveys: []
     };
+  }
+
+  componentDidMount() {
+    if (this.props.record.get('purpose') === 'loading') {
+      this.loadSurveyOptions();
+    }
+  }
+
+  loadSingleSurvey = (surveyId) => {
+    console.log(`loading survey ${surveyId}`);
   }
 
   loadSurveyOptions = () => {
     const { record } = this.props;
     
-    record.set('purpose', 'loading');
-    this.setState({currentUse: 'loading'});
+    getSavedSurveys().then(response => {
+      if (!response.ok) {
+        console.log('there was an error loading the surveys');
+        return false;
+      }
+
+      record.set('purpose', 'loading');
+      this.setState({
+        currentUse: 'loading',
+        availableSurveys: response.data
+      });
+    });
   }
 
   saveSurvey = () => {
@@ -110,11 +132,15 @@ export default class App extends React.Component {
         <Builder questions={this.state.questions} updateQuestions={this.updateQuestions} lockQuestions={this.props.record.get('surveyId')} />
       </div>;
     } else if (this.state.currentUse === 'loading') {
-      canvas = <div>retrieve a bear</div>;
+      if (this.props.record.get('surveyId')) {
+        canvas = <div>loading a survey</div>;
+      } else {
+        canvas = <SurveyList surveys={this.state.availableSurveys} loadSurvey={this.loadSingleSurvey} />;
+      }
     } else {
       header = <nav className={Style.flexirow}>
         <button type="button" onClick={this.startBuildingSurvey}>build a survey</button>
-        <button type="button" onClick={this.loadSurveyOptions} disabled>load a survey</button>
+        <button type="button" onClick={this.loadSurveyOptions}>load a survey</button>
       </nav>;
     }
 
