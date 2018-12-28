@@ -1,3 +1,5 @@
+import { debounce } from 'throttle-debounce';
+import { updateAnswer } from '../survey-communication.js';
 import Style from "./Form.less";
 
 export default class TextInputAnswer extends React.Component {
@@ -7,10 +9,23 @@ export default class TextInputAnswer extends React.Component {
     update: React.PropTypes.func
   }
 
+  componentDidMount() {
+    this.storeAnswer = debounce(1000, this.storeAnswer);
+  }
+
   answerUpdate = (event) => {
-    // debounce communication to server to update the answer
     // TODO make question type enum
+    this.storeAnswer(event.target.value);
     this.props.update(this.props.answer.id, 'text_input', event.target.value);
+  }
+
+  storeAnswer = (value) => {
+    updateAnswer(this.props.answer.id, 'text_input', value)
+      .then(response => {
+        if (!response.ok) {
+          console.log('something went wrong with updating the answer');
+        }
+      });
   }
 
   render() {

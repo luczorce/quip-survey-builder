@@ -17,7 +17,7 @@ export function createAnswer(question, quipDocumentId) {
 
   return fetch(path, options).then(resp => {
     response = resp;
-    return resp.json()
+    return resp.json();
   }).then(responseBody => {
     response.data = responseBody;
     return response;
@@ -111,6 +111,28 @@ export function saveSurveyQuestion(surveyId, question, index) {
   });
 }
 
+export function updateAnswer(answerId, type, value) {
+  let response;
+
+  const path = `${endpoint}/answers/${answerId}`;
+  const options = {
+    method: 'PUT',
+    body: JSON.stringify(buildUpdatedAnswerBody(type, value)),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${API_KEY}`
+    }
+  };
+
+  return fetch(path, options).then(resp => {
+    response = resp;
+    return resp.json();
+  }).then(responseBody => {
+    response.data = responseBody;
+    return response;
+  });
+}
+
 //////
 
 function buildNewAnswerBody(question, quipDocumentId) {
@@ -121,7 +143,7 @@ function buildNewAnswerBody(question, quipDocumentId) {
     type: 'text_input',
     quip_id: quipDocumentId,
     answer: ''
-  }
+  };
 }
 
 function buildNewQuestionBody(question, index) {
@@ -130,6 +152,14 @@ function buildNewQuestionBody(question, index) {
       type: 'text_input',
       order: index,
       question: question.question
-    }
+    };
   }
+}
+
+function buildUpdatedAnswerBody(type, value) {
+  // TODO if (type === 'text_input')
+  return {
+    type: 'text_input',
+    answer: value
+  };
 }
