@@ -1,3 +1,4 @@
+import { qatypes } from '../util/enums.js';
 import Style from "./Form.less";
 
 export default class TextInput extends React.Component {
@@ -17,7 +18,7 @@ export default class TextInput extends React.Component {
     let updatedQuestion = {
       question: event.target.value,
       guid: this.props.guid,
-      type: 'textInput'
+      type: qatypes.textInput
     };
 
     this.props.updated(updatedQuestion);

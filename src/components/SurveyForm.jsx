@@ -1,4 +1,5 @@
 import TextInputAnswer from './TextInputAnswer.jsx';
+import { qatypes } from '../util/enums.js';
 
 export default class SurveyForm extends React.Component {
   static propTypes = {
@@ -9,7 +10,7 @@ export default class SurveyForm extends React.Component {
 
   buildForm = () => {
     return this.props.questions.map(q => {
-      // TODO if (question.type === 'text_input')
+      // TODO if (question.type === qatypes.textInput)
       let answer = this.props.answers.find(a => a.input_text_question_id === q.id);
 
       return <TextInputAnswer 
