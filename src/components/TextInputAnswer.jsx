@@ -1,5 +1,5 @@
 import { debounce } from 'throttle-debounce';
-import { updateAnswer } from '../survey-communication.js';
+import { updateAnswer } from '../util/survey-communication.js';
 import Style from "./Form.less";
 
 export default class TextInputAnswer extends React.Component {

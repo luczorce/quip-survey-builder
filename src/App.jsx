@@ -14,7 +14,7 @@ import {
   getSurveyQuestions, 
   saveSurveyName, 
   saveSurveyQuestion 
-} from './survey-communication.js';
+} from './util/survey-communication.js';
 
 export default class App extends React.Component {
   constructor(props) {
