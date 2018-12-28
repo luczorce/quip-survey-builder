@@ -32,7 +32,7 @@ export default class App extends React.Component {
       surveyName: props.record.get('surveyName') || '',
       saveSurveyDisabled: saveSurveyDisabled,
       availableSurveys: [],
-      answers: []
+      answers: props.record.get('answers') || [],
     };
   }
 
@@ -41,7 +41,6 @@ export default class App extends React.Component {
       const id = this.props.record.get('surveyId');
       
       if (id) {
-        console.log('looking for a survey');
         this.loadSingleSurvey(id);
       } else {
         this.loadSurveyOptions();
@@ -54,23 +53,12 @@ export default class App extends React.Component {
 
     const { record } = this.props;
 
-    if (record.get('surveyId') && record.get('questions') && record.get('answers')) {
-      console.log('got saved questions and answers here');
-    } else {
+    if (!record.get('surveyId')) {
       let questions, answers;
-
-      // now with all the questions
-      // create the answers, based on the type of question and the quip id
-      // or load the answers, if we have them stored in the record 
-      // finally update the record
-      
-      // this.setState({
-      //   questions: questionResponse.data
-      // });
       
       getSurveyQuestions(surveyId).then(questionResponse => {
         if (!questionResponse.ok) {
-          console.log('there was an error loading the surveys');
+          console.log('there was an error loading the questions');
           return Promise.reject();
         }
 
@@ -86,9 +74,7 @@ export default class App extends React.Component {
 
         return Promise.all(answerPromises);
       }).then(answerResponse => {
-        console.log(answerResponse);
         answers = answerResponse.map(a => a.data);
-        console.log(answers);
         
         if (answerResponse.some(a => !a.ok)) {
           console.log('there are some errors with the answers');
@@ -161,6 +147,18 @@ export default class App extends React.Component {
     this.setState({currentUse: 'building'});
   }
 
+  updateAnswerState = (id, type, value) => {
+    let answers = this.state.answers;
+    let index = answers.findIndex(a => a.id === id);
+
+    if (index === -1) return;
+
+    // TODO if (type === 'textInput')
+    answers[index].answer = value;
+    this.props.record.set('answers', answers);
+    this.setState({answers: answers});
+  }
+
   updateQuestions = (questions) => {
     const { record } = this.props;
 
@@ -204,7 +202,7 @@ export default class App extends React.Component {
       </div>;
     } else if (this.state.currentUse === 'loading') {
       if (this.props.record.get('surveyId')) {
-        canvas = <SurveyForm questions={this.state.questions} answers={this.state.answers} />;
+        canvas = <SurveyForm questions={this.state.questions} answers={this.state.answers} updateAnswer={this.updateAnswerState} />;
       } else {
         canvas = <SurveyList surveys={this.state.availableSurveys} loadSurvey={this.loadSingleSurvey} />;
       }
