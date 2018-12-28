@@ -1,9 +1,20 @@
-import Style from "./App.less";
-import FormStyle from "./components/Form.less";
+import quip from 'quip';
+
 import Builder from './components/Builder.jsx';
 import SurveyList from './components/SurveyList.jsx';
+import SurveyForm from './components/SurveyForm.jsx';
 import ErrorMessage from './components/ErrorMessage.jsx';
-import { getSavedSurveys, saveSurveyName, saveSurveyQuestions } from './survey-communication.js';
+
+import Style from "./App.less";
+import FormStyle from "./components/Form.less";
+
+import {
+  createAnswer,
+  getSavedSurveys, 
+  getSurveyQuestions, 
+  saveSurveyName, 
+  saveSurveyQuestion 
+} from './survey-communication.js';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -16,23 +27,83 @@ export default class App extends React.Component {
     }
 
     this.state = {
-      // can be either building or loading
-      currentUse: props.record.get('purpose') || null,
+      currentUse: props.record.get('purpose') || null, // can be either building or loading
       questions: props.record.get('questions') || [],
       surveyName: props.record.get('surveyName') || '',
       saveSurveyDisabled: saveSurveyDisabled,
-      availableSurveys: []
+      availableSurveys: [],
+      answers: []
     };
   }
 
   componentDidMount() {
     if (this.props.record.get('purpose') === 'loading') {
-      this.loadSurveyOptions();
+      const id = this.props.record.get('surveyId');
+      
+      if (id) {
+        console.log('looking for a survey');
+        this.loadSingleSurvey(id);
+      } else {
+        this.loadSurveyOptions();
+      }
     }
   }
 
   loadSingleSurvey = (surveyId) => {
-    console.log(`loading survey ${surveyId}`);
+    if (surveyId === null) return false;
+
+    const { record } = this.props;
+
+    if (record.get('surveyId') && record.get('questions') && record.get('answers')) {
+      console.log('got saved questions and answers here');
+    } else {
+      let questions, answers;
+
+      // now with all the questions
+      // create the answers, based on the type of question and the quip id
+      // or load the answers, if we have them stored in the record 
+      // finally update the record
+      
+      // this.setState({
+      //   questions: questionResponse.data
+      // });
+      
+      getSurveyQuestions(surveyId).then(questionResponse => {
+        if (!questionResponse.ok) {
+          console.log('there was an error loading the surveys');
+          return Promise.reject();
+        }
+
+        let answerPromises = [];
+        let quipDocumentId = quip.apps.getThreadId();
+
+        questions = questionResponse.data;
+        record.set('questions', questions);
+
+        questions.forEach((question, index) => {
+          answerPromises.push(createAnswer(question, quipDocumentId));
+        });
+
+        return Promise.all(answerPromises);
+      }).then(answerResponse => {
+        console.log(answerResponse);
+        answers = answerResponse.map(a => a.data);
+        console.log(answers);
+        
+        if (answerResponse.some(a => !a.ok)) {
+          console.log('there are some errors with the answers');
+          return Promise.reject();
+        } else {
+          record.set('answers', answers);
+        }
+      }).then(() => {
+        record.set('surveyId', Number(surveyId));
+        this.setState({
+          questions,
+          answers
+        });
+      });
+    }
   }
 
   loadSurveyOptions = () => {
@@ -71,7 +142,7 @@ export default class App extends React.Component {
     let questionPromises = [];
 
     this.state.questions.forEach((question, index) => {
-      questionPromises.push(saveSurveyQuestions(surveyId, question, index));
+      questionPromises.push(saveSurveyQuestion(surveyId, question, index));
     });
 
     Promise.all(questionPromises).then(responses => {
@@ -133,14 +204,14 @@ export default class App extends React.Component {
       </div>;
     } else if (this.state.currentUse === 'loading') {
       if (this.props.record.get('surveyId')) {
-        canvas = <div>loading a survey</div>;
+        canvas = <SurveyForm questions={this.state.questions} answers={this.state.answers} />;
       } else {
         canvas = <SurveyList surveys={this.state.availableSurveys} loadSurvey={this.loadSingleSurvey} />;
       }
     } else {
       header = <nav className={Style.flexirow}>
-        <button type="button" onClick={this.startBuildingSurvey}>build a survey</button>
-        <button type="button" onClick={this.loadSurveyOptions}>load a survey</button>
+        <quip.apps.ui.Button type="button" onClick={this.startBuildingSurvey} text="build a survey" />
+        <quip.apps.ui.Button type="button" onClick={this.loadSurveyOptions} text="load a survey" />
       </nav>;
     }
 
