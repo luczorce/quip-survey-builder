@@ -15,7 +15,7 @@ import {
   saveSurveyName, 
   saveSurveyQuestion 
 } from './util/survey-communication.js';
-import { qatypes } from './util/enums.js';
+import { qatypes, purposes } from './util/enums.js';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -28,8 +28,7 @@ export default class App extends React.Component {
     }
 
     this.state = {
-      // TODO replace with enum
-      currentUse: props.record.get('purpose') || null, // can be either building or loading
+      purpose: props.record.get('purpose') || null,
       questions: props.record.get('questions') || [],
       surveyName: props.record.get('surveyName') || '',
       saveSurveyDisabled: saveSurveyDisabled,
@@ -39,7 +38,7 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.record.get('purpose') === 'loading') {
+    if (this.props.record.get('purpose') === purposes.loading) {
       const id = this.props.record.get('surveyId');
       
       if (id) {
@@ -103,9 +102,9 @@ export default class App extends React.Component {
         return false;
       }
 
-      record.set('purpose', 'loading');
+      record.set('purpose', purposes.loading);
       this.setState({
-        currentUse: 'loading',
+        purpose: purposes.loading,
         availableSurveys: response.data
       });
     });
@@ -145,8 +144,8 @@ export default class App extends React.Component {
   startBuildingSurvey = () => {
     const { record } = this.props;
     
-    record.set('purpose', 'building');
-    this.setState({currentUse: 'building'});
+    record.set('purpose', purposes.building);
+    this.setState({purpose: purposes.building});
   }
 
   updateAnswerState = (id, type, value) => {
@@ -183,7 +182,7 @@ export default class App extends React.Component {
   render() {
     let header, canvas;
 
-    if (this.state.currentUse === 'building') {
+    if (this.state.purpose === purposes.building) {
       header = <header className={Style.buildingHeader}>
         <label className={FormStyle.formInput}>
           <span>survey name</span>
@@ -202,7 +201,7 @@ export default class App extends React.Component {
         { this.state.surveyErrors && <ErrorMessage type="newSurvey" error={this.state.surveyErrors} />}
         <Builder questions={this.state.questions} updateQuestions={this.updateQuestions} lockQuestions={this.props.record.get('surveyId')} />
       </div>;
-    } else if (this.state.currentUse === 'loading') {
+    } else if (this.state.purpose === purposes.loading) {
       if (this.props.record.get('surveyId')) {
         canvas = <SurveyForm questions={this.state.questions} answers={this.state.answers} updateAnswer={this.updateAnswerState} />;
       } else {

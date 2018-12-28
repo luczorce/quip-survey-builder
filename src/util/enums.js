@@ -4,4 +4,7 @@ export const qatypes = {
   textInput: 'text_input'
 };
 
-// TODO purpose or building
+export const purposes = {
+  building: 'building',
+  loading: 'loading'
+};
