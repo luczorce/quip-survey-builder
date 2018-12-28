@@ -29,8 +29,8 @@ export default class TextInputAnswer extends React.Component {
   }
 
   render() {
-    return <div key={this.props.answer.id} className={Style.formSection}>
-      <label className={Style.formInput}>
+    return <div key={this.props.answer.id}>
+      <label className={Style.formAnswerInput}>
         <span>{this.props.question}</span>
         <input type="text" value={this.props.answer ? this.props.answer.answer : ''} onChange={this.answerUpdate} />
       </label>
