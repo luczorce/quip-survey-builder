@@ -5,7 +5,9 @@ class SurveyRecord extends quip.apps.RootRecord {
   static getProperties() {
     return {
       purpose: 'string',
-      questions: 'array'
+      questions: 'array',
+      surveyName: 'string',
+      surveyId: 'number'
     }
   }
 }
