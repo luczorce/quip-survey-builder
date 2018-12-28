@@ -1,5 +1,6 @@
 import { debounce } from 'throttle-debounce';
 import { updateAnswer } from '../util/survey-communication.js';
+import { qatypes } from '../util/enums.js';
 import Style from "./Form.less";
 
 export default class TextInputAnswer extends React.Component {
@@ -14,13 +15,12 @@ export default class TextInputAnswer extends React.Component {
   }
 
   answerUpdate = (event) => {
-    // TODO make question type enum
     this.storeAnswer(event.target.value);
-    this.props.update(this.props.answer.id, 'text_input', event.target.value);
+    this.props.update(this.props.answer.id, qatypes.textInput, event.target.value);
   }
 
   storeAnswer = (value) => {
-    updateAnswer(this.props.answer.id, 'text_input', value)
+    updateAnswer(this.props.answer.id, qatypes.textInput, value)
       .then(response => {
         if (!response.ok) {
           console.log('something went wrong with updating the answer');

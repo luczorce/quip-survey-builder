@@ -1,5 +1,6 @@
-import Style from "../App.less";
 import TextInput from './TextInput.jsx';
+import { qatypes } from '../util/enums.js';
+import Style from "../App.less";
 
 export default class Builder extends React.Component {
   static propTypes = {
@@ -10,7 +11,7 @@ export default class Builder extends React.Component {
 
   addTextInput = () => {
     const question = {
-      type: 'textInput',
+      type: qatypes.textInput,
       question: '',
       guid: Date.now()
     };
@@ -25,7 +26,7 @@ export default class Builder extends React.Component {
   // and transform question data into 
   // the appropriate type of form data to render
   buildSurveyElements = (element, index) => {
-    if (element.type === 'textInput') {
+    if (element.type === qatypes.textInput) {
       return <TextInput question={element.question} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
     }
   }

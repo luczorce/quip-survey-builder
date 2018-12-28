@@ -1,3 +1,5 @@
+import { qatypes } from './enums.js';
+
 const endpoint = 'https://localhost:3000';
 // const endpoint = 'https://eio-qi-surveys.herokuapp.com';
 const API_KEY = '%%api_secret%%';
@@ -136,20 +138,20 @@ export function updateAnswer(answerId, type, value) {
 //////
 
 function buildNewAnswerBody(question, quipDocumentId) {
-  // TODO need to detect question type when we have more answers types
+  // TODO if (type === qatypes.textInput)
   // TODO need to update API to include type with the question
-  
+
   return {
-    type: 'text_input',
+    type: qatypes.textInput,
     quip_id: quipDocumentId,
     answer: ''
   };
 }
 
 function buildNewQuestionBody(question, index) {
-  if (question.type === 'textInput') {
+  if (question.type === qatypes.textInput) {
     return {
-      type: 'text_input',
+      type: qatypes.textInput,
       order: index,
       question: question.question
     };
@@ -157,9 +159,9 @@ function buildNewQuestionBody(question, index) {
 }
 
 function buildUpdatedAnswerBody(type, value) {
-  // TODO if (type === 'text_input')
+  // TODO if (type === qatypes.textInput)
   return {
-    type: 'text_input',
+    type: qatypes.textInput,
     answer: value
   };
 }

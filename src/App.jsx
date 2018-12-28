@@ -15,6 +15,7 @@ import {
   saveSurveyName, 
   saveSurveyQuestion 
 } from './util/survey-communication.js';
+import { qatypes } from './util/enums.js';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -27,6 +28,7 @@ export default class App extends React.Component {
     }
 
     this.state = {
+      // TODO replace with enum
       currentUse: props.record.get('purpose') || null, // can be either building or loading
       questions: props.record.get('questions') || [],
       surveyName: props.record.get('surveyName') || '',
@@ -153,7 +155,7 @@ export default class App extends React.Component {
 
     if (index === -1) return;
 
-    // TODO if (type === 'textInput')
+    // TODO if (type === qatypes.textInput)
     answers[index].answer = value;
     this.props.record.set('answers', answers);
     this.setState({answers: answers});
