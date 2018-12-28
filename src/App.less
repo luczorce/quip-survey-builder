@@ -1,5 +1,6 @@
 .flexirow {
   display: flex;
+  align-items: baseline;
 
   button:not(:first-child) {
     margin-left: 5px;
@@ -9,4 +10,11 @@
 .buildingHeader {
   margin-bottom: 25px;
   .flexirow();
+}
+
+.errorMessage {
+  padding: 5px;
+  background: #fbd5d9;
+  border: 1px #e69898 solid;
+  border-radius: 6px;
 }

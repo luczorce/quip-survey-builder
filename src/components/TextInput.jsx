@@ -5,7 +5,8 @@ export default class TextInput extends React.Component {
     question: React.PropTypes.string,
     guid: React.PropTypes.number,
     updated: React.PropTypes.func,
-    deleted: React.PropTypes.func
+    deleted: React.PropTypes.func,
+    lock: React.PropTypes.bool
   }
 
   deleteQuestion = () => {
@@ -30,12 +31,12 @@ export default class TextInput extends React.Component {
     return <li key={this.props.guid} className={Style.formSection}>
       <p>
         <em>text input</em>
-        <button type="button" onClick={this.deleteQuestion} className={Style.sectionDeleter}>delete question</button>
+        <button type="button" onClick={this.deleteQuestion} className={Style.sectionDeleter} disabled={this.props.lock}>delete question</button>
       </p>
       
       <label className={Style.formInput}>
         <span>question</span>
-        <input type="text" value={this.props.question} placeholder="(Who did you talk to last?)" onChange={this.questionValueUpdate} />
+        <input type="text" value={this.props.question} placeholder="(Who did you talk to last?)" onChange={this.questionValueUpdate} disabled={this.props.lock} />
       </label>
     </li>;
   }
