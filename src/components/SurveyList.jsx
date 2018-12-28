@@ -1,3 +1,6 @@
+import Style from '../App.less';
+import FormStyle from './Form.less';
+
 export default class SurveyList extends React.Component {
   static propTypes = {
     surveys: React.PropTypes.array,
@@ -19,8 +22,8 @@ export default class SurveyList extends React.Component {
       return <option key={s.id} value={s.id}>{s.name}</option>;
     });
 
-    return <section>
-      <label>
+    return <section className={Style.flexirow}>
+      <label className={FormStyle.formSelect}>
         <span>choose a survey</span>
         <select onChange={this.updateChoice}>
           <option>--</option>
@@ -28,7 +31,7 @@ export default class SurveyList extends React.Component {
         </select>
       </label>
 
-      <button type="button" onClick={this.chooseSurvey}>load survey</button>
+      <quip.apps.ui.Button type="button" onClick={this.chooseSurvey} text="load survey" />
     </section>;
   }
 }
