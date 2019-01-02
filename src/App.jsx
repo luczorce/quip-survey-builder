@@ -6,7 +6,6 @@ import SurveyForm from './components/SurveyForm.jsx';
 import ErrorMessage from './components/ErrorMessage.jsx';
 
 import Style from "./App.less";
-import FormStyle from "./components/Form.less";
 
 import {
   createAnswer,
@@ -34,6 +33,7 @@ export default class App extends React.Component {
       saveSurveyDisabled: saveSurveyDisabled,
       availableSurveys: [],
       answers: props.record.get('answers') || [],
+      surveyErrors: null
     };
   }
 
@@ -167,8 +167,7 @@ export default class App extends React.Component {
     this.setState({questions: questions});
   }
 
-  updateSurveyName = (event) => {
-    const name = event.target.value;
+  updateSurveyNameState = (name) => {
     const { record } = this.props;
     const shouldDisable = record.get('surveyId') || !name.length;
 
@@ -180,27 +179,16 @@ export default class App extends React.Component {
   }
 
   render() {
-    let header, canvas;
+    let canvas;
 
     if (this.state.purpose === purposes.building) {
-      header = <header className={Style.buildingHeader}>
-        <label className={FormStyle.formInput}>
-          <span>survey name</span>
-          <input type="text" value={this.state.surveyName} onInput={this.updateSurveyName} disabled={this.props.record.get('surveyId')} />
-        </label>
-
-        <quip.apps.ui.Button 
-          type="button" 
-          onClick={this.saveSurvey} 
-          primary="true"
-          disabled={this.state.saveSurveyDisabled} 
-          text={this.props.record.get('surveyId') ? 'survey saved' : 'save survey'} />
-      </header>;
-
-      canvas = <div>
-        { this.state.surveyErrors && <ErrorMessage type="newSurvey" error={this.state.surveyErrors} />}
-        <Builder questions={this.state.questions} updateQuestions={this.updateQuestions} lockQuestions={this.props.record.get('surveyId')} />
-      </div>;
+      canvas = <Builder questions={this.state.questions} 
+        lockQuestions={this.props.record.get('surveyId')} 
+        surveyName={this.state.surveyName} 
+        disableSave={this.state.saveSurveyDisabled} 
+        updateQuestions={this.updateQuestions} 
+        updateSurveyName={this.updateSurveyNameState} 
+        saveSurvey={this.saveSurvey} />;
     } else if (this.state.purpose === purposes.loading) {
       if (this.props.record.get('surveyId')) {
         canvas = <SurveyForm questions={this.state.questions} answers={this.state.answers} updateAnswer={this.updateAnswerState} />;
@@ -208,15 +196,12 @@ export default class App extends React.Component {
         canvas = <SurveyList surveys={this.state.availableSurveys} loadSurvey={this.loadSingleSurvey} />;
       }
     } else {
-      header = <nav className={Style.flexirow}>
+      canvas = <nav className={Style.flexirow}>
         <quip.apps.ui.Button type="button" onClick={this.startBuildingSurvey} text="build a survey" />
         <quip.apps.ui.Button type="button" onClick={this.loadSurveyOptions} text="load a survey" />
       </nav>;
     }
 
-    return <div>
-      { header }
-      { canvas }
-    </div>;
+    return <div>{ canvas }</div>;
   }
 }
