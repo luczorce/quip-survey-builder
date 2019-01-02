@@ -138,14 +138,19 @@ export function updateAnswer(answerId, type, value) {
 //////
 
 function buildNewAnswerBody(question, quipDocumentId) {
-  // TODO if (type === qatypes.textInput)
-  // TODO need to update API to include type with the question
-
-  return {
-    type: qatypes.textInput,
-    quip_id: quipDocumentId,
-    answer: ''
-  };
+  if (question.question_type === qatypes.textInput) {
+    return {
+      type: qatypes.textInput,
+      quip_id: quipDocumentId,
+      answer: ''
+    };
+  } else if (question.question_type === qatypes.textarea) {
+    return {
+      type: qatypes.textarea,
+      quip_id: quipDocumentId,
+      answer: ''
+    };
+  }
 }
 
 function buildNewQuestionBody(question, index) {
@@ -165,9 +170,15 @@ function buildNewQuestionBody(question, index) {
 }
 
 function buildUpdatedAnswerBody(type, value) {
-  // TODO if (type === qatypes.textInput)
-  return {
-    type: qatypes.textInput,
-    answer: value
-  };
+  if (type === qatypes.textInput) {
+    return {
+      type: qatypes.textInput,
+      answer: value
+    };
+  } else if (type === qatypes.textarea) {
+    return {
+      type: qatypes.textarea,
+      answer: value
+    };
+  }
 }
