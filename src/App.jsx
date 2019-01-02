@@ -137,7 +137,6 @@ export default class App extends React.Component {
         // TODO how to announce for errors, and help user around this?
         console.log('found some errors');
       }
-      // TODO how to update the save button
     });
   }
 
@@ -160,7 +159,7 @@ export default class App extends React.Component {
     this.setState({answers: answers});
   }
 
-  updateQuestions = (questions) => {
+  updateQuestionsState = (questions) => {
     const { record } = this.props;
 
     record.set('questions', questions);
@@ -186,7 +185,7 @@ export default class App extends React.Component {
         lockQuestions={this.props.record.get('surveyId')} 
         surveyName={this.state.surveyName} 
         disableSave={this.state.saveSurveyDisabled} 
-        updateQuestions={this.updateQuestions} 
+        updateQuestions={this.updateQuestionsState} 
         updateSurveyName={this.updateSurveyNameState} 
         saveSurvey={this.saveSurvey} />;
     } else if (this.state.purpose === purposes.loading) {

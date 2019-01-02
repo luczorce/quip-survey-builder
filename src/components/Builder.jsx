@@ -1,4 +1,5 @@
 import TextInput from './TextInput.jsx';
+import TextareaQ from './Textarea.jsx';
 import { qatypes } from '../util/enums.js';
 import Style from "../App.less";
 import FormStyle from "./Form.less";
@@ -27,12 +28,27 @@ export default class Builder extends React.Component {
     this.props.updateQuestions(questions);
   }
 
+  addTextarea = () => {
+    const question = {
+      type: qatypes.textarea,
+      question: '',
+      guid: Date.now()
+    };
+
+    let questions = this.props.questions;
+    questions.push(question);
+
+    this.props.updateQuestions(questions);
+  }
+
   // this is used in a map function to iterate
   // and transform question data into 
   // the appropriate type of form data to render
   buildSurveyElements = (element, index) => {
     if (element.type === qatypes.textInput) {
       return <TextInput question={element.question} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
+    } else if (element.type === qatypes.textarea) {
+      return <TextareaQ question={element.question} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
     }
   }
 
@@ -71,7 +87,7 @@ export default class Builder extends React.Component {
       <header className={Style.buildingHeader}>
         <label className={FormStyle.formInput}>
           <span>survey name</span>
-          <input type="text" value={this.props.surveyName} onInput={this.updateName} disabled={this.props.disableSave} />
+          <input type="text" value={this.props.surveyName} onInput={this.updateName} disabled={this.props.lockQuestions} />
         </label>
 
         <quip.apps.ui.Button 
@@ -85,7 +101,9 @@ export default class Builder extends React.Component {
       <nav className={Style.flexirow}>
         <strong>add to form:</strong>
 
-        <quip.apps.ui.Button type="button"onClick={this.addTextInput} disabled={this.props.lockQuestions} text="short text" />
+        <quip.apps.ui.Button type="button" onClick={this.addTextInput} disabled={this.props.lockQuestions} text="short text" />
+
+        <quip.apps.ui.Button type="button" onClick={this.addTextarea} disabled={this.props.lockQuestions} text="long form text" />
       </nav>
 
       { this.props.surveyErrors && <ErrorMessage type="newSurvey" error={this.props.surveyErrors} />}
