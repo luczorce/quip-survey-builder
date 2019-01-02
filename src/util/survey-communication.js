@@ -155,6 +155,12 @@ function buildNewQuestionBody(question, index) {
       order: index,
       question: question.question
     };
+  } else if (question.type === qatypes.textarea) {
+    return {
+      type: qatypes.textarea,
+      order: index,
+      question: question.question
+    };
   }
 }
 
