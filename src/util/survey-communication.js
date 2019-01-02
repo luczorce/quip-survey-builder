@@ -27,7 +27,6 @@ export function createAnswer(question, quipDocumentId) {
 }
 
 export function getSavedSurveys() {
-  let response;
   const path = `${endpoint}/surveys`;  
   const options = {
     method: 'GET',
@@ -36,17 +35,10 @@ export function getSavedSurveys() {
     }
   };
 
-  return fetch(path, options).then(resp => {
-    response = resp;
-    return resp.json()
-  }).then(responseBody => {
-    response.data = responseBody;
-    return response;
-  });
+  return combinedFetch(path, options);
 }
 
 export function getSurveyQuestions(surveyId) {
-  let response;
   const path = `${endpoint}/surveys/${surveyId}/questions`;  
   const options = {
     method: 'GET',
@@ -55,17 +47,10 @@ export function getSurveyQuestions(surveyId) {
     }
   };
 
-  return fetch(path, options).then(resp => {
-    response = resp;
-    return resp.json()
-  }).then(responseBody => {
-    response.data = responseBody;
-    return response;
-  });
+  return combinedFetch(path, options);
 }
 
 export function saveSurveyName(name, surveyId) {
-  let response;
   let path = `${endpoint}/surveys`;  
   let method = 'POST';
 
@@ -83,17 +68,10 @@ export function saveSurveyName(name, surveyId) {
     }
   };
 
-  return fetch(path, options).then(resp => {
-    response = resp;
-    return resp.json()
-  }).then(responseBody => {
-    response.data = responseBody;
-    return response;
-  });
+  return combinedFetch(path, options);
 }
 
 export function saveSurveyQuestion(surveyId, question, index) {
-  let response;
   const path = `${endpoint}/surveys/${surveyId}/questions`;
   const options = {
     method: 'POST',
@@ -104,18 +82,10 @@ export function saveSurveyQuestion(surveyId, question, index) {
     }
   };
 
-  return fetch(path, options).then(resp => {
-    response = resp;
-    return resp.json()
-  }).then(responseBody => {
-    response.data = responseBody;
-    return response;
-  });
+  return combinedFetch(path, options);
 }
 
 export function updateAnswer(answerId, type, value) {
-  let response;
-
   const path = `${endpoint}/answers/${answerId}`;
   const options = {
     method: 'PUT',
@@ -126,13 +96,7 @@ export function updateAnswer(answerId, type, value) {
     }
   };
 
-  return fetch(path, options).then(resp => {
-    response = resp;
-    return resp.json();
-  }).then(responseBody => {
-    response.data = responseBody;
-    return response;
-  });
+  return combinedFetch(path, options);
 }
 
 //////
@@ -181,4 +145,18 @@ function buildUpdatedAnswerBody(type, value) {
       answer: value
     };
   }
+}
+
+function combinedFetch(path, options) {
+  let response;
+
+  return new Promise((resolve, reject) => {
+    fetch(path, options).then(resp => {
+      response = resp;
+      return resp.json();
+    }).then(responseBody => {
+      response.data = responseBody;
+      resolve(response);
+    });
+  });
 }
