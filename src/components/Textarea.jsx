@@ -1,7 +1,7 @@
 import { qatypes } from '../util/enums.js';
 import Style from "./Form.less";
 
-export default class TextInput extends React.Component {
+export default class TextareaQ extends React.Component {
   static propTypes = {
     question: React.PropTypes.string,
     guid: React.PropTypes.number,
@@ -18,7 +18,7 @@ export default class TextInput extends React.Component {
     let updatedQuestion = {
       question: event.target.value,
       guid: this.props.guid,
-      type: qatypes.textInput
+      type: qatypes.textarea
     };
 
     this.props.updated(updatedQuestion);
@@ -27,7 +27,7 @@ export default class TextInput extends React.Component {
   render() {
     return <li key={this.props.guid} className={Style.formSection}>
       <p>
-        text input <em>(for short answers)</em>
+        textarea <em>(for long form answers)</em>
         <button type="button" onClick={this.deleteQuestion} className={Style.sectionDeleter} disabled={this.props.lock}>delete question</button>
       </p>
       

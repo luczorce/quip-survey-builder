@@ -43,6 +43,24 @@
   }
 }
 
+.formAnswerTextarea {
+  span {
+    // font-size: 1.1em; // get some feedback on these ideas
+    color: #555;
+  }
+
+  textarea {
+    margin: 0.5em auto 1.5em;
+    padding: 6px;
+    width: 100%;
+    resize: vertical;
+
+    &:focus {
+      .focus();
+    }
+  }
+}
+
 .formSelect {
   display: flex;
   justify-content: space-between;
