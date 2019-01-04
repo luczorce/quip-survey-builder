@@ -5,6 +5,8 @@ import SurveyList from './components/SurveyList.jsx';
 import SurveyForm from './components/SurveyForm.jsx';
 import ErrorMessage from './components/ErrorMessage.jsx';
 
+import { optionTypes } from './util/enums.js';
+
 import Style from "./App.less";
 
 import {
@@ -132,6 +134,11 @@ export default class App extends React.Component {
     let questionPromises = [];
 
     this.state.questions.forEach((question, index) => {
+      if (optionTypes.includes(question.type)) {
+        let optionsList = this.state.options.find(o => o.guid === question.guid);
+        question.options = optionsList.options.map(o => o.value);
+      }
+
       questionPromises.push(saveSurveyQuestion(surveyId, question, index));
     });
 

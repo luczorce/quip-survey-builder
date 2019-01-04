@@ -116,7 +116,7 @@ function buildNewQuestionBody(question, index) {
     question: question.question
   };
 
-  if (optionTypes.includes(type)) {
+  if (optionTypes.includes(question.type)) {
     payload.options = question.options.join('~~~');
   }
 
