@@ -1,4 +1,4 @@
-import { qatypes } from './enums.js';
+import { qatypes, optionTypes } from './enums.js';
 
 const endpoint = 'https://localhost:3000';
 // const endpoint = 'https://eio-qi-surveys.herokuapp.com';
@@ -102,49 +102,36 @@ export function updateAnswer(answerId, type, value) {
 //////
 
 function buildNewAnswerBody(question, quipDocumentId) {
-  if (question.question_type === qatypes.textInput) {
-    return {
-      answer_type: qatypes.textInput,
-      quip_id: quipDocumentId,
-      answer: ''
-    };
-  } else if (question.question_type === qatypes.textarea) {
-    return {
-      answer_type: qatypes.textarea,
-      quip_id: quipDocumentId,
-      answer: ''
-    };
-  }
+  return {
+    answer_type: question.question_type,
+    quip_id: quipDocumentId,
+    answer: ''
+  };
 }
 
 function buildNewQuestionBody(question, index) {
-  if (question.type === qatypes.textInput) {
-    return {
-      question_type: qatypes.textInput,
-      order: index,
-      question: question.question
-    };
-  } else if (question.type === qatypes.textarea) {
-    return {
-      question_type: qatypes.textarea,
-      order: index,
-      question: question.question
-    };
+  let payload = {
+    question_type: question.type,
+    order: index,
+    question: question.question
+  };
+
+  if (optionTypes.includes(type)) {
+    payload.options = question.options.join('~~~');
   }
+
+  return payload;
 }
 
 function buildUpdatedAnswerBody(type, value) {
-  if (type === qatypes.textInput) {
-    return {
-      answer_type: qatypes.textInput,
-      answer: value
-    };
-  } else if (type === qatypes.textarea) {
-    return {
-      answer_type: qatypes.textarea,
-      answer: value
-    };
+  if (type === type.qatypes.checkbox && typeof value !== 'string') {
+    value = value.join('~~~');
   }
+
+  return {
+    answer_type: type,
+    answer: value
+  };
 }
 
 function combinedFetch(path, options) {
