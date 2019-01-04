@@ -15,6 +15,20 @@ export default class Builder extends React.Component {
     updateSurveyName: React.PropTypes.func,
   };
 
+  addSelect = () => {
+    const question = {
+      type: qatypes.select,
+      question: '',
+      guid: Date.now(),
+      options: []
+    };
+
+    let questions = this.props.questions;
+    questions.push(question);
+
+    this.props.updateQuestions(questions);
+  }
+
   addTextInput = () => {
     const question = {
       type: qatypes.textInput,
@@ -45,10 +59,13 @@ export default class Builder extends React.Component {
   // and transform question data into 
   // the appropriate type of form data to render
   buildSurveyElements = (element, index) => {
+    console.log(element);
     if (element.type === qatypes.textInput) {
       return <TextInput question={element.question} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
     } else if (element.type === qatypes.textarea) {
       return <TextareaQ question={element.question} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
+    } else if (element.type === qatypes.select) {
+      return <li>select box</li>;
     }
   }
 
@@ -102,8 +119,8 @@ export default class Builder extends React.Component {
         <strong>add to form:</strong>
 
         <quip.apps.ui.Button type="button" onClick={this.addTextInput} disabled={this.props.lockQuestions} text="short text" />
-
         <quip.apps.ui.Button type="button" onClick={this.addTextarea} disabled={this.props.lockQuestions} text="long form text" />
+        <quip.apps.ui.Button type="button" onClick={this.addSelect} disabled={this.props.lockQuestions} text="select box" />
       </nav>
 
       { this.props.surveyErrors && <ErrorMessage type="newSurvey" error={this.props.surveyErrors} />}
