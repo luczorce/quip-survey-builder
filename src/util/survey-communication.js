@@ -124,7 +124,7 @@ function buildNewQuestionBody(question, index) {
 }
 
 function buildUpdatedAnswerBody(type, value) {
-  if (type === type.qatypes.checkbox && typeof value !== 'string') {
+  if (type === qatypes.checkbox && typeof value !== 'string') {
     value = value.join('~~~');
   }
 

@@ -67,8 +67,7 @@ export default class App extends React.Component {
         }
 
         let answerPromises = [];
-        // TODO remove this date now when done snuffing around
-        let quipDocumentId = quip.apps.getThreadId() + Date.now();
+        let quipDocumentId = quip.apps.getThreadId();
 
         questions = questionResponse.data;
         record.set('questions', questions);
@@ -163,7 +162,7 @@ export default class App extends React.Component {
 
     if (index === -1) return;
 
-    // TODO if (type === qatypes.textInput)
+    // TODO if (type === qatypes.checkbox) else
     answers[index].answer = value;
     this.props.record.set('answers', answers);
     this.setState({answers: answers});
