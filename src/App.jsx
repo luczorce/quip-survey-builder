@@ -27,6 +27,7 @@ export default class App extends React.Component {
     }
 
     this.state = {
+      options: props.record.get('questionOptions').getRecords().map(r => r.getData()),
       purpose: props.record.get('purpose') || null,
       questions: props.record.get('questions') || [],
       surveyName: props.record.get('surveyName') || '',
@@ -64,7 +65,8 @@ export default class App extends React.Component {
         }
 
         let answerPromises = [];
-        let quipDocumentId = quip.apps.getThreadId();
+        // TODO remove this date now when done snuffing around
+        let quipDocumentId = quip.apps.getThreadId() + Date.now();
 
         questions = questionResponse.data;
         record.set('questions', questions);
@@ -76,6 +78,7 @@ export default class App extends React.Component {
         return Promise.all(answerPromises);
       }).then(answerResponse => {
         answers = answerResponse.map(a => a.data);
+        console.log(answerResponse);
         
         if (answerResponse.some(a => !a.ok)) {
           console.log('there are some errors with the answers');
@@ -159,6 +162,23 @@ export default class App extends React.Component {
     this.setState({answers: answers});
   }
 
+
+  updateOptionsState = (optionList, optionalIndex) => {
+    const { record } = this.props;
+    let optionListRecord = record.get('questionOptions');
+    
+    if (optionalIndex !== null) {
+      const oldRecord = optionListRecord.get(optionalIndex);
+      optionListRecord.remove(oldRecord);
+      optionListRecord.add(optionList, optionalIndex);
+    } else {
+      optionListRecord.add(optionList);
+    }
+    
+    const options = optionListRecord.getRecords().map(record => record.getData());
+    this.setState({options: options});
+  }
+
   updateQuestionsState = (questions) => {
     const { record } = this.props;
 
@@ -182,9 +202,11 @@ export default class App extends React.Component {
 
     if (this.state.purpose === purposes.building) {
       canvas = <Builder questions={this.state.questions} 
+        options={this.state.options} 
         lockQuestions={this.props.record.get('surveyId')} 
         surveyName={this.state.surveyName} 
         disableSave={this.state.saveSurveyDisabled} 
+        updateOptions={this.updateOptionsState} 
         updateQuestions={this.updateQuestionsState} 
         updateSurveyName={this.updateSurveyNameState} 
         saveSurvey={this.saveSurvey} />;

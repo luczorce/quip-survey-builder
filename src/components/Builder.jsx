@@ -1,5 +1,6 @@
 import TextInput from './TextInput.jsx';
 import TextareaQ from './Textarea.jsx';
+import SelectQ from './Select.jsx';
 import { qatypes } from '../util/enums.js';
 import Style from "../App.less";
 import FormStyle from "./Form.less";
@@ -8,9 +9,11 @@ export default class Builder extends React.Component {
   static propTypes = {
     disableSave: React.PropTypes.bool,
     lockQuestions: React.PropTypes.bool,
+    options: React.PropTypes.array,
     questions: React.PropTypes.array,
     surveyName: React.PropTypes.string,
     saveSurvey: React.PropTypes.func,
+    updateOptions: React.PropTypes.func,
     updateQuestions: React.PropTypes.func,
     updateSurveyName: React.PropTypes.func,
   };
@@ -19,7 +22,11 @@ export default class Builder extends React.Component {
     const question = {
       type: qatypes.select,
       question: '',
-      guid: Date.now(),
+      guid: Date.now()
+    };
+
+    const optionList = {
+      guid: question.guid,
       options: []
     };
 
@@ -27,6 +34,7 @@ export default class Builder extends React.Component {
     questions.push(question);
 
     this.props.updateQuestions(questions);
+    this.props.updateOptions(optionList, null);
   }
 
   addTextInput = () => {
@@ -59,13 +67,14 @@ export default class Builder extends React.Component {
   // and transform question data into 
   // the appropriate type of form data to render
   buildSurveyElements = (element, index) => {
-    console.log(element);
     if (element.type === qatypes.textInput) {
       return <TextInput question={element.question} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
     } else if (element.type === qatypes.textarea) {
       return <TextareaQ question={element.question} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
     } else if (element.type === qatypes.select) {
-      return <li>select box</li>;
+      let options = this.props.options.find(o => o.guid === element.guid);
+      // console.log(options);
+      return <SelectQ question={element.question} optionsList={options} guid={element.guid} updateQuestion={this.updateQuestion} updateOptions={this.updateOption} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
     }
   }
 
@@ -76,6 +85,23 @@ export default class Builder extends React.Component {
     this.props.updateQuestions(questions);
   }
 
+  updateName = (event) => {
+    this.props.updateSurveyName(event.target.value);
+  }
+
+  updateOption = (guid, updatedOptionsList) => {
+    let options = this.props.options;
+    let index = options.findIndex(o => o.guid === guid);
+
+    if (index === -1) {
+      console.log('couldnt find the right Option to update');
+      return false;
+    }
+
+    options[index].options = updatedOptionsList;
+    this.props.updateOptions(options[index], index);
+  }
+
   updateQuestion = (updatedValue) => {
     let questions = this.props.questions;
     let index = questions.findIndex(q => q.guid === updatedValue.guid);
@@ -83,10 +109,6 @@ export default class Builder extends React.Component {
     questions[index] = updatedValue;
 
     this.props.updateQuestions(questions);
-  }
-
-  updateName = (event) => {
-    this.props.updateSurveyName(event.target.value);
   }
 
   render() {

@@ -27,6 +27,12 @@ export default class SurveyForm extends React.Component {
                 question={q.question}
                 answer={answer}
                 update={this.props.updateAnswer} />;
+      } else {
+        return <div>
+          <p><em>answer with type {q.question_type}</em></p>
+          <p>{q.question}</p>
+          <ul>{q.options.map(o => <li>{o}</li>)}</ul>
+        </div>;
       }
     });
   }
