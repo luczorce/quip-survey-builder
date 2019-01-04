@@ -37,7 +37,7 @@ export default class SelectAnswer extends React.Component {
     });
 
     return <div key={this.props.answer.id}>
-      <label className={Style.formAnswerInput}>
+      <label className={Style.formAnswerSelect}>
         <span>{this.props.question}</span>
 
         <select onChange={this.answerUpdate}>
