@@ -104,13 +104,13 @@ export function updateAnswer(answerId, type, value) {
 function buildNewAnswerBody(question, quipDocumentId) {
   if (question.question_type === qatypes.textInput) {
     return {
-      type: qatypes.textInput,
+      answer_type: qatypes.textInput,
       quip_id: quipDocumentId,
       answer: ''
     };
   } else if (question.question_type === qatypes.textarea) {
     return {
-      type: qatypes.textarea,
+      answer_type: qatypes.textarea,
       quip_id: quipDocumentId,
       answer: ''
     };
@@ -120,13 +120,13 @@ function buildNewAnswerBody(question, quipDocumentId) {
 function buildNewQuestionBody(question, index) {
   if (question.type === qatypes.textInput) {
     return {
-      type: qatypes.textInput,
+      question_type: qatypes.textInput,
       order: index,
       question: question.question
     };
   } else if (question.type === qatypes.textarea) {
     return {
-      type: qatypes.textarea,
+      question_type: qatypes.textarea,
       order: index,
       question: question.question
     };
@@ -136,12 +136,12 @@ function buildNewQuestionBody(question, index) {
 function buildUpdatedAnswerBody(type, value) {
   if (type === qatypes.textInput) {
     return {
-      type: qatypes.textInput,
+      answer_type: qatypes.textInput,
       answer: value
     };
   } else if (type === qatypes.textarea) {
     return {
-      type: qatypes.textarea,
+      answer_type: qatypes.textarea,
       answer: value
     };
   }
