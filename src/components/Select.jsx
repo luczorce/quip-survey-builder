@@ -45,6 +45,14 @@ export default class SelectQ extends React.Component {
     this.props.updateOptions(this.props.optionsList.guid, updatedOptions);
   }
 
+  removeOption = (optionGuid) => {
+    let updatedOptions = this.props.optionsList.options;
+    const index = updatedOptions.findIndex(o => o.guid === optionGuid);
+
+    updatedOptions.splice(index, 1);
+    this.props.updateOptions(this.props.optionsList.guid, updatedOptions);
+  }
+
   render() {
     const options = this.props.optionsList.options.map(o => {
       return <li key={o.guid}>

@@ -83,6 +83,7 @@ export default class Builder extends React.Component {
     questions = questions.filter(q => q.guid !== questionGuid);
 
     this.props.updateQuestions(questions);
+    // TODO consider removing an associated optionList
   }
 
   updateName = (event) => {
