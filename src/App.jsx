@@ -79,7 +79,6 @@ export default class App extends React.Component {
         return Promise.all(answerPromises);
       }).then(answerResponse => {
         answers = answerResponse.map(a => a.data);
-        console.log(answerResponse);
         
         if (answerResponse.some(a => !a.ok)) {
           console.log('there are some errors with the answers');
@@ -162,7 +161,6 @@ export default class App extends React.Component {
 
     if (index === -1) return;
 
-    // TODO if (type === qatypes.checkbox) else
     answers[index].answer = value;
     this.props.record.set('answers', answers);
     this.setState({answers: answers});
