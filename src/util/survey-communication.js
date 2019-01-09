@@ -120,6 +120,11 @@ function buildNewQuestionBody(question, index) {
     payload.options = question.options.join('~~~');
   }
 
+  if (question.type === qatypes.numberInput) {
+    payload.min = question.min || null;
+    payload.max = question.max || null;
+  }
+
   return payload;
 }
 

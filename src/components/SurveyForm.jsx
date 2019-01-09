@@ -1,4 +1,5 @@
 import CheckboxAnswer from './CheckboxAnswer.jsx';
+import NumberInputAnswer from './NumberInputAnswer.jsx';
 import RadioAnswer from './RadioAnswer.jsx';
 import SelectAnswer from './SelectAnswer.jsx';
 import TextInputAnswer from './TextInputAnswer.jsx';
@@ -22,6 +23,15 @@ export default class SurveyForm extends React.Component {
         return <TextInputAnswer 
                 question={q.question}
                 answer={answer}
+                update={this.props.updateAnswer} />;
+      } else if (q.question_type === qatypes.numberInput) {
+        let answer = this.props.answers.find(a => a.input_number_question_id === q.id);
+
+        return <NumberInputAnswer 
+                question={q.question} 
+                min={q.min} 
+                max={q.max} 
+                answer={answer} 
                 update={this.props.updateAnswer} />;
       } else if (q.question_type === qatypes.textarea) {
         let answer = this.props.answers.find(a => a.textarea_question_id === q.id);
