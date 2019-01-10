@@ -15,14 +15,14 @@ export default class TextInput extends React.Component {
     this.props.deleted(this.props.guid);
   }
 
-  questionValueUpdate = (event) => {
-    let updatedQuestion = {
-      question: event.target.value,
+  moveQuestionDown = () => {
+    let question = {
+      question: this.props.question,
       guid: this.props.guid,
       type: qatypes.textInput
     };
 
-    this.props.updated(updatedQuestion);
+    this.props.updateOrder(question, false);
   }
 
   moveQuestionUp = () => {
@@ -35,14 +35,14 @@ export default class TextInput extends React.Component {
     this.props.updateOrder(question, true);
   }
 
-  moveQuestionDown = () => {
-    let question = {
-      question: this.props.question,
+  questionValueUpdate = (event) => {
+    let updatedQuestion = {
+      question: event.target.value,
       guid: this.props.guid,
       type: qatypes.textInput
     };
 
-    this.props.updateOrder(question, false);
+    this.props.updated(updatedQuestion);
   }
 
   render() {

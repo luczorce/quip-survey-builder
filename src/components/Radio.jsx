@@ -9,12 +9,33 @@ export default class Radio extends React.Component {
     guid: React.PropTypes.number,
     updateQuestion: React.PropTypes.func,
     updateOptions: React.PropTypes.func,
+    updateOrder: React.PropTypes.func,
     deleted: React.PropTypes.func,
     lock: React.PropTypes.bool
   }
 
   deleteQuestion = () => {
     this.props.deleted(this.props.guid);
+  }
+
+  moveQuestionDown = () => {
+    let question = {
+      question: this.props.question,
+      guid: this.props.guid,
+      type: qatypes.radio
+    };
+
+    this.props.updateOrder(question, false);
+  }
+
+  moveQuestionUp = () => {
+    let question = {
+      question: this.props.question,
+      guid: this.props.guid,
+      type: qatypes.radio
+    };
+
+    this.props.updateOrder(question, true);
   }
 
   questionValueUpdate = (event) => {
@@ -80,6 +101,11 @@ export default class Radio extends React.Component {
 
       { !this.props.optionsList.options.length && <p>no options yet...</p> }
       { Boolean(this.props.optionsList.options.length) && <ol>{options}</ol> }
+
+      <p className={Style.sectionFooter}>
+        <button type="button" onClick={this.moveQuestionUp} className={Style.sectionMover} disabled={this.props.lock}>move question up</button>
+        <button type="button" onClick={this.moveQuestionDown} className={Style.sectionMover} disabled={this.props.lock}>move question down</button>
+      </p>
     </li>;
   }
 }

@@ -102,18 +102,18 @@ export default class Builder extends React.Component {
     if (element.type === qatypes.textInput) {
       return <TextInput question={element.question} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} updateOrder={this.updateQuestionOrder} />;
     } else if (element.type === qatypes.numberInput) {
-      return <NumberInput question={element.question} min={element.min} max={element.max} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
+      return <NumberInput question={element.question} min={element.min} max={element.max} guid={element.guid} updated={this.updateQuestion} updateOrder={this.updateQuestionOrder} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
     } else if (element.type === qatypes.textarea) {
-      return <TextareaQ question={element.question} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
+      return <TextareaQ question={element.question} guid={element.guid} updated={this.updateQuestion} updateOrder={this.updateQuestionOrder} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
     } else if (optionTypes.includes(element.type)) {
       let options = this.props.options.find(o => o.guid === element.guid);
 
       if (element.type === qatypes.select) {
-        return <SelectQ question={element.question} optionsList={options} guid={element.guid} updateQuestion={this.updateQuestion} updateOptions={this.updateOption} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
+        return <SelectQ question={element.question} optionsList={options} guid={element.guid} updateQuestion={this.updateQuestion} updateOptions={this.updateOption} updateOrder={this.updateQuestionOrder} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
       } else if (element.type === qatypes.radio) {
-        return <Radio question={element.question} optionsList={options} guid={element.guid} updateQuestion={this.updateQuestion} updateOptions={this.updateOption} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
+        return <Radio question={element.question} optionsList={options} guid={element.guid} updateQuestion={this.updateQuestion} updateOptions={this.updateOption} updateOrder={this.updateQuestionOrder} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
       } else if (element.type === qatypes.checkbox) {
-        return <Checkbox question={element.question} optionsList={options} guid={element.guid} updateQuestion={this.updateQuestion} updateOptions={this.updateOption} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
+        return <Checkbox question={element.question} optionsList={options} guid={element.guid} updateQuestion={this.updateQuestion} updateOptions={this.updateOption} updateOrder={this.updateQuestionOrder} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
       }
     }
   }
