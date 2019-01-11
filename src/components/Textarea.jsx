@@ -26,7 +26,7 @@ export default class TextareaQ extends React.Component {
 
   render() {
     return <li key={this.props.guid} className={Style.formSection}>
-      <p>
+      <p className={Style.sectionDescription}>
         textarea <em>(for long form answers)</em>
         <button type="button" onClick={this.deleteQuestion} className={Style.sectionDeleter} disabled={this.props.lock}>delete question</button>
       </p>

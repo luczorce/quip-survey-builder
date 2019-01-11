@@ -9,6 +9,20 @@
   box-shadow: 0px 2px 5px #cecece;
 }
 
+.surveyQuestion {
+  // font-size: 1.1em; // get some feedback on these ideas
+  color: #555;
+}
+
+.selectReset {
+  border-color: @color_default;
+  background: white;
+
+  &:focus {
+    .focus();
+  }
+}
+
 .formInput {
   display: flex;
   justify-content: space-between;
@@ -25,10 +39,23 @@
   }
 }
 
+.formOption {
+  margin: 0 auto 5px;
+  display: flex;
+
+  input[type=text] {
+    flex: 1 0 auto;
+    margin-right: 5px;
+
+    &:focus {
+      .focus();
+    }
+  }
+}
+
 .formAnswerInput {
   span {
-    // font-size: 1.1em; // get some feedback on these ideas
-    color: #555;
+    .surveyQuestion();
   }
 
   input[type=text] {
@@ -43,10 +70,21 @@
   }
 }
 
+.formAnswerSelect {
+  span {
+    .surveyQuestion();
+  }
+
+  select {
+    display: block;
+    margin: 0.75em 0 1.5em;
+    .selectReset();
+  }
+}
+
 .formAnswerTextarea {
   span {
-    // font-size: 1.1em; // get some feedback on these ideas
-    color: #555;
+    .surveyQuestion();
   }
 
   textarea {
@@ -70,6 +108,7 @@
   select {
     flex: 1 0 auto;
     margin-left: 5px;
+    .selectReset();
   }
 }
 
@@ -77,7 +116,14 @@
   border: 1px @color_default solid;
   border-radius: 6px;
   padding: 5px 10px 10px;
-  margin-bottom: 15px;
+  margin-bottom: 25px;
+
+}
+
+.sectionDescription {
+  background: @color_default;
+  margin: -5px -10px 10px;
+  padding: 10px;
 }
 
 .buttonLink {

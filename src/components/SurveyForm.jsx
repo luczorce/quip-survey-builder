@@ -1,5 +1,6 @@
 import TextInputAnswer from './TextInputAnswer.jsx';
 import TextareaAnswer from './TextareaAnswer.jsx';
+import SelectAnswer from './SelectAnswer.jsx';
 import { qatypes } from '../util/enums.js';
 
 export default class SurveyForm extends React.Component {
@@ -26,6 +27,14 @@ export default class SurveyForm extends React.Component {
         return <TextareaAnswer 
                 question={q.question}
                 answer={answer}
+                update={this.props.updateAnswer} />;
+      } else {
+        let answer = this.props.answers.find(a => a.option_question_id === q.id);
+
+        return <SelectAnswer 
+                question={q.question} 
+                answer={answer}
+                options={q.options}
                 update={this.props.updateAnswer} />;
       }
     });

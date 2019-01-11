@@ -26,7 +26,7 @@ export default class TextInput extends React.Component {
 
   render() {
     return <li key={this.props.guid} className={Style.formSection}>
-      <p>
+      <p className={Style.sectionDescription}>
         text input <em>(for short answers)</em>
         <button type="button" onClick={this.deleteQuestion} className={Style.sectionDeleter} disabled={this.props.lock}>delete question</button>
       </p>

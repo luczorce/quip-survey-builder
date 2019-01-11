@@ -116,7 +116,7 @@ function buildNewQuestionBody(question, index) {
     question: question.question
   };
 
-  if (optionTypes.includes(type)) {
+  if (optionTypes.includes(question.type)) {
     payload.options = question.options.join('~~~');
   }
 
@@ -124,7 +124,7 @@ function buildNewQuestionBody(question, index) {
 }
 
 function buildUpdatedAnswerBody(type, value) {
-  if (type === type.qatypes.checkbox && typeof value !== 'string') {
+  if (type === qatypes.checkbox && typeof value !== 'string') {
     value = value.join('~~~');
   }
 

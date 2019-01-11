@@ -5,6 +5,8 @@ import SurveyList from './components/SurveyList.jsx';
 import SurveyForm from './components/SurveyForm.jsx';
 import ErrorMessage from './components/ErrorMessage.jsx';
 
+import { optionTypes } from './util/enums.js';
+
 import Style from "./App.less";
 
 import {
@@ -27,6 +29,7 @@ export default class App extends React.Component {
     }
 
     this.state = {
+      options: props.record.get('questionOptions').getRecords().map(r => r.getData()),
       purpose: props.record.get('purpose') || null,
       questions: props.record.get('questions') || [],
       surveyName: props.record.get('surveyName') || '',
@@ -76,6 +79,7 @@ export default class App extends React.Component {
         return Promise.all(answerPromises);
       }).then(answerResponse => {
         answers = answerResponse.map(a => a.data);
+        console.log(answerResponse);
         
         if (answerResponse.some(a => !a.ok)) {
           console.log('there are some errors with the answers');
@@ -129,6 +133,11 @@ export default class App extends React.Component {
     let questionPromises = [];
 
     this.state.questions.forEach((question, index) => {
+      if (optionTypes.includes(question.type)) {
+        let optionsList = this.state.options.find(o => o.guid === question.guid);
+        question.options = optionsList.options.map(o => o.value);
+      }
+
       questionPromises.push(saveSurveyQuestion(surveyId, question, index));
     });
 
@@ -153,10 +162,27 @@ export default class App extends React.Component {
 
     if (index === -1) return;
 
-    // TODO if (type === qatypes.textInput)
+    // TODO if (type === qatypes.checkbox) else
     answers[index].answer = value;
     this.props.record.set('answers', answers);
     this.setState({answers: answers});
+  }
+
+
+  updateOptionsState = (optionList, optionalIndex) => {
+    const { record } = this.props;
+    let optionListRecord = record.get('questionOptions');
+    
+    if (optionalIndex !== null) {
+      const oldRecord = optionListRecord.get(optionalIndex);
+      optionListRecord.remove(oldRecord);
+      optionListRecord.add(optionList, optionalIndex);
+    } else {
+      optionListRecord.add(optionList);
+    }
+    
+    const options = optionListRecord.getRecords().map(record => record.getData());
+    this.setState({options: options});
   }
 
   updateQuestionsState = (questions) => {
@@ -182,9 +208,11 @@ export default class App extends React.Component {
 
     if (this.state.purpose === purposes.building) {
       canvas = <Builder questions={this.state.questions} 
+        options={this.state.options} 
         lockQuestions={this.props.record.get('surveyId')} 
         surveyName={this.state.surveyName} 
         disableSave={this.state.saveSurveyDisabled} 
+        updateOptions={this.updateOptionsState} 
         updateQuestions={this.updateQuestionsState} 
         updateSurveyName={this.updateSurveyNameState} 
         saveSurvey={this.saveSurvey} />;
