@@ -1,7 +1,6 @@
 import { qatypes, optionTypes } from './enums.js';
 
-const endpoint = 'https://localhost:3000';
-// const endpoint = 'https://eio-qi-surveys.herokuapp.com';
+const endpoint = '%%api_route%%';
 const API_KEY = '%%api_secret%%';
 
 export function createAnswer(question, quipDocumentId) {

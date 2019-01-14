@@ -6,7 +6,11 @@ _This is an app to create surveys inside Quip, then distribute them to fellow Qu
 
 Follow the instructions on deploying your [first quip app](https://salesforce.quip.com/dev/liveapps/). There will be some differences, though:
 
-1. Create a `.env` file, which contains an API_KEY key/value pair. This will allow us to communicate with our api
+1. Create a `.env` file, which contains the following key/value pairs:
+   * `LOCAL_API_KEY` allows us to communicate with our local api for development
+   * `LOCAL_ROUTE` route to the local api for development
+   * `PROD_API_KEY` used for the `npm run build` command
+   * `PROD_ROUTE` used for the `npm run build` command
 2. `npm run prepssl` and feel free to leave answers blank... we're setting up keys to use to serve this live app with ssl
 3. `npm run watch` to start webpack watching and rebuilding the liveapp as we go
 4. `npm run serve` in another terminal window to serve the contents from files (as oppposed to from memory, which webpack-dev-sever does)
