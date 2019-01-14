@@ -99,6 +99,31 @@
   }
 }
 
+.formAnswerOption {
+  display: block;
+  margin-bottom: 5px;
+
+  input[type="radio"],
+  input[type="checkbox"] {
+    display: inline;
+    margin-right: 5px;
+  }
+
+  span {
+    color: @default_text_color;
+  }
+
+  &:last-of-type {
+    margin-bottom: 25px;
+  }
+}
+
+.checkboxGrid {
+  @media screen and (min-width: 400px) {
+    column-count: 2;
+  }
+}
+
 .formSelect {
   display: flex;
   justify-content: space-between;
@@ -117,7 +142,6 @@
   border-radius: 6px;
   padding: 5px 10px 10px;
   margin-bottom: 25px;
-
 }
 
 .sectionDescription {

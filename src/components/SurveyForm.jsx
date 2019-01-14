@@ -1,6 +1,8 @@
+import CheckboxAnswer from './CheckboxAnswer.jsx';
+import RadioAnswer from './RadioAnswer.jsx';
+import SelectAnswer from './SelectAnswer.jsx';
 import TextInputAnswer from './TextInputAnswer.jsx';
 import TextareaAnswer from './TextareaAnswer.jsx';
-import SelectAnswer from './SelectAnswer.jsx';
 import { qatypes } from '../util/enums.js';
 
 export default class SurveyForm extends React.Component {
@@ -31,11 +33,25 @@ export default class SurveyForm extends React.Component {
       } else {
         let answer = this.props.answers.find(a => a.option_question_id === q.id);
 
-        return <SelectAnswer 
-                question={q.question} 
-                answer={answer}
-                options={q.options}
-                update={this.props.updateAnswer} />;
+        if (q.question_type === qatypes.select) {
+          return <SelectAnswer 
+                  question={q.question} 
+                  answer={answer}
+                  options={q.options}
+                  update={this.props.updateAnswer} />;
+        } else if (q.question_type === qatypes.radio) {
+          return <RadioAnswer 
+                  question={q.question} 
+                  answer={answer}
+                  options={q.options}
+                  update={this.props.updateAnswer} />;
+        } else if (q.question_type === qatypes.checkbox) {
+          return <CheckboxAnswer 
+                  question={q.question} 
+                  answer={answer}
+                  options={q.options}
+                  update={this.props.updateAnswer} />;
+        }
       }
     });
   }

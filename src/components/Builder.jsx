@@ -1,7 +1,11 @@
-import TextInput from './TextInput.jsx';
-import TextareaQ from './Textarea.jsx';
+import Checkbox from './Checkbox.jsx';
+import Radio from './Radio.jsx';
 import SelectQ from './Select.jsx';
-import { qatypes } from '../util/enums.js';
+import TextareaQ from './Textarea.jsx';
+import TextInput from './TextInput.jsx';
+
+import { qatypes, optionTypes } from '../util/enums.js';
+
 import Style from "../App.less";
 import FormStyle from "./Form.less";
 
@@ -18,9 +22,13 @@ export default class Builder extends React.Component {
     updateSurveyName: React.PropTypes.func,
   };
 
-  addSelect = () => {
+  addCheckbox = () => {
+    this.addOption(qatypes.checkbox);
+  }
+
+  addOption = (type) => {
     const question = {
-      type: qatypes.select,
+      type: type,
       question: '',
       guid: Date.now()
     };
@@ -35,6 +43,14 @@ export default class Builder extends React.Component {
 
     this.props.updateQuestions(questions);
     this.props.updateOptions(optionList, null);
+  }
+
+  addRadio = () => {
+    this.addOption(qatypes.radio);
+  }
+
+  addSelect = () => {
+    this.addOption(qatypes.select);
   }
 
   addTextInput = () => {
@@ -71,10 +87,16 @@ export default class Builder extends React.Component {
       return <TextInput question={element.question} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
     } else if (element.type === qatypes.textarea) {
       return <TextareaQ question={element.question} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
-    } else if (element.type === qatypes.select) {
+    } else if (optionTypes.includes(element.type)) {
       let options = this.props.options.find(o => o.guid === element.guid);
-      // console.log(options);
-      return <SelectQ question={element.question} optionsList={options} guid={element.guid} updateQuestion={this.updateQuestion} updateOptions={this.updateOption} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
+
+      if (element.type === qatypes.select) {
+        return <SelectQ question={element.question} optionsList={options} guid={element.guid} updateQuestion={this.updateQuestion} updateOptions={this.updateOption} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
+      } else if (element.type === qatypes.radio) {
+        return <Radio question={element.question} optionsList={options} guid={element.guid} updateQuestion={this.updateQuestion} updateOptions={this.updateOption} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
+      } else if (element.type === qatypes.checkbox) {
+        return <Checkbox question={element.question} optionsList={options} guid={element.guid} updateQuestion={this.updateQuestion} updateOptions={this.updateOption} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
+      }
     }
   }
 
@@ -144,6 +166,8 @@ export default class Builder extends React.Component {
         <quip.apps.ui.Button type="button" onClick={this.addTextInput} disabled={this.props.lockQuestions} text="short text" />
         <quip.apps.ui.Button type="button" onClick={this.addTextarea} disabled={this.props.lockQuestions} text="long form text" />
         <quip.apps.ui.Button type="button" onClick={this.addSelect} disabled={this.props.lockQuestions} text="select box" />
+        <quip.apps.ui.Button type="button" onClick={this.addRadio} disabled={this.props.lockQuestions} text="radios" />
+        <quip.apps.ui.Button type="button" onClick={this.addCheckbox} disabled={this.props.lockQuestions} text="checkboxes" />
       </nav>
 
       { this.props.surveyErrors && <ErrorMessage type="newSurvey" error={this.props.surveyErrors} />}
