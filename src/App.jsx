@@ -166,7 +166,6 @@ export default class App extends React.Component {
     this.setState({answers: answers});
   }
 
-
   updateOptionsState = (optionList, optionalIndex) => {
     const { record } = this.props;
     let optionListRecord = record.get('questionOptions');

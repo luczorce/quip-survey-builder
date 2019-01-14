@@ -8,6 +8,7 @@ export default class NumberInput extends React.Component {
     max: React.PropTypes.number,
     guid: React.PropTypes.number,
     updated: React.PropTypes.func,
+    updateOrder: React.PropTypes.func,
     deleted: React.PropTypes.func,
     lock: React.PropTypes.bool
   }
@@ -51,6 +52,30 @@ export default class NumberInput extends React.Component {
     this.props.updated(updatedQuestion);
   }
 
+  moveQuestionDown = () => {
+    let question = {
+      question: this.props.question,
+      guid: this.props.guid,
+      min: this.props.min,
+      max: this.props.max,
+      type: qatypes.numberInput
+    };
+
+    this.props.updateOrder(question, false);
+  }
+
+  moveQuestionUp = () => {
+    let question = {
+      question: this.props.question,
+      guid: this.props.guid,
+      min: this.props.min,
+      max: this.props.max,
+      type: qatypes.numberInput
+    };
+
+    this.props.updateOrder(question, true);
+  }
+
   questionValueUpdate = (event) => {
     let updatedQuestion = {
       question: event.target.value,
@@ -84,6 +109,11 @@ export default class NumberInput extends React.Component {
         <span>maximum value (leave blank for no maximum)</span>
         <input type="number" value={this.props.max} onChange={this.maxValueUpdate} disabled={this.props.lock} />
       </label>
+
+      <p className={Style.sectionFooter}>
+        <button type="button" onClick={this.moveQuestionUp} className={Style.sectionMover} disabled={this.props.lock}>move question up</button>
+        <button type="button" onClick={this.moveQuestionDown} className={Style.sectionMover} disabled={this.props.lock}>move question down</button>
+      </p>
     </li>;
   }
 }
