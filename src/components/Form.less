@@ -29,13 +29,18 @@
   align-items: center;
   flex: 1 0 auto;
 
-  input[type=text] {
+  input[type=text],
+  input[type=number] {
     flex: 1 0 auto;
     margin-left: 5px;
 
     &:focus {
       .focus();
     }
+  }
+
+  &:not(:first-of-type) {
+    margin-top: 10px;
   }
 }
 
@@ -68,6 +73,29 @@
       .focus();
     }
   }
+}
+
+.formAnswerNumber {
+  span {
+    .surveyQuestion();
+  }
+
+  input[type=number] {
+    display: block;
+    width: 100%;
+    margin: 0.5em auto 1.5em;
+    padding: 6px;
+
+    &:focus {
+      .focus();
+    }
+  }
+}
+
+.numberHelper {
+  font-size: 0.9em;
+  flex: 1 0 auto;
+  margin-left: 10px;
 }
 
 .formAnswerSelect {
@@ -116,6 +144,15 @@
   &:last-of-type {
     margin-bottom: 25px;
   }
+}
+
+.answerRow {
+  display: flex;
+  align-items: baseline;
+}
+
+.inputError {
+  background: lighten(red, 35%);
 }
 
 .checkboxGrid {

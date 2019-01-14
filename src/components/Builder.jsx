@@ -1,4 +1,5 @@
 import Checkbox from './Checkbox.jsx';
+import NumberInput from './NumberInput.jsx';
 import Radio from './Radio.jsx';
 import SelectQ from './Select.jsx';
 import TextareaQ from './Textarea.jsx';
@@ -24,6 +25,21 @@ export default class Builder extends React.Component {
 
   addCheckbox = () => {
     this.addOption(qatypes.checkbox);
+  }
+
+  addNumberInput = () => {
+    const question = {
+      type: qatypes.numberInput,
+      question: '',
+      min: null,
+      max: null,
+      guid: Date.now()
+    };
+
+    let questions = this.props.questions;
+    questions.push(question);
+
+    this.props.updateQuestions(questions);
   }
 
   addOption = (type) => {
@@ -85,6 +101,8 @@ export default class Builder extends React.Component {
   buildSurveyElements = (element, index) => {
     if (element.type === qatypes.textInput) {
       return <TextInput question={element.question} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
+    } else if (element.type === qatypes.numberInput) {
+      return <NumberInput question={element.question} min={element.min} max={element.max} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
     } else if (element.type === qatypes.textarea) {
       return <TextareaQ question={element.question} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
     } else if (optionTypes.includes(element.type)) {
@@ -160,11 +178,12 @@ export default class Builder extends React.Component {
           text={this.props.lockQuestions ? 'survey saved' : 'save survey'} />
       </header>
 
-      <nav className={Style.flexirow}>
+      <nav className={Style.boxRow}>
         <strong>add to form:</strong>
 
         <quip.apps.ui.Button type="button" onClick={this.addTextInput} disabled={this.props.lockQuestions} text="short text" />
         <quip.apps.ui.Button type="button" onClick={this.addTextarea} disabled={this.props.lockQuestions} text="long form text" />
+        <quip.apps.ui.Button type="button" onClick={this.addNumberInput} disabled={this.props.lockQuestions} text="(whole) number" />
         <quip.apps.ui.Button type="button" onClick={this.addSelect} disabled={this.props.lockQuestions} text="select box" />
         <quip.apps.ui.Button type="button" onClick={this.addRadio} disabled={this.props.lockQuestions} text="radios" />
         <quip.apps.ui.Button type="button" onClick={this.addCheckbox} disabled={this.props.lockQuestions} text="checkboxes" />
