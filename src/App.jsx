@@ -157,7 +157,7 @@ export default class App extends React.Component {
 
   updateAnswerState = (id, type, value) => {
     let answers = this.state.answers;
-    let index = answers.findIndex(a => a.id === id);
+    let index = answers.findIndex(a => (a.id === id && a.answer_type === type));
 
     if (index === -1) return;
 
