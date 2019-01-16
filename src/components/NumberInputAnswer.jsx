@@ -24,7 +24,7 @@ export default class NumberInputAnswer extends React.Component {
     this.storeAnswer = debounce(1000, this.storeAnswer);
 
     let answer = this.props.answer.answer;
-    if (answer.length) {
+    if (answer !== null && answer.length) {
       const hasError = !this.isValidAnswer(answer);
       this.setState({hasError: hasError});
     }
