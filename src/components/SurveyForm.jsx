@@ -5,6 +5,7 @@ import SelectAnswer from './SelectAnswer.jsx';
 import TextInputAnswer from './TextInputAnswer.jsx';
 import TextareaAnswer from './TextareaAnswer.jsx';
 import { qatypes } from '../util/enums.js';
+import Style from "./Form.less";
 
 export default class SurveyForm extends React.Component {
   static propTypes = {
@@ -68,7 +69,7 @@ export default class SurveyForm extends React.Component {
 
   render() {
     const fields = this.buildForm();
-    return <section>
+    return <section className={Style.answerList}>
       {fields}
     </section>;
   }

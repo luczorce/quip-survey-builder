@@ -36,7 +36,7 @@ export default class SelectAnswer extends React.Component {
       return <option value={option} selected={selected}>{option}</option>;
     });
 
-    return <div key={this.props.answer.id}>
+    return <div key={this.props.answer.id} className={Style.answerSelect}>
       <label className={Style.formAnswerSelect}>
         <p className={Style.surveyQuestion}>{this.props.question}</p>
 

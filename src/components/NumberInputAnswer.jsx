@@ -86,7 +86,7 @@ export default class NumberInputAnswer extends React.Component {
       input = <input type="number" value={this.props.answer.answer} onChange={this.answerUpdate} />
     }
 
-    return <div key={this.props.answer.id}>
+    return <div key={this.props.answer.id} className={Style.answerInput}>
       <label className={Style.formAnswerNumber}>
         <p className={Style.surveyQuestion}>{this.props.question}</p>
 

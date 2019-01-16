@@ -58,11 +58,38 @@
   }
 }
 
+.answerList {
+  @media screen and (min-width: 600px) {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: flex-end;
+
+    .answerInput,
+    .answerSelect {
+      width: 49%;
+    }
+
+    .answerTextarea,
+    .answerCheckbox,
+    .answerRadio {
+      width: 100%;
+    }
+  }
+
+  .answerInput,
+  .answerSelect,
+  .answerTextarea,
+  .answerCheckbox,
+  .answerRadio {
+    margin-bottom: 1.5em;
+  }
+}
+
 .formAnswerInput {
   input[type=text] {
     display: block;
     width: 100%;
-    margin: 0.5em auto 1.5em;
     padding: 6px;
 
     &:focus {
@@ -75,7 +102,6 @@
   input[type=number] {
     display: block;
     width: 100%;
-    margin: 0.5em auto 1.5em;
     padding: 6px;
 
     &:focus {
@@ -101,7 +127,6 @@
 
 .formAnswerTextarea {
   textarea {
-    margin: 0.5em auto 1.5em;
     padding: 6px;
     width: 100%;
     resize: vertical;
@@ -137,8 +162,6 @@
 }
 
 .checkboxGrid {
-  margin-bottom: 1.5em;
-
   @media screen and (min-width: 400px) {
     column-count: 2;
   }

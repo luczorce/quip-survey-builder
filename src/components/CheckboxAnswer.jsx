@@ -50,7 +50,7 @@ export default class CheckboxAnswer extends React.Component {
       </label>;
     });
 
-    return <div key={this.props.answer.id}>
+    return <div key={this.props.answer.id} className={Style.answerCheckbox}>
       <p className={Style.surveyQuestion}>
         {this.props.question}
       </p>
