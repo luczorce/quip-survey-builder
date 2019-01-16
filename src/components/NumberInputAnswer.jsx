@@ -88,7 +88,7 @@ export default class NumberInputAnswer extends React.Component {
 
     return <div key={this.props.answer.id}>
       <label className={Style.formAnswerNumber}>
-        <span>{this.props.question}</span>
+        <p className={Style.surveyQuestion}>{this.props.question}</p>
 
         <div className={Style.answerRow}>
           {input}
