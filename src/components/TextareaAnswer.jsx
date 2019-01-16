@@ -29,9 +29,9 @@ export default class TextareaAnswer extends React.Component {
   }
 
   render() {
-    return <div key={this.props.answer.id}>
+    return <div key={this.props.answer.id} className={Style.answerTextarea}>
       <label className={Style.formAnswerTextarea}>
-        <span>{this.props.question}</span>
+        <p className={Style.surveyQuestion}>{this.props.question}</p>
         <textarea value={this.props.answer ? this.props.answer.answer : ''} onChange={this.answerUpdate} />
       </label>
     </div>;

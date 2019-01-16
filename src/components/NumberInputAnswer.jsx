@@ -24,7 +24,7 @@ export default class NumberInputAnswer extends React.Component {
     this.storeAnswer = debounce(1000, this.storeAnswer);
 
     let answer = this.props.answer.answer;
-    if (answer.length) {
+    if (answer !== null && answer.length) {
       const hasError = !this.isValidAnswer(answer);
       this.setState({hasError: hasError});
     }
@@ -86,9 +86,9 @@ export default class NumberInputAnswer extends React.Component {
       input = <input type="number" value={this.props.answer.answer} onChange={this.answerUpdate} />
     }
 
-    return <div key={this.props.answer.id}>
+    return <div key={this.props.answer.id} className={Style.answerInput}>
       <label className={Style.formAnswerNumber}>
-        <span>{this.props.question}</span>
+        <p className={Style.surveyQuestion}>{this.props.question}</p>
 
         <div className={Style.answerRow}>
           {input}
