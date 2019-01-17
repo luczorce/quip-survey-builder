@@ -6,7 +6,8 @@ export const qatypes = {
   textarea: 'textarea',
   select: 'select',
   radio: 'radio',
-  checkbox: 'checkbox'
+  checkbox: 'checkbox',
+  header: 'header'
 };
 
 export const optionTypes = ['select', 'radio', 'checkbox'];

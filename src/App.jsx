@@ -73,7 +73,11 @@ export default class App extends React.Component {
         record.set('questions', questions);
 
         questions.forEach((question, index) => {
-          answerPromises.push(createAnswer(question, quipDocumentId));
+          if (question.question_type === qatypes.header) {
+            return false;
+          } else {
+            answerPromises.push(createAnswer(question, quipDocumentId));
+          }
         });
 
         return Promise.all(answerPromises);

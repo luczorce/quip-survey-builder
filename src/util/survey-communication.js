@@ -109,12 +109,22 @@ function buildNewAnswerBody(question, quipDocumentId) {
 }
 
 function buildNewQuestionBody(question, index) {
-  let payload = {
-    question_type: question.type,
-    order: index,
-    question: question.question,
-    question_helper: question.helper
-  };
+  let payload;
+
+  if (question.type === qatypes.header) {
+    payload = {
+      question_type: question.type,
+      value: question.value,
+      order: index,
+    };
+  } else {
+    payload = {
+      question_type: question.type,
+      order: index,
+      question: question.question,
+      question_helper: question.helper
+    };
+  }
 
   if (optionTypes.includes(question.type)) {
     payload.options = question.options.join('~~~');
