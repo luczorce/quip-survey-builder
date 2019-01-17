@@ -5,7 +5,7 @@ export default class HeaderInput extends React.Component {
   static propTypes = {
     value: React.PropTypes.string,
     guid: React.PropTypes.number,
-    lock: React.PropTypes.bool
+    lock: React.PropTypes.bool,
     updated: React.PropTypes.func,
     updateOrder: React.PropTypes.func,
     deleted: React.PropTypes.func,
@@ -54,7 +54,7 @@ export default class HeaderInput extends React.Component {
       
       <label className={Style.formInput}>
         <span>text</span>
-        <input type="text" value={this.props.question} placeholder="(Who did you talk to last?)" onChange={this.questionValueUpdate} disabled={this.props.lock} />
+        <input type="text" value={this.props.value} placeholder="(Industry Specific Questions)" onChange={this.questionValueUpdate} disabled={this.props.lock} />
       </label>
 
       <p className={Style.sectionFooter}>

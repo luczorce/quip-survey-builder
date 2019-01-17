@@ -118,7 +118,7 @@ export default class Builder extends React.Component {
   // the appropriate type of form data to render
   buildSurveyElements = (element, index) => {
     if (element.type === qatypes.header) {
-      retur <HeaderInput value={element.value} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} updateOrder={this.updateQuestionOrder} />;
+      return <HeaderInput value={element.value} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} updateOrder={this.updateQuestionOrder} />;
     } else if (element.type === qatypes.textInput) {
       return <TextInput question={element.question} helper={element.helper} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} updateOrder={this.updateQuestionOrder} />;
     } else if (element.type === qatypes.numberInput) {
