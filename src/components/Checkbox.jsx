@@ -68,9 +68,18 @@ export default class Checkbox extends React.Component {
 
     updatedOptions.push({
       guid: Date.now(),
-      value: ''
+      value: '',
+      helper: ''
     });
 
+    this.props.updateOptions(this.props.optionsList.guid, updatedOptions);
+  }
+
+  questionOptionHelperUpdate = (value, guid) => {
+    let updatedOptions = this.props.optionsList.options;
+    const index = updatedOptions.findIndex(o => o.guid === guid);
+
+    updatedOptions[index].helper = value;
     this.props.updateOptions(this.props.optionsList.guid, updatedOptions);
   }
 
@@ -95,6 +104,7 @@ export default class Checkbox extends React.Component {
       return <li key={o.guid} className={Style.formOption}>
         <input value={o.value} type="text" onChange={(event) => this.questionOptionsUpdate(event.target.value, o.guid)} />
         <quip.apps.ui.Button type="button" onClick={() => this.removeOption(o.guid)} disabled={this.props.lock} text="remove" />
+        <input value={o.helper} type="text" onChange={(event) => this.questionOptionHelperUpdate(event.target.value, o.guid)} />
       </li>;
     });
 
