@@ -113,8 +113,9 @@ function buildNewQuestionBody(question, index) {
 
   if (question.type === qatypes.header) {
     payload = {
+      question_type: question.type,
       value: question.value,
-      order: index
+      order: index,
     };
   } else {
     payload = {
