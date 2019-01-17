@@ -29,7 +29,7 @@
 }
 
 .surveyHelper {
-  margin: 0 0 0.25em;
+  margin: 0 0 0.5em;
   .helperText();
 }
 
@@ -70,30 +70,12 @@
     &.formOptionHelper {
       margin-right: 0;
       margin-top: 5px;
+      flex-basis: 100%;
     }
   }
-
 }
 
 .answerList {
-  @media screen and (min-width: 600px) {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    align-items: flex-end;
-
-    .answerInput,
-    .answerSelect {
-      width: 49%;
-    }
-
-    .answerTextarea,
-    .answerCheckbox,
-    .answerRadio {
-      width: 100%;
-    }
-  }
-
   .answerInput,
   .answerSelect,
   .answerTextarea,
