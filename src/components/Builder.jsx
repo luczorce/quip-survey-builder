@@ -1,4 +1,5 @@
 import Checkbox from './Checkbox.jsx';
+import HeaderInput from './HeaderInput.jsx';
 import NumberInput from './NumberInput.jsx';
 import Radio from './Radio.jsx';
 import SelectQ from './Select.jsx';
@@ -25,6 +26,19 @@ export default class Builder extends React.Component {
 
   addCheckbox = () => {
     this.addOption(qatypes.checkbox);
+  }
+
+  addHeader = () => {
+    const question = {
+      type: qatypes.header,
+      value: '',
+      guid: Date.now()
+    };
+
+    let questions = this.props.questions;
+    questions.push(question);
+
+    this.props.updateQuestions(questions);
   }
 
   addNumberInput = () => {
@@ -103,7 +117,9 @@ export default class Builder extends React.Component {
   // and transform question data into 
   // the appropriate type of form data to render
   buildSurveyElements = (element, index) => {
-    if (element.type === qatypes.textInput) {
+    if (element.type === qatypes.header) {
+      retur <HeaderInput value={element.value} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} updateOrder={this.updateQuestionOrder} />;
+    } else if (element.type === qatypes.textInput) {
       return <TextInput question={element.question} helper={element.helper} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} updateOrder={this.updateQuestionOrder} />;
     } else if (element.type === qatypes.numberInput) {
       return <NumberInput question={element.question} helper={element.helper} min={element.min} max={element.max} guid={element.guid} updated={this.updateQuestion} updateOrder={this.updateQuestionOrder} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
@@ -210,6 +226,7 @@ export default class Builder extends React.Component {
         <quip.apps.ui.Button type="button" onClick={this.addSelect} disabled={this.props.lockQuestions} text="select box" />
         <quip.apps.ui.Button type="button" onClick={this.addRadio} disabled={this.props.lockQuestions} text="radios" />
         <quip.apps.ui.Button type="button" onClick={this.addCheckbox} disabled={this.props.lockQuestions} text="checkboxes" />
+        <quip.apps.ui.Button type="button" onClick={this.addHeader} disabled={this.props.lockQuestions} text="header" />
       </nav>
 
       { this.props.surveyErrors && <ErrorMessage type="newSurvey" error={this.props.surveyErrors} />}
