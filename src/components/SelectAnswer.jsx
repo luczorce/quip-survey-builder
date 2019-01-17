@@ -40,10 +40,16 @@ export default class SelectAnswer extends React.Component {
       return <option value={option} selected={selected}>{option} ({helper})</option>;
     });
 
+    let questionHelper;
+
+    if (this.props.helper.length) {
+      questionHelper = <p className={Style.surveyHelper}>{this.props.helper}</p>;
+    }
+
     return <div key={this.props.answer.id} className={Style.answerSelect}>
       <label className={Style.formAnswerSelect}>
         <p className={Style.surveyQuestion}>{this.props.question}</p>
-        { this.props.helper.length && <p className={Style.surveyHelper}>{this.props.helper}</p> }
+        {questionHelper}
 
         <select onChange={this.answerUpdate}>
           <option>--</option>

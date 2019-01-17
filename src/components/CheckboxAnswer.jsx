@@ -50,13 +50,19 @@ export default class CheckboxAnswer extends React.Component {
       return <label className={Style.formAnswerOption}>
         <input type="checkbox" checked={checked} name={option} onChange={this.answerUpdate} />
         <span>{option}</span>
-        { helper.length && <span className={Style.surveyHelper}>{helper}</span> }
+        { helper && helper.length && <span className={Style.surveyHelper}>{helper}</span> }
       </label>;
     });
 
+    let questionHelper;
+
+    if (this.props.helper.length) {
+      questionHelper = <p className={Style.surveyHelper}>{this.props.helper}</p>;
+    }
+
     return <div key={this.props.answer.id} className={Style.answerCheckbox}>
       <p className={Style.surveyQuestion}>{this.props.question}</p>
-      { this.props.helper.length && <p className={Style.surveyHelper}>{this.props.helper}</p> }
+      {questionHelper}
       <div className={Style.checkboxGrid}>{options}</div>
     </div>;
   }
