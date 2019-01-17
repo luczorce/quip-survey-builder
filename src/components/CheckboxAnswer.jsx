@@ -45,12 +45,16 @@ export default class CheckboxAnswer extends React.Component {
   render() {
     const options = this.props.options.map((option, index) => {
       let checked = this.props.answer.answer.includes(option);
-      let helper = this.props.optionHelpers[index];
+      let helper;
+
+      if (this.props.optionHelpers[index] && this.props.optionHelpers[index].length) {
+        helper = <span className={Style.surveyOptionHelper}>{this.props.optionHelpers[index]}</span>
+      }
       
       return <label className={Style.formAnswerOption}>
         <input type="checkbox" checked={checked} name={option} onChange={this.answerUpdate} />
         <span>{option}</span>
-        { helper && helper.length && <span className={Style.surveyHelper}>{helper}</span> }
+        {helper}
       </label>;
     });
 
