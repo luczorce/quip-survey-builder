@@ -6,6 +6,7 @@ import Style from "./Form.less";
 export default class NumberInputAnswer extends React.Component {
   static propTypes = {
     question: React.PropTypes.string,
+    helper: React.PropTypes.string,
     min: React.PropTypes.number,
     max: React.PropTypes.number,
     answer: React.PropTypes.object,
@@ -71,7 +72,7 @@ export default class NumberInputAnswer extends React.Component {
   }
 
   render() {
-    let input, helper;
+    let input, helper, questionHelper;
 
     if (this.props.min !== null && this.props.max !== null) {
       input = <input type="number" value={this.props.answer.answer} onChange={this.answerUpdate} min={this.props.min} max={this.props.max} className={this.state.hasError ? Style.inputError : ''} />;
@@ -86,9 +87,14 @@ export default class NumberInputAnswer extends React.Component {
       input = <input type="number" value={this.props.answer.answer} onChange={this.answerUpdate} />
     }
 
+    if (this.props.helper.length) {
+      questionHelper = <p className={Style.surveyHelper}>{this.props.helper}</p>;
+    }
+
     return <div key={this.props.answer.id} className={Style.answerInput}>
       <label className={Style.formAnswerNumber}>
         <p className={Style.surveyQuestion}>{this.props.question}</p>
+        {questionHelper}
 
         <div className={Style.answerRow}>
           {input}

@@ -6,7 +6,9 @@ import Style from "./Form.less";
 export default class SelectAnswer extends React.Component {
   static propTypes = {
     question: React.PropTypes.string,
+    helper: React.PropTypes.string,
     options: React.PropTypes.array,
+    optionHelpers: React.PropTypes.array,
     answer: React.PropTypes.object,
     update: React.PropTypes.func
   }
@@ -31,14 +33,23 @@ export default class SelectAnswer extends React.Component {
   }
 
   render() {
-    const options = this.props.options.map(option => {
+    const options = this.props.options.map((option, index) => {
       let selected = Boolean(option === this.props.answer.answer);
-      return <option value={option} selected={selected}>{option}</option>;
+      let helper = this.props.optionHelpers[index];
+      
+      return <option value={option} selected={selected}>{option} ({helper})</option>;
     });
+
+    let questionHelper;
+
+    if (this.props.helper.length) {
+      questionHelper = <p className={Style.surveyHelper}>{this.props.helper}</p>;
+    }
 
     return <div key={this.props.answer.id} className={Style.answerSelect}>
       <label className={Style.formAnswerSelect}>
         <p className={Style.surveyQuestion}>{this.props.question}</p>
+        {questionHelper}
 
         <select onChange={this.answerUpdate}>
           <option>--</option>

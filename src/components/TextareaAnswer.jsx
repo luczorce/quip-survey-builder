@@ -6,6 +6,7 @@ import Style from "./Form.less";
 export default class TextareaAnswer extends React.Component {
   static propTypes = {
     question: React.PropTypes.string,
+    helper: React.PropTypes.string,
     answer: React.PropTypes.object,
     update: React.PropTypes.func
   }
@@ -29,9 +30,16 @@ export default class TextareaAnswer extends React.Component {
   }
 
   render() {
+    let helper;
+
+    if (this.props.helper.length) {
+      helper = <p className={Style.surveyHelper}>{this.props.helper}</p>;
+    }
+
     return <div key={this.props.answer.id} className={Style.answerTextarea}>
       <label className={Style.formAnswerTextarea}>
         <p className={Style.surveyQuestion}>{this.props.question}</p>
+        {helper}
         <textarea value={this.props.answer ? this.props.answer.answer : ''} onChange={this.answerUpdate} />
       </label>
     </div>;

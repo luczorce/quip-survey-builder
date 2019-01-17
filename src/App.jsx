@@ -135,6 +135,7 @@ export default class App extends React.Component {
       if (optionTypes.includes(question.type)) {
         let optionsList = this.state.options.find(o => o.guid === question.guid);
         question.options = optionsList.options.map(o => o.value);
+        question.optionHelpers = optionsList.options.map(o => o.helper);
       }
 
       questionPromises.push(saveSurveyQuestion(surveyId, question, index));

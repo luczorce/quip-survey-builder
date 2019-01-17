@@ -6,7 +6,9 @@ import Style from "./Form.less";
 export default class CheckboxAnswer extends React.Component {
   static propTypes = {
     question: React.PropTypes.string,
+    helper: React.PropTypes.string,
     options: React.PropTypes.array,
+    optionHelpers: React.PropTypes.array,
     answer: React.PropTypes.object,
     update: React.PropTypes.func
   }
@@ -41,19 +43,30 @@ export default class CheckboxAnswer extends React.Component {
   }
 
   render() {
-    const options = this.props.options.map(option => {
+    const options = this.props.options.map((option, index) => {
       let checked = this.props.answer.answer.includes(option);
+      let helper;
+
+      if (this.props.optionHelpers[index] && this.props.optionHelpers[index].length) {
+        helper = <span className={Style.surveyOptionHelper}>{this.props.optionHelpers[index]}</span>
+      }
       
       return <label className={Style.formAnswerOption}>
         <input type="checkbox" checked={checked} name={option} onChange={this.answerUpdate} />
         <span>{option}</span>
+        {helper}
       </label>;
     });
 
+    let questionHelper;
+
+    if (this.props.helper.length) {
+      questionHelper = <p className={Style.surveyHelper}>{this.props.helper}</p>;
+    }
+
     return <div key={this.props.answer.id} className={Style.answerCheckbox}>
-      <p className={Style.surveyQuestion}>
-        {this.props.question}
-      </p>
+      <p className={Style.surveyQuestion}>{this.props.question}</p>
+      {questionHelper}
       <div className={Style.checkboxGrid}>{options}</div>
     </div>;
   }

@@ -9,11 +9,6 @@
   box-shadow: 0px 2px 5px #cecece;
 }
 
-.surveyQuestion {
-  font-size: 1.1em;
-  margin: 0 0 0.5em;
-}
-
 .selectReset {
   border-color: @color_default;
   background: white;
@@ -21,6 +16,27 @@
   &:focus {
     .focus();
   }
+}
+
+.helperText {
+  font-size: 0.9em;
+  color: #555;
+}
+
+.surveyQuestion {
+  font-size: 1.1em;
+  margin: 0 0 0.5em;
+}
+
+.surveyHelper {
+  margin: 0 0 0.5em;
+  .helperText();
+}
+
+.surveyOptionHelper {
+  display: block;
+  margin: 5px 0 0;
+  .helperText();
 }
 
 .formInput {
@@ -47,6 +63,7 @@
 .formOption {
   margin: 0 auto 5px;
   display: flex;
+  flex-wrap: wrap;
 
   input[type=text] {
     flex: 1 0 auto;
@@ -55,28 +72,16 @@
     &:focus {
       .focus();
     }
+    
+    &.formOptionHelper {
+      margin-right: 0;
+      margin-top: 5px;
+      flex-basis: 100%;
+    }
   }
 }
 
 .answerList {
-  @media screen and (min-width: 600px) {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    align-items: flex-end;
-
-    .answerInput,
-    .answerSelect {
-      width: 49%;
-    }
-
-    .answerTextarea,
-    .answerCheckbox,
-    .answerRadio {
-      width: 100%;
-    }
-  }
-
   .answerInput,
   .answerSelect,
   .answerTextarea,
@@ -111,10 +116,9 @@
 }
 
 .numberHelper {
-  font-size: 0.9em;
   flex: 1 0 auto;
   margin-left: 10px;
-  color: #555;
+  .helperText();
 }
 
 .formAnswerSelect {

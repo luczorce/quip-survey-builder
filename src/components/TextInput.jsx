@@ -4,6 +4,7 @@ import Style from "./Form.less";
 export default class TextInput extends React.Component {
   static propTypes = {
     question: React.PropTypes.string,
+    helper: React.PropTypes.string,
     guid: React.PropTypes.number,
     updated: React.PropTypes.func,
     updateOrder: React.PropTypes.func,
@@ -18,6 +19,7 @@ export default class TextInput extends React.Component {
   moveQuestionDown = () => {
     let question = {
       question: this.props.question,
+      helper: this.props.helper,
       guid: this.props.guid,
       type: qatypes.textInput
     };
@@ -28,6 +30,7 @@ export default class TextInput extends React.Component {
   moveQuestionUp = () => {
     let question = {
       question: this.props.question,
+      helper: this.props.helper,
       guid: this.props.guid,
       type: qatypes.textInput
     };
@@ -35,9 +38,21 @@ export default class TextInput extends React.Component {
     this.props.updateOrder(question, true);
   }
 
+  questionHelperValueUpdate = (event) => {
+    let updatedQuestion = {
+      question: this.props.question,
+      helper: event.target.value,
+      guid: this.props.guid,
+      type: qatypes.textInput
+    };
+
+    this.props.updated(updatedQuestion);
+  }
+
   questionValueUpdate = (event) => {
     let updatedQuestion = {
       question: event.target.value,
+      helper: this.props.helper,
       guid: this.props.guid,
       type: qatypes.textInput
     };
@@ -55,6 +70,11 @@ export default class TextInput extends React.Component {
       <label className={Style.formInput}>
         <span>question</span>
         <input type="text" value={this.props.question} placeholder="(Who did you talk to last?)" onChange={this.questionValueUpdate} disabled={this.props.lock} />
+      </label>
+
+      <label className={Style.formInput}>
+        <span>optional helper text</span>
+        <input type="text" value={this.props.helper} placeholder="(Give first and last name, like: John Smith)" onChange={this.questionHelperValueUpdate} disabled={this.props.lock} />
       </label>
 
       <p className={Style.sectionFooter}>

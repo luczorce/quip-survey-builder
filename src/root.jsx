@@ -9,7 +9,7 @@ class OptionsRecord extends quip.apps.Record {
       guid: 'number',
       // this will contain the data on the options available to the question
       // while the survey is being built, this is all stored in the quip records
-      // it will look like [ {guid: 'number', value: 'string'}, ...]
+      // it will look like [ {guid: 'number', value: 'string', helper: 'string'}, ...]
       options: 'array'
     };
   }

@@ -112,11 +112,13 @@ function buildNewQuestionBody(question, index) {
   let payload = {
     question_type: question.type,
     order: index,
-    question: question.question
+    question: question.question,
+    question_helper: question.helper
   };
 
   if (optionTypes.includes(question.type)) {
     payload.options = question.options.join('~~~');
+    payload.option_helpers = question.optionHelpers.join('~~~');
   }
 
   if (question.type === qatypes.numberInput) {

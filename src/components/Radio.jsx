@@ -5,6 +5,7 @@ import MainStyle from "../App.less";
 export default class Radio extends React.Component {
   static propTypes = {
     question: React.PropTypes.string,
+    helper: React.PropTypes.string,
     optionsList: React.PropTypes.object,
     guid: React.PropTypes.number,
     updateQuestion: React.PropTypes.func,
@@ -21,6 +22,7 @@ export default class Radio extends React.Component {
   moveQuestionDown = () => {
     let question = {
       question: this.props.question,
+      helper: this.props.helper,
       guid: this.props.guid,
       type: qatypes.radio
     };
@@ -31,6 +33,7 @@ export default class Radio extends React.Component {
   moveQuestionUp = () => {
     let question = {
       question: this.props.question,
+      helper: this.props.helper,
       guid: this.props.guid,
       type: qatypes.radio
     };
@@ -38,9 +41,21 @@ export default class Radio extends React.Component {
     this.props.updateOrder(question, true);
   }
 
+  questionHelperValueUpdate = (event) => {
+    let updatedQuestion = {
+      question: this.props.question,
+      helper: event.target.value,
+      guid: this.props.guid,
+      type: qatypes.radio
+    };
+
+    this.props.updateQuestion(updatedQuestion);
+  }
+
   questionValueUpdate = (event) => {
     let updatedQuestion = {
       question: event.target.value,
+      helper: this.props.helper,
       guid: this.props.guid,
       type: qatypes.radio
     };
@@ -53,9 +68,18 @@ export default class Radio extends React.Component {
 
     updatedOptions.push({
       guid: Date.now(),
-      value: ''
+      value: '',
+      helper: ''
     });
 
+    this.props.updateOptions(this.props.optionsList.guid, updatedOptions);
+  }
+
+  questionOptionHelperUpdate = (value, guid) => {
+    let updatedOptions = this.props.optionsList.options;
+    const index = updatedOptions.findIndex(o => o.guid === guid);
+
+    updatedOptions[index].helper = value;
     this.props.updateOptions(this.props.optionsList.guid, updatedOptions);
   }
 
@@ -80,6 +104,7 @@ export default class Radio extends React.Component {
       return <li key={o.guid} className={Style.formOption}>
         <input value={o.value} type="text" onChange={(event) => this.questionOptionsUpdate(event.target.value, o.guid)} />
         <quip.apps.ui.Button type="button" onClick={() => this.removeOption(o.guid)} disabled={this.props.lock} text="remove" />
+        <input value={o.helper} type="text" className={Style.formOptionHelper} onChange={(event) => this.questionOptionHelperUpdate(event.target.value, o.guid)} placeholder="helper text for option" />
       </li>;
     });
 
@@ -92,6 +117,11 @@ export default class Radio extends React.Component {
       <label className={Style.formInput}>
         <span>question</span>
         <input type="text" value={this.props.question} placeholder="(Who did you talk to last?)" onChange={this.questionValueUpdate} disabled={this.props.lock} />
+      </label>
+
+      <label className={Style.formInput}>
+        <span>optional helper text</span>
+        <input type="text" value={this.props.helper} placeholder="(Choose the most appropriate answer)" onChange={this.questionHelperValueUpdate} disabled={this.props.lock} />
       </label>
 
       <p className={MainStyle.flexirow}>
