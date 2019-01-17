@@ -6,7 +6,9 @@ import Style from "./Form.less";
 export default class RadioAnswer extends React.Component {
   static propTypes = {
     question: React.PropTypes.string,
+    helper: React.PropTypes.string,
     options: React.PropTypes.array,
+    optionHelpers: React.PropTypes.array,
     answer: React.PropTypes.object,
     update: React.PropTypes.func
   }
@@ -31,19 +33,21 @@ export default class RadioAnswer extends React.Component {
   }
 
   render() {
-    const options = this.props.options.map(option => {
+    const options = this.props.options.map((option, index) => {
       let checked = Boolean(option === this.props.answer.answer);
+      let helper = this.props.optionHelpers[index];
       
       return <label className={Style.formAnswerOption}>
         <input type="radio" value={option} checked={checked} name={'radio' + this.props.answer.id} onChange={this.answerUpdate} />
         <span>{option}</span>
+        { helper.length && <span className={Style.surveyHelper}>{helper}</span> }
       </label>;
     });
 
     return <div key={this.props.answer.id} className={Style.answerRadio}>
-      <p className={Style.surveyQuestion}>
-        {this.props.question}
-      </p>
+      <p className={Style.surveyQuestion}>{this.props.question}</p>
+      { this.props.helper.length && <p className={Style.surveyHelper}>{this.props.helper}</p> }
+
       {options}
     </div>;
   }

@@ -23,13 +23,15 @@ export default class SurveyForm extends React.Component {
 
         return <TextInputAnswer 
                 question={q.question}
+                helper={q.question_helper}
                 answer={answer}
                 update={this.props.updateAnswer} />;
       } else if (q.question_type === qatypes.numberInput) {
         let answer = this.props.answers.find(a => a.input_number_question_id === q.id);
 
         return <NumberInputAnswer 
-                question={q.question} 
+                question={q.question}
+                helper={q.question_helper}
                 min={q.min} 
                 max={q.max} 
                 answer={answer} 
@@ -39,6 +41,7 @@ export default class SurveyForm extends React.Component {
 
         return <TextareaAnswer 
                 question={q.question}
+                helper={q.question_helper}
                 answer={answer}
                 update={this.props.updateAnswer} />;
       } else {
@@ -46,21 +49,27 @@ export default class SurveyForm extends React.Component {
 
         if (q.question_type === qatypes.select) {
           return <SelectAnswer 
-                  question={q.question} 
+                  question={q.question}
+                  helper={q.question_helper}
                   answer={answer}
                   options={q.options}
+                  optionHelpers={q.option_helpers}
                   update={this.props.updateAnswer} />;
         } else if (q.question_type === qatypes.radio) {
           return <RadioAnswer 
-                  question={q.question} 
+                  question={q.question}
+                  helper={q.question_helper}
                   answer={answer}
                   options={q.options}
+                  optionHelpers={q.option_helpers}
                   update={this.props.updateAnswer} />;
         } else if (q.question_type === qatypes.checkbox) {
           return <CheckboxAnswer 
-                  question={q.question} 
+                  question={q.question}
+                  helper={q.question_helper}
                   answer={answer}
                   options={q.options}
+                  optionHelpers={q.option_helpers}
                   update={this.props.updateAnswer} />;
         }
       }

@@ -9,11 +9,6 @@
   box-shadow: 0px 2px 5px #cecece;
 }
 
-.surveyQuestion {
-  font-size: 1.1em;
-  margin: 0 0 0.5em;
-}
-
 .selectReset {
   border-color: @color_default;
   background: white;
@@ -21,6 +16,21 @@
   &:focus {
     .focus();
   }
+}
+
+.helperText {
+  font-size: 0.9em;
+  color: #555;
+}
+
+.surveyQuestion {
+  font-size: 1.1em;
+  margin: 0 0 0.5em;
+}
+
+.surveyHelper {
+  margin: 0 0 0.25em;
+  .helperText();
 }
 
 .formInput {
@@ -115,10 +125,9 @@
 }
 
 .numberHelper {
-  font-size: 0.9em;
   flex: 1 0 auto;
   margin-left: 10px;
-  color: #555;
+  .helperText();
 }
 
 .formAnswerSelect {
