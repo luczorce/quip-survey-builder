@@ -57,6 +57,7 @@
 .formOption {
   margin: 0 auto 5px;
   display: flex;
+  flex-wrap: wrap;
 
   input[type=text] {
     flex: 1 0 auto;
@@ -65,11 +66,13 @@
     &:focus {
       .focus();
     }
+    
+    &.formOptionHelper {
+      margin-right: 0;
+      margin-top: 5px;
+    }
   }
 
-  input.helper {
-    margin-right: 0;
-  }
 }
 
 .answerList {

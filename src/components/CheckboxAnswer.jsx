@@ -43,7 +43,7 @@ export default class CheckboxAnswer extends React.Component {
   }
 
   render() {
-    const options = this.props.options.map((option, helper) => {
+    const options = this.props.options.map((option, index) => {
       let checked = this.props.answer.answer.includes(option);
       let helper = this.props.optionHelpers[index];
       

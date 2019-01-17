@@ -49,7 +49,7 @@ export default class Radio extends React.Component {
       type: qatypes.radio
     };
 
-    this.props.updated(updatedQuestion);
+    this.props.updateQuestion(updatedQuestion);
   }
 
   questionValueUpdate = (event) => {
@@ -104,7 +104,7 @@ export default class Radio extends React.Component {
       return <li key={o.guid} className={Style.formOption}>
         <input value={o.value} type="text" onChange={(event) => this.questionOptionsUpdate(event.target.value, o.guid)} />
         <quip.apps.ui.Button type="button" onClick={() => this.removeOption(o.guid)} disabled={this.props.lock} text="remove" />
-        <input value={o.helper} type="text" onChange={(event) => this.questionOptionHelperUpdate(event.target.value, o.guid)} />
+        <input value={o.helper} type="text" className={Style.formOptionHelper} onChange={(event) => this.questionOptionHelperUpdate(event.target.value, o.guid)} placeholder="helper text for option" />
       </li>;
     });
 
