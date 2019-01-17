@@ -18,7 +18,10 @@ export default class SurveyForm extends React.Component {
     if (!this.props.questions.length) return <p>no questions</p>;
 
     return this.props.questions.map(q => {
-      if (q.question_type === qatypes.textInput) {
+      if (q.question_type === qatypes.header) {
+        // TODO add spacing? add quip text class?
+        return <h3>{q.value}</h3>;
+      } else if (q.question_type === qatypes.textInput) {
         let answer = this.props.answers.find(a => a.input_text_question_id === q.id);
 
         return <TextInputAnswer 
