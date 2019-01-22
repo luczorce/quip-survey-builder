@@ -24,7 +24,8 @@
 }
 
 .surveyQuestion {
-  font-size: 1.1em;
+  font-size: 1em;
+  font-weight: bold;
   margin: 0 0 0.5em;
 }
 
@@ -36,7 +37,16 @@
 .surveyOptionHelper {
   display: block;
   margin: 5px 0 0;
+  font-style: italic;
   .helperText();
+
+  @media screen and (min-width: 400px) {
+    margin-left: 18px;
+  }
+
+  @media screen and (max-width: 399px) {
+    margin-left: 22px;
+  }
 }
 
 .formInput {
@@ -85,6 +95,11 @@
   width: 100%;
   text-transform: uppercase;
   margin: 0 auto 1em;
+  font-size: 1.25em;
+
+  &:not(:first-of-type) {
+    margin-top: 2em;
+  }
 }
 
 .answerList {
@@ -135,6 +150,12 @@
   }
 }
 
+.formAnswerInput INPUT, .formAnswerNumber INPUT, .formAnswerTextarea TEXTAREA {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
 .formAnswerTextarea {
   textarea {
     padding: 6px;
@@ -171,9 +192,14 @@
   background: lighten(red, 35%);
 }
 
-.checkboxGrid {
+.checkboxGrid, .checkboxGridColumns {
+  margin-top: 1em;
+}
+
+.checkboxGridColumns {
   @media screen and (min-width: 400px) {
     column-count: 2;
+    column-gap: 40px;
   }
 }
 

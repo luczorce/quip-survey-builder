@@ -58,6 +58,8 @@ export default class CheckboxAnswer extends React.Component {
       </label>;
     });
 
+    const optionGridStyle = options.length > 4 ? Style.checkboxGridColumns : Style.checkboxGrid;
+
     let questionHelper;
 
     if (this.props.helper.length) {
@@ -67,7 +69,7 @@ export default class CheckboxAnswer extends React.Component {
     return <div key={this.props.answer.id} className={Style.answerCheckbox}>
       <p className={Style.surveyQuestion}>{this.props.question}</p>
       {questionHelper}
-      <div className={Style.checkboxGrid}>{options}</div>
+      <div className={optionGridStyle}>{options}</div>
     </div>;
   }
 }
