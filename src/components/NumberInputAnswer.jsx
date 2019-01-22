@@ -87,7 +87,7 @@ export default class NumberInputAnswer extends React.Component {
       input = <input type="number" value={this.props.answer.answer} onChange={this.answerUpdate} />
     }
 
-    if (this.props.helper.length) {
+    if (this.props.helper && this.props.helper.length) {
       questionHelper = <p className={Style.surveyHelper}>{this.props.helper}</p>;
     }
 
