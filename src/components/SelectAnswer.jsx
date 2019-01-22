@@ -36,13 +36,17 @@ export default class SelectAnswer extends React.Component {
     const options = this.props.options.map((option, index) => {
       let selected = Boolean(option === this.props.answer.answer);
       let helper = this.props.optionHelpers[index];
+
+      if (helper.length) {
+        helper = ` (${helper})`;
+      }
       
-      return <option value={option} selected={selected}>{option} ({helper})</option>;
+      return <option value={option} selected={selected}>{option}{helper}</option>;
     });
 
     let questionHelper;
 
-    if (this.props.helper.length) {
+    if (this.props.helper && this.props.helper.length) {
       questionHelper = <p className={Style.surveyHelper}>{this.props.helper}</p>;
     }
 

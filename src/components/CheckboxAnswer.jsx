@@ -62,7 +62,7 @@ export default class CheckboxAnswer extends React.Component {
 
     let questionHelper;
 
-    if (this.props.helper.length) {
+    if (this.props.helper && this.props.helper.length) {
       questionHelper = <p className={Style.surveyHelper}>{this.props.helper}</p>;
     }
 

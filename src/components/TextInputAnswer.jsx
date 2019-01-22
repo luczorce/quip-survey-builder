@@ -32,7 +32,7 @@ export default class TextInputAnswer extends React.Component {
   render() {
     let helper;
 
-    if (this.props.helper.length) {
+    if (this.props.helper && this.props.helper.length) {
       helper = <p className={Style.surveyHelper}>{this.props.helper}</p>;
     }
 
