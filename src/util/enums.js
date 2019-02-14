@@ -14,5 +14,6 @@ export const optionTypes = ['select', 'radio', 'checkbox'];
 
 export const purposes = {
   building: 'building',
-  loading: 'loading'
+  loading: 'loading',
+  deleting: 'deleting'
 };

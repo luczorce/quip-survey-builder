@@ -2,12 +2,9 @@ import quip from 'quip';
 
 import Builder from './components/Builder.jsx';
 import SurveyList from './components/SurveyList.jsx';
+import SurveyDeleter from './components/SurveyDeleter.jsx';
 import SurveyForm from './components/SurveyForm.jsx';
 import ErrorMessage from './components/ErrorMessage.jsx';
-
-import { optionTypes } from './util/enums.js';
-
-import Style from "./App.less";
 
 import {
   createAnswer,
@@ -16,7 +13,9 @@ import {
   saveSurveyName, 
   saveSurveyQuestion 
 } from './util/survey-communication.js';
-import { qatypes, purposes } from './util/enums.js';
+import { optionTypes, purposes, qatypes } from './util/enums.js';
+
+import Style from "./App.less";
 
 export default class App extends React.Component {
   constructor(props) {
@@ -47,9 +46,15 @@ export default class App extends React.Component {
       if (id) {
         this.loadSingleSurvey(id);
       } else {
-        this.loadSurveyOptions();
+        this.loadSurveyForList();
       }
+    } else if (this.props.record.get('purpose') === purposes.deleting) {
+      this.loadSurveyForDeleting();
     }
+  }
+
+  deleteSurveys = (surveyIds) => {
+    console.log('want to delete all these surveys', surveyIds.join(', '));
   }
 
   loadSingleSurvey = (surveyId) => {
@@ -100,7 +105,15 @@ export default class App extends React.Component {
     }
   }
 
-  loadSurveyOptions = () => {
+  loadSurveyForDeleting = () => {
+    this.loadSurveyOptions(purposes.deleting);
+  }
+
+  loadSurveyForList = () => {
+    this.loadSurveyOptions(purposes.loading);
+  }
+
+  loadSurveyOptions = (purpose) => {
     const { record } = this.props;
     
     getSavedSurveys().then(response => {
@@ -109,9 +122,9 @@ export default class App extends React.Component {
         return false;
       }
 
-      record.set('purpose', purposes.loading);
+      record.set('purpose', purpose);
       this.setState({
-        purpose: purposes.loading,
+        purpose: purpose,
         availableSurveys: response.data
       });
     });
@@ -229,10 +242,13 @@ export default class App extends React.Component {
       } else {
         canvas = <SurveyList surveys={this.state.availableSurveys} loadSurvey={this.loadSingleSurvey} />;
       }
+    } else if (this.state.purpose === purposes.deleting) {
+      canvas = <SurveyDeleter surveys={this.state.availableSurveys} deleteSurveys={this.deleteSurveys} />;
     } else {
       canvas = <nav className={Style.flexirow}>
         <quip.apps.ui.Button type="button" onClick={this.startBuildingSurvey} text="build a survey" />
-        <quip.apps.ui.Button type="button" onClick={this.loadSurveyOptions} text="load a survey" />
+        <quip.apps.ui.Button type="button" onClick={this.loadSurveyForList} text="load a survey" />
+        <quip.apps.ui.Button type="button" onClick={this.loadSurveyForDeleting} text="delete surveys" />
       </nav>;
     }
 
