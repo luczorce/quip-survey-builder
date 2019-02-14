@@ -1,5 +1,5 @@
-import quip from "quip";
-import App from "./App.jsx";
+import quip from 'quip';
+import App from './App.jsx';
 
 class OptionsRecord extends quip.apps.Record {
   static getProperties() {
@@ -36,11 +36,11 @@ class SurveyRecord extends quip.apps.RootRecord {
   }
 }
 
-quip.apps.registerClass(SurveyRecord, "survey-record");
+quip.apps.registerClass(SurveyRecord, 'survey-record');
 
 quip.apps.initialize({
   initializationCallback: function(rootNode) {
     let rootRecord = quip.apps.getRootRecord();
     ReactDOM.render(<App record={rootRecord} />, rootNode);
-  },
+  }
 });

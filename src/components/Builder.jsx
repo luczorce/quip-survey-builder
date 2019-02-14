@@ -24,6 +24,76 @@ export default class Builder extends React.Component {
     updateSurveyName: React.PropTypes.func,
   };
 
+  componentDidMount = () => {
+    let toolbar = {
+      toolbarCommandIds: [
+        'addFormItem'
+      ],
+      menuCommands: [
+        {
+          id: 'addFormItem',
+          label: 'Add to Form',
+          subCommands: ['shortText', 'longText', 'number', 'selectBox', 'radio', 'checkbox', 'header']
+        },
+        {
+          id: 'shortText',
+          label: 'short text',
+          handler: () => {
+            this.addTextInput();
+          }
+        },
+        {
+          id: 'longText',
+          label: 'long form text',
+          handler: () => {
+            this.addTextarea();
+          }
+        },
+        {
+          id: 'number',
+          label: 'whole number',
+          handler: () => {
+            this.addNumberInput();
+          }
+        },
+        {
+          id: 'selectBox',
+          label: 'select box',
+          handler: () => {
+            this.addSelect();
+          }
+        },
+        {
+          id: 'radio',
+          label: 'radio',
+          handler: () => {
+            this.addRadio();
+          }
+        },
+        {
+          id: 'checkbox',
+          label: 'checkbox',
+          handler: () => {
+            this.addCheckbox();
+          }
+        },
+        {
+          id: 'header',
+          label: 'header',
+          handler: () => {
+            this.addHeader();
+          }
+        }
+      ]
+    };
+
+    if (this.props.lockQuestions) {
+      toolbar.disabledCommandIds = ['addFormItem'];
+    }
+
+    quip.apps.updateToolbar(toolbar);
+  }
+
   addCheckbox = () => {
     this.addOption(qatypes.checkbox);
   }
@@ -73,8 +143,8 @@ export default class Builder extends React.Component {
     let questions = this.props.questions;
     questions.push(question);
 
-    this.props.updateQuestions(questions);
     this.props.updateOptions(optionList, null);
+    this.props.updateQuestions(questions);
   }
 
   addRadio = () => {
@@ -199,7 +269,7 @@ export default class Builder extends React.Component {
         {this.props.questions.map(this.buildSurveyElements)}
       </ol>;
     } else {
-      builderCanvas = <p>add questions...</p>;
+      builderCanvas = <p>add questions to the form...</p>;
     }
 
     return <section>
@@ -216,18 +286,6 @@ export default class Builder extends React.Component {
           disabled={this.props.disableSave} 
           text={this.props.lockQuestions ? 'survey saved' : 'save survey'} />
       </header>
-
-      <nav className={Style.boxRow}>
-        <strong>add to form:</strong>
-
-        <quip.apps.ui.Button type="button" onClick={this.addTextInput} disabled={this.props.lockQuestions} text="short text" />
-        <quip.apps.ui.Button type="button" onClick={this.addTextarea} disabled={this.props.lockQuestions} text="long form text" />
-        <quip.apps.ui.Button type="button" onClick={this.addNumberInput} disabled={this.props.lockQuestions} text="(whole) number" />
-        <quip.apps.ui.Button type="button" onClick={this.addSelect} disabled={this.props.lockQuestions} text="select box" />
-        <quip.apps.ui.Button type="button" onClick={this.addRadio} disabled={this.props.lockQuestions} text="radios" />
-        <quip.apps.ui.Button type="button" onClick={this.addCheckbox} disabled={this.props.lockQuestions} text="checkboxes" />
-        <quip.apps.ui.Button type="button" onClick={this.addHeader} disabled={this.props.lockQuestions} text="header" />
-      </nav>
 
       { this.props.surveyErrors && <ErrorMessage type="newSurvey" error={this.props.surveyErrors} />}
 
