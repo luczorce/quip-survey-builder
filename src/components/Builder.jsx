@@ -137,8 +137,8 @@ export default class Builder extends React.Component {
     let questions = this.props.questions;
     questions.push(question);
 
-    this.props.updateQuestions(questions);
     this.props.updateOptions(optionList, null);
+    this.props.updateQuestions(questions);
   }
 
   addRadio = () => {
