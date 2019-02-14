@@ -53,10 +53,6 @@ export default class App extends React.Component {
     }
   }
 
-  deleteSurveys = (surveyIds) => {
-    console.log('want to delete all these surveys', surveyIds.join(', '));
-  }
-
   loadSingleSurvey = (surveyId) => {
     if (surveyId === null) return false;
 
@@ -243,7 +239,7 @@ export default class App extends React.Component {
         canvas = <SurveyList surveys={this.state.availableSurveys} loadSurvey={this.loadSingleSurvey} />;
       }
     } else if (this.state.purpose === purposes.deleting) {
-      canvas = <SurveyDeleter surveys={this.state.availableSurveys} deleteSurveys={this.deleteSurveys} />;
+      canvas = <SurveyDeleter surveys={this.state.availableSurveys} />;
     } else {
       canvas = <nav className={Style.flexirow}>
         <quip.apps.ui.Button type="button" onClick={this.startBuildingSurvey} text="build a survey" />

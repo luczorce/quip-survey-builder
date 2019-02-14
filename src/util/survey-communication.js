@@ -25,6 +25,18 @@ export function createAnswer(question, quipDocumentId) {
   });
 }
 
+export function deleteSurvey(id) {
+  const path = `${endpoint}/surveys/${id}`;  
+  const options = {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`
+    }
+  };
+
+  return combinedFetch(path, options);
+}
+
 export function getSavedSurveys() {
   const path = `${endpoint}/surveys`;  
   const options = {
@@ -156,7 +168,7 @@ function combinedFetch(path, options) {
   return new Promise((resolve, reject) => {
     fetch(path, options).then(resp => {
       response = resp;
-      return resp.json();
+      return (resp.status === 204) ? {} : resp.json();
     }).then(responseBody => {
       response.data = responseBody;
       resolve(response);

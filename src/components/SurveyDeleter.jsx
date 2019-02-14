@@ -1,17 +1,18 @@
-import Style from '../App.less';
-import FormStyle from './Form.less';
+import { deleteSurvey } from '../util/survey-communication.js';
+import Style from './Form.less';
 
 export default class SurveyList extends React.Component {
   static propTypes = {
-    surveys: React.PropTypes.array,
-    deleteSurveys: React.PropTypes.func
+    surveys: React.PropTypes.array
   };
 
   constructor(props) {
     super();
 
     this.state = {
-      deleteMe: []
+      deleteMe: [],
+      hasFinished: false,
+      withErrors: false
     }
   }
 
@@ -34,25 +35,50 @@ export default class SurveyList extends React.Component {
     }
   }
 
-  sendChoppingBlock = () => {
-    this.deleteSurveys(this.state.deleteMe);
+  deleteSelectedSurveys = () => {
+    const deletePromises = this.state.deleteMe.map(id => {
+      return deleteSurvey(id);
+    });
+
+    Promise.all(deletePromises).then(responses => {
+      this.setState({
+        hasFinished: true,
+        withErrors: responses.some(r => !r.ok)
+      });
+    });
   }
 
   render() {
     const options = this.props.surveys.map(s => {
-      return <label className={FormStyle.formAnswerOption}>
-        <input type="checkbox" name={s.id} onChange={this.choppingBlockUpdate} />
+      return <label className={Style.formAnswerOption}>
+        <input type="checkbox" disabled={this.state.hasFinished} name={s.id} onChange={this.choppingBlockUpdate} />
         <span>{s.name}</span>
       </label>;
     });
 
-    const optionGridStyle = options.length > 4 ? FormStyle.checkboxGridColumns : FormStyle.checkboxGrid;
+    const optionGridStyle = options.length > 4 ? Style.checkboxGridColumns : Style.checkboxGrid;
+
+    let instructions;
+
+    if (this.state.hasFinished) {
+      if (this.state.withErrors) {
+        instructions = <p>There were some errors with deleting. Reload the page and try again. :(</p>;
+      } else {
+        instructions = <p>The surveys were deleted. Feel free to reload or delete this live app.</p>;
+      }
+    } else {
+      instructions = <div>
+        <p>Choose all the questions you would like to delete.</p>
+        <p><em><strong>Beware!</strong> You can not undo this action.</em></p>
+      </div>;
+    }
 
     return <section>
-      <p>Choose all the questions you would like to delete.</p>
-      <p><em><strong>Beware!</strong> You can not undo this action.</em></p>
+      {instructions}
       <div className={optionGridStyle}>{options}</div>
-      <quip.apps.ui.Button type="button" onClick={this.sendChoppingBlock} text="delete selected surveys" />
+      <p>
+        <quip.apps.ui.Button type="button" onClick={this.deleteSelectedSurveys} text="delete selected surveys" disabled={this.state.hasFinished} />
+      </p>
     </section>;
   }
 }
