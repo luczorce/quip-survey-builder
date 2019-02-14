@@ -118,6 +118,11 @@ export default class App extends React.Component {
   }
 
   saveSurvey = () => {
+    // TODO this may get removed as we enable editing for surveys
+    quip.apps.updateToolbar({
+      disabledCommandIds: ['addFormItem']
+    });
+
     this.setState({saveSurveyDisabled: true}, () => {
       saveSurveyName(this.state.surveyName, null)
         .then(response => {
