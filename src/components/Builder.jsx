@@ -25,7 +25,7 @@ export default class Builder extends React.Component {
   };
 
   componentDidMount = () => {
-    quip.apps.updateToolbar({
+    let toolbar = {
       toolbarCommandIds: [
         'addFormItem'
       ],
@@ -85,7 +85,13 @@ export default class Builder extends React.Component {
           }
         }
       ]
-    });
+    };
+
+    if (this.props.lockQuestions) {
+      toolbar.disabledCommandIds = ['addFormItem'];
+    }
+
+    quip.apps.updateToolbar(toolbar);
   }
 
   addCheckbox = () => {
