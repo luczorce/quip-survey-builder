@@ -86,7 +86,7 @@ export function saveSurveyQuestion(surveyId, question, index) {
   const path = `${endpoint}/surveys/${surveyId}/questions`;
   const options = {
     method: 'POST',
-    body: JSON.stringify(buildNewQuestionBody(question, index)),
+    body: JSON.stringify(buildQuestionBody(question, index)),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${API_KEY}`
@@ -110,6 +110,20 @@ export function updateAnswer(answerId, type, value) {
   return combinedFetch(path, options);
 }
 
+export function updateSurveyQuestion(question, index) {
+  const path = `${endpoint}/questions/${question.id}`;
+  const options = {
+    method: 'PUT',
+    body: JSON.stringify(buildQuestionBody(question, index)),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${API_KEY}`
+    }
+  };
+
+  return combinedFetch(path, options);
+}
+
 //////
 
 function buildNewAnswerBody(question, quipDocumentId) {
@@ -120,7 +134,7 @@ function buildNewAnswerBody(question, quipDocumentId) {
   };
 }
 
-function buildNewQuestionBody(question, index) {
+function buildQuestionBody(question, index) {
   let payload;
 
   if (question.type === qatypes.header) {

@@ -10,8 +10,6 @@ import {
   createAnswer,
   getSavedSurveys, 
   getSurveyQuestions
-  // saveSurveyName, 
-  // saveSurveyQuestion 
 } from './util/survey-communication.js';
 import { optionTypes, purposes, qatypes } from './util/enums.js';
 
@@ -54,11 +52,6 @@ export default class App extends React.Component {
       purpose: purposes.editing,
       surveyId: surveyId
     });
-    // this.forceUpdate();
-    
-    // TODO update the questions to include their saved id
-    // this will need another function
-    // this.props.record.set('question', createdSurveyData.questions);
   }
 
   loadSingleSurvey = (surveyId) => {

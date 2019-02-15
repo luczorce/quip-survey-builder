@@ -6,8 +6,9 @@ import SelectQ from './Select.jsx';
 import TextareaQ from './Textarea.jsx';
 import TextInput from './TextInput.jsx';
 
-import { saveSurveyName, saveSurveyQuestion } from '../util/survey-communication.js';
+import { saveSurveyName, saveSurveyQuestion, updateSurveyQuestion } from '../util/survey-communication.js';
 import { qatypes, optionTypes, purposes } from '../util/enums.js';
+import { Question } from '../util/models.js';
 
 import Style from "../App.less";
 import FormStyle from "./Form.less";
@@ -98,10 +99,6 @@ export default class Builder extends React.Component {
       ]
     };
 
-    if (this.props.lockQuestions) {
-      toolbar.disabledCommandIds = ['addFormItem'];
-    }
-
     quip.apps.updateToolbar(toolbar);
   }
 
@@ -167,14 +164,9 @@ export default class Builder extends React.Component {
   }
 
   addTextInput = () => {
-    const question = {
-      type: qatypes.textInput,
-      question: '',
-      helper: '',
-      guid: Date.now()
-    };
-
+    const question = new Question(qatypes.textInput); 
     let questions = this.props.questions;
+
     questions.push(question);
 
     this.props.updateQuestions(questions);
@@ -201,7 +193,7 @@ export default class Builder extends React.Component {
     if (element.type === qatypes.header) {
       return <HeaderInput value={element.value} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} updateOrder={this.updateQuestionOrder} />;
     } else if (element.type === qatypes.textInput) {
-      return <TextInput question={element.question} helper={element.helper} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} updateOrder={this.updateQuestionOrder} />;
+      return <TextInput question={element.question} helper={element.helper} guid={element.guid} errors={element.errors} id={element.id} updated={this.updateQuestion} deleted={this.deleteQuestion} updateOrder={this.updateQuestionOrder} />;
     } else if (element.type === qatypes.numberInput) {
       return <NumberInput question={element.question} helper={element.helper} min={element.min} max={element.max} guid={element.guid} updated={this.updateQuestion} updateOrder={this.updateQuestionOrder} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
     } else if (element.type === qatypes.textarea) {
@@ -228,11 +220,6 @@ export default class Builder extends React.Component {
     });
   }
 
-  catchSurveyQuestionsFailure = (response) => {
-    console.log('caught survey question failure');
-    console.log(response);
-  }
-
   deleteQuestion = (questionGuid) => {
     let questions = this.props.questions
     questions = questions.filter(q => q.guid !== questionGuid);
@@ -251,8 +238,7 @@ export default class Builder extends React.Component {
           this.props.onSurveySaved(surveyId);
           return surveyId;
         }, this.catchSurveyNameFailure)
-        .then(this.saveSurveyQuestions)
-        .then(() => {}, this.catchSurveyQuestionsFailure);
+        .then(this.saveSurveyQuestions);
     });
   }
 
@@ -273,7 +259,6 @@ export default class Builder extends React.Component {
   }
 
   saveSurveyQuestions = (surveyId) => {
-    // TODO instead of saving, we may need to update saved question
     const questionPromises = this.props.questions.map((question, index) => {
       if (optionTypes.includes(question.type)) {
         let optionsList = this.props.options.find(o => o.guid === question.guid);
@@ -282,18 +267,40 @@ export default class Builder extends React.Component {
       }
 
       return new Promise((resolve, reject) => {
-        saveSurveyQuestion(surveyId, question, index)
-          .then(questionResponse => {
-            resolve({question, questionResponse});
-          });
+        if (question.id !== null) {
+          updateSurveyQuestion(question, index)
+            .then(questionResponse => {
+              resolve({question, questionResponse});
+            });
+        } else {
+          saveSurveyQuestion(surveyId, question, index)
+            .then(questionResponse => {
+              resolve({question, questionResponse});
+            });
+        }
       });
     });
 
     Promise.all(questionPromises).then(responses => {
+      responses.forEach(r => {
+        if (r.questionResponse.ok) {
+          r.question.id = r.questionResponse.data.id;
+          r.question.errors.length = 0;
+        } else {
+          let errorMessages = [];
+          Object.keys(r.questionResponse.data).forEach(e => {
+            errorMessages.push(`${e} ${r.questionResponse.data[e].join(', ')}`);
+          });
+
+          r.question.errors = errorMessages;
+        }
+        
+        this.updateQuestion(r.question);
+      });
+
       if (responses.map(r => r.questionResponse).some(r => !r.ok)) {
         console.log('found some errors in the Promise all finale');
       } else {
-        console.log('all questions are ok');
         this.setState({
           globalMessage: 'the survey and all questions saved successfully'
         }, () => {
@@ -371,10 +378,14 @@ export default class Builder extends React.Component {
         <p className={Style.errorMessage}>{this.state.globalError}</p>
       }
 
+      { this.state.globalMessage && 
+        <p className={Style.notificationMessage}>{this.state.globalMessage}</p>
+      }
+
       <header className={Style.buildingHeader}>
         <label className={FormStyle.formInput}>
           <span>survey name</span>
-          <input type="text" value={this.props.surveyName} onInput={this.updateName} disabled={this.props.lockQuestions} />
+          <input type="text" value={this.props.surveyName} onInput={this.updateName} />
         </label>
 
         <quip.apps.ui.Button 
@@ -384,7 +395,6 @@ export default class Builder extends React.Component {
           disabled={this.state.disableSave} 
           text={this.props.purpose == purposes.editing ? 'update survey' : 'save survey'} />
       </header>
-      <p>{this.props.purpose}</p>
 
       { builderCanvas }
     </section>;
