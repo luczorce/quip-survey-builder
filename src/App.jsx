@@ -9,9 +9,9 @@ import ErrorMessage from './components/ErrorMessage.jsx';
 import {
   createAnswer,
   getSavedSurveys, 
-  getSurveyQuestions, 
-  saveSurveyName, 
-  saveSurveyQuestion 
+  getSurveyQuestions
+  // saveSurveyName, 
+  // saveSurveyQuestion 
 } from './util/survey-communication.js';
 import { optionTypes, purposes, qatypes } from './util/enums.js';
 
@@ -51,6 +51,29 @@ export default class App extends React.Component {
     } else if (this.props.record.get('purpose') === purposes.deleting) {
       this.loadSurveyForDeleting();
     }
+  }
+
+  changePurposeFromBuildToEdit = (createdSurveyData) => {
+    // TODO this may get removed as we enable editing for surveys
+    // quip.apps.updateToolbar({
+    //   disabledCommandIds: ['addFormItem']
+    // });
+
+    // this.setState({saveSurveyDisabled: true}, () => {
+    //   saveSurveyName(this.state.surveyName, null)
+    //     .then(response => {
+    //       if (!response.ok) {
+    //         this.setState({surveyErrors: response});
+    //       } else {
+    //         this.props.record.set('surveyId', response.data.id);
+    //         this.saveQuestions(response.data.id);
+    //         this.forceUpdate();
+    //       }
+    //     });
+    // });
+
+    this.props.record.set('surveyId', createdSurveyData.surveyId);
+    // this.props.record.set('question', createdSurveyData.questions);
   }
 
   loadSingleSurvey = (surveyId) => {
@@ -123,26 +146,6 @@ export default class App extends React.Component {
         purpose: purpose,
         availableSurveys: response.data
       });
-    });
-  }
-
-  saveSurvey = () => {
-    // TODO this may get removed as we enable editing for surveys
-    quip.apps.updateToolbar({
-      disabledCommandIds: ['addFormItem']
-    });
-
-    this.setState({saveSurveyDisabled: true}, () => {
-      saveSurveyName(this.state.surveyName, null)
-        .then(response => {
-          if (!response.ok) {
-            this.setState({surveyErrors: response});
-          } else {
-            this.props.record.set('surveyId', response.data.id);
-            this.saveQuestions(response.data.id);
-            this.forceUpdate();
-          }
-        });
     });
   }
 
@@ -231,7 +234,7 @@ export default class App extends React.Component {
         updateOptions={this.updateOptionsState} 
         updateQuestions={this.updateQuestionsState} 
         updateSurveyName={this.updateSurveyNameState} 
-        saveSurvey={this.saveSurvey} />;
+        onSurveySaved={this.changePurposeFromBuildToEdit} />;
     } else if (this.state.purpose === purposes.loading) {
       if (this.props.record.get('surveyId')) {
         canvas = <SurveyForm questions={this.state.questions} answers={this.state.answers} updateAnswer={this.updateAnswerState} />;
@@ -241,6 +244,7 @@ export default class App extends React.Component {
     } else if (this.state.purpose === purposes.deleting) {
       canvas = <SurveyDeleter surveys={this.state.availableSurveys} />;
     } else {
+      // TODO add an "update a survey" option
       canvas = <nav className={Style.flexirow}>
         <quip.apps.ui.Button type="button" onClick={this.startBuildingSurvey} text="build a survey" />
         <quip.apps.ui.Button type="button" onClick={this.loadSurveyForList} text="load a survey" />

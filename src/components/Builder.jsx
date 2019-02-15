@@ -6,6 +6,7 @@ import SelectQ from './Select.jsx';
 import TextareaQ from './Textarea.jsx';
 import TextInput from './TextInput.jsx';
 
+import { saveSurveyName, saveSurveyQuestion } from '../util/survey-communication.js';
 import { qatypes, optionTypes } from '../util/enums.js';
 
 import Style from "../App.less";
@@ -18,11 +19,19 @@ export default class Builder extends React.Component {
     options: React.PropTypes.array,
     questions: React.PropTypes.array,
     surveyName: React.PropTypes.string,
-    saveSurvey: React.PropTypes.func,
+    onSurveySaved: React.PropTypes.func,
     updateOptions: React.PropTypes.func,
     updateQuestions: React.PropTypes.func,
     updateSurveyName: React.PropTypes.func,
   };
+
+  constructor(props) {
+    super();
+
+    this.state = {
+      globalError: null
+    };
+  }
 
   componentDidMount = () => {
     let toolbar = {
@@ -208,12 +217,80 @@ export default class Builder extends React.Component {
     }
   }
 
+  catchSurveyNameFailure = (response) => {
+    // TODO add a name error message ???
+    console.log('error with saving survey name');
+    console.log(response);
+    
+    this.setState({
+      globalError: `name ${response.data.name}`
+    });
+  }
+
+  catchSurveyQuestionsFailure = (response) => {
+    console.log('caught survey question failure');
+    console.log(response);
+  }
+
   deleteQuestion = (questionGuid) => {
     let questions = this.props.questions
     questions = questions.filter(q => q.guid !== questionGuid);
 
     this.props.updateQuestions(questions);
     // TODO consider removing an associated optionList
+  }
+
+  saveSurvey = () => {
+    // TODO save the survey questions
+    // TODO update the App component parent
+    this.saveSurveyName()
+      .then(this.saveSurveyQuestions, this.catchSurveyNameFailure);
+  }
+
+  saveSurveyName = () => {
+    return new Promise((resolve, reject) => {
+      saveSurveyName(this.props.surveyName, null).then(response => {
+        if (!response.ok) {
+          return reject(response);
+        } else {
+          this.setState({
+            globalError: null
+          }, () => {
+            return resolve(response.data.id);
+          });
+        }
+      });
+    });
+  }
+
+  saveSurveyQuestions = (surveyNameResponse) => {
+    console.log('will save questions');
+    // .then(this.props.onSurveySaved, this.catchSurveyQuestionsFailure);
+    // const surveyId = surveyNameResponse.data.id;
+
+    // const questionPromises = this.props.questions.map((question, index) => {
+    //   if (optionTypes.includes(question.type)) {
+    //     let optionsList = this.props.options.find(o => o.guid === question.guid);
+    //     question.options = optionsList.options.map(o => o.value);
+    //     question.optionHelpers = optionsList.options.map(o => o.helper);
+    //   }
+
+    //   return saveSurveyQuestion(surveyId, question, index);
+    // });
+
+    
+    // Promise.all(questionPromises).then(responses => {
+    //   if (responses.some(r => !r.ok)) {
+    //     // TODO how to announce for errors, and help user around this?
+    //     console.log('found some errors');
+    //   } else {
+    //     // TODO use the model Survey??
+    //     return {
+    //       surveyId
+    //       // questionList: responses
+    //     }
+    //   }
+    // });
   }
 
   updateName = (event) => {
@@ -273,6 +350,10 @@ export default class Builder extends React.Component {
     }
 
     return <section>
+      { this.state.globalError && 
+        <p className={Style.errorMessage}>{this.state.globalError}</p>
+      }
+
       <header className={Style.buildingHeader}>
         <label className={FormStyle.formInput}>
           <span>survey name</span>
@@ -281,13 +362,11 @@ export default class Builder extends React.Component {
 
         <quip.apps.ui.Button 
           type="button" 
-          onClick={this.props.saveSurvey} 
+          onClick={this.saveSurvey} 
           primary="true"
           disabled={this.props.disableSave} 
           text={this.props.lockQuestions ? 'survey saved' : 'save survey'} />
       </header>
-
-      { this.props.surveyErrors && <ErrorMessage type="newSurvey" error={this.props.surveyErrors} />}
 
       { builderCanvas }
     </section>;
