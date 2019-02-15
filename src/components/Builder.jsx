@@ -7,17 +7,17 @@ import TextareaQ from './Textarea.jsx';
 import TextInput from './TextInput.jsx';
 
 import { saveSurveyName, saveSurveyQuestion } from '../util/survey-communication.js';
-import { qatypes, optionTypes } from '../util/enums.js';
+import { qatypes, optionTypes, purposes } from '../util/enums.js';
 
 import Style from "../App.less";
 import FormStyle from "./Form.less";
 
 export default class Builder extends React.Component {
   static propTypes = {
-    disableSave: React.PropTypes.bool,
-    lockQuestions: React.PropTypes.bool,
     options: React.PropTypes.array,
+    purpose: React.PropTypes.string,
     questions: React.PropTypes.array,
+    surveyId: React.PropTypes.number,
     surveyName: React.PropTypes.string,
     onSurveySaved: React.PropTypes.func,
     updateOptions: React.PropTypes.func,
@@ -29,7 +29,9 @@ export default class Builder extends React.Component {
     super();
 
     this.state = {
-      globalError: null
+      disableSave: !props.surveyName.length,
+      globalError: null,
+      globalMessage: null
     };
   }
 
@@ -218,7 +220,6 @@ export default class Builder extends React.Component {
   }
 
   catchSurveyNameFailure = (response) => {
-    // TODO add a name error message ???
     console.log('error with saving survey name');
     console.log(response);
     
@@ -241,15 +242,23 @@ export default class Builder extends React.Component {
   }
 
   saveSurvey = () => {
-    // TODO save the survey questions
-    // TODO update the App component parent
-    this.saveSurveyName()
-      .then(this.saveSurveyQuestions, this.catchSurveyNameFailure);
+    this.setState({
+      globalError: null,
+      globalMessage: null
+    }, () => {
+      this.saveSurveyName()
+        .then((surveyId) => {
+          this.props.onSurveySaved(surveyId);
+          return surveyId;
+        }, this.catchSurveyNameFailure)
+        .then(this.saveSurveyQuestions)
+        .then(() => {}, this.catchSurveyQuestionsFailure);
+    });
   }
 
   saveSurveyName = () => {
     return new Promise((resolve, reject) => {
-      saveSurveyName(this.props.surveyName, null).then(response => {
+      saveSurveyName(this.props.surveyName, this.props.surveyId).then(response => {
         if (!response.ok) {
           return reject(response);
         } else {
@@ -263,38 +272,46 @@ export default class Builder extends React.Component {
     });
   }
 
-  saveSurveyQuestions = (surveyNameResponse) => {
-    console.log('will save questions');
-    // .then(this.props.onSurveySaved, this.catchSurveyQuestionsFailure);
-    // const surveyId = surveyNameResponse.data.id;
+  saveSurveyQuestions = (surveyId) => {
+    // TODO instead of saving, we may need to update saved question
+    const questionPromises = this.props.questions.map((question, index) => {
+      if (optionTypes.includes(question.type)) {
+        let optionsList = this.props.options.find(o => o.guid === question.guid);
+        question.options = optionsList.options.map(o => o.value);
+        question.optionHelpers = optionsList.options.map(o => o.helper);
+      }
 
-    // const questionPromises = this.props.questions.map((question, index) => {
-    //   if (optionTypes.includes(question.type)) {
-    //     let optionsList = this.props.options.find(o => o.guid === question.guid);
-    //     question.options = optionsList.options.map(o => o.value);
-    //     question.optionHelpers = optionsList.options.map(o => o.helper);
-    //   }
+      return new Promise((resolve, reject) => {
+        saveSurveyQuestion(surveyId, question, index)
+          .then(questionResponse => {
+            resolve({question, questionResponse});
+          });
+      });
+    });
 
-    //   return saveSurveyQuestion(surveyId, question, index);
-    // });
-
-    
-    // Promise.all(questionPromises).then(responses => {
-    //   if (responses.some(r => !r.ok)) {
-    //     // TODO how to announce for errors, and help user around this?
-    //     console.log('found some errors');
-    //   } else {
-    //     // TODO use the model Survey??
-    //     return {
-    //       surveyId
-    //       // questionList: responses
-    //     }
-    //   }
-    // });
+    Promise.all(questionPromises).then(responses => {
+      if (responses.map(r => r.questionResponse).some(r => !r.ok)) {
+        console.log('found some errors in the Promise all finale');
+      } else {
+        console.log('all questions are ok');
+        this.setState({
+          globalMessage: 'the survey and all questions saved successfully'
+        }, () => {
+          setTimeout(() => {
+            this.setState({ globalMessage: null });
+          }, 5000)
+        });
+      }
+    });
   }
 
   updateName = (event) => {
-    this.props.updateSurveyName(event.target.value);
+    const name = event.target.value;
+
+    this.props.updateSurveyName(name);
+    this.setState({
+      disableSave: !name.length
+    });
   }
 
   updateOption = (guid, updatedOptionsList) => {
@@ -364,9 +381,10 @@ export default class Builder extends React.Component {
           type="button" 
           onClick={this.saveSurvey} 
           primary="true"
-          disabled={this.props.disableSave} 
-          text={this.props.lockQuestions ? 'survey saved' : 'save survey'} />
+          disabled={this.state.disableSave} 
+          text={this.props.purpose == purposes.editing ? 'update survey' : 'save survey'} />
       </header>
+      <p>{this.props.purpose}</p>
 
       { builderCanvas }
     </section>;
