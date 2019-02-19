@@ -1,3 +1,4 @@
+import SavedIcon from "./Indicators.jsx";
 import { qatypes } from '../util/enums.js';
 import { Question } from '../util/models.js';
 import Style from "./Form.less";
@@ -59,12 +60,7 @@ export default class TextInput extends React.Component {
           text input <em>(for short answers)</em>
           <button type="button" onClick={this.deleteQuestion} className={Style.sectionDeleter}>delete question</button>
 
-            { this.props.id !== null && 
-              <span>
-                <span title="saved to server" aria-hidden="true">&#x2713;</span>
-                <span className={GlobalStyle.visuallyHidden}>saved to server</span>
-              </span>
-            }
+            { this.props.id !== null && <SavedIcon /> }
         </p>
         
         <label className={Style.formInput}>
