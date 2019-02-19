@@ -27,9 +27,9 @@ export class Question {
   }
 }
 
-export class QuestionOptionList {
-  constructor(questionGuid) {
-    this.options = [];
+export class OptionList {
+  constructor(questionGuid, options = []) {
     this.guid = questionGuid;
+    this.options = options;
   }
 }

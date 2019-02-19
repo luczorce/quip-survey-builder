@@ -12,7 +12,7 @@ export default class HeaderInput extends React.Component {
     errors: React.PropTypes.array,
     updated: React.PropTypes.func,
     updateOrder: React.PropTypes.func,
-    deleted: React.PropTypes.func,
+    deleted: React.PropTypes.func
   }
 
   deleteQuestion = () => {

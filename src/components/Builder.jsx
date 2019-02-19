@@ -8,7 +8,7 @@ import TextInput from './TextInput.jsx';
 
 import { saveSurveyName, saveSurveyQuestion, updateSurveyQuestion } from '../util/survey-communication.js';
 import { qatypes, optionTypes, purposes } from '../util/enums.js';
-import { Question } from '../util/models.js';
+import { Question, OptionList } from '../util/models.js';
 
 import Style from "../App.less";
 import FormStyle from "./Form.less";
@@ -125,17 +125,8 @@ export default class Builder extends React.Component {
   }
 
   addOption = (type) => {
-    const question = {
-      type: type,
-      question: '',
-      helper: '',
-      guid: Date.now()
-    };
-
-    const optionList = {
-      guid: question.guid,
-      options: []
-    };
+    const question = new Question(type);
+    const optionList = new OptionList(question.guid);
 
     let questions = this.props.questions;
     questions.push(question);
@@ -218,31 +209,34 @@ export default class Builder extends React.Component {
         return <SelectQ question={element.question} 
             helper={element.helper} 
             optionsList={options} 
-            uid={element.guid} 
+            guid={element.guid} 
+            id={element.id} 
+            errors={element.errors} 
             updateQuestion={this.updateQuestion} 
             updateOptions={this.updateOption} 
             updateOrder={this.updateQuestionOrder} 
-            deleted={this.deleteQuestion} 
-            lock={this.props.lockQuestions} />;
+            deleted={this.deleteQuestion} />;
       } else if (element.type === qatypes.radio) {
         return <Radio question={element.question} 
             helper={element.helper} optionsList={options} 
             guid={element.guid} 
+            id={element.id} 
+            errors={element.errors} 
             updateQuestion={this.updateQuestion} 
             updateOptions={this.updateOption} 
             updateOrder={this.updateQuestionOrder} 
-            deleted={this.deleteQuestion} 
-            lock={this.props.lockQuestions} />;
+            deleted={this.deleteQuestion} />;
       } else if (element.type === qatypes.checkbox) {
         return <Checkbox question={element.question} 
             helper={element.helper} 
             optionsList={options} 
             guid={element.guid} 
+            id={element.id} 
+            errors={element.errors} 
             updateQuestion={this.updateQuestion} 
             updateOptions={this.updateOption} 
             updateOrder={this.updateQuestionOrder} 
-            deleted={this.deleteQuestion} 
-            lock={this.props.lockQuestions} />;
+            deleted={this.deleteQuestion} />;
       }
     }
   }

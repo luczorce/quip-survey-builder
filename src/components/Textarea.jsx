@@ -23,13 +23,11 @@ export default class TextareaQ extends React.Component {
 
   moveQuestionDown = () => {
     const question = new Question(qatypes.textarea, this.props);
-
     this.props.updateOrder(question, false);
   }
 
   moveQuestionUp = () => {
     const question = new Question(qatypes.textarea, this.props);
-
     this.props.updateOrder(question, true);
   }
 
@@ -58,7 +56,6 @@ export default class TextareaQ extends React.Component {
       {errors}
 
       <div className={Style.formSection}>
-
         <p className={Style.sectionDescription}>
           textarea <em>(for long form answers)</em>
           <button type="button" onClick={this.deleteQuestion} className={Style.sectionDeleter}>delete question</button>
