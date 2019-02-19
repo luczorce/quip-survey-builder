@@ -15,6 +15,13 @@ export class Question {
       this.max = extraData.max || null;
     }
 
+    if (type === qatypes.header) {
+      this.value = extraData.value || '';
+
+      delete this.question;
+      delete this.helper;
+    }
+
     // NOTE consider adding dirty, 
     // for when local updates aren't reflected on the server?
   }

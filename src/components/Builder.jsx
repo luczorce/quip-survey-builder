@@ -107,23 +107,20 @@ export default class Builder extends React.Component {
   }
 
   addHeader = () => {
-    const question = {
-      type: qatypes.header,
-      value: '',
-      guid: Date.now()
-    };
-
+    const question = new Question(qatypes.header);
+    
     let questions = this.props.questions;
     questions.push(question);
-
+    
     this.props.updateQuestions(questions);
   }
 
   addNumberInput = () => {
     const question = new Question(qatypes.numberInput);
-    let questions = this.props.questions;
 
+    let questions = this.props.questions;
     questions.push(question);
+
     this.props.updateQuestions(questions);
   }
 
@@ -157,17 +154,19 @@ export default class Builder extends React.Component {
 
   addTextInput = () => {
     const question = new Question(qatypes.textInput);
-    let questions = this.props.questions;
 
+    let questions = this.props.questions;
     questions.push(question);
+
     this.props.updateQuestions(questions);
   }
 
   addTextarea = () => {
     const question = new Question(qatypes.textarea);
+
     let questions = this.props.questions;
-    
     questions.push(question);
+    
     this.props.updateQuestions(questions);
   }
 
@@ -178,9 +177,10 @@ export default class Builder extends React.Component {
     if (element.type === qatypes.header) {
       return <HeaderInput value={element.value} 
           guid={element.guid} 
+          id={element.id} 
+          errors={element.errors} 
           updated={this.updateQuestion} 
           deleted={this.deleteQuestion} 
-          lock={this.props.lockQuestions} 
           updateOrder={this.updateQuestionOrder} />;
     } else if (element.type === qatypes.textInput) {
       return <TextInput question={element.question} 
@@ -336,6 +336,13 @@ export default class Builder extends React.Component {
 
       if (responses.map(r => r.questionResponse).some(r => !r.ok)) {
         console.log('found some errors in the Promise all finale');
+        this.setState({
+          globalError: 'there were issues saving, please double check all questions'
+        }, () => {
+          setTimeout(() => {
+            this.setState({ globalError: null });
+          }, 5000)
+        });
       } else {
         this.setState({
           globalMessage: 'the survey and all questions saved successfully'
