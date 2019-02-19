@@ -11,8 +11,8 @@ export default class NumberInput extends React.Component {
     min: React.PropTypes.number,
     max: React.PropTypes.number,
     guid: React.PropTypes.number,
-    errors: React.PropTypes.array,
     id: React.PropTypes.number,
+    errors: React.PropTypes.array,
     updated: React.PropTypes.func,
     updateOrder: React.PropTypes.func,
     deleted: React.PropTypes.func

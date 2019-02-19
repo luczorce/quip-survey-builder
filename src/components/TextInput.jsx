@@ -9,8 +9,8 @@ export default class TextInput extends React.Component {
     question: React.PropTypes.string,
     helper: React.PropTypes.string,
     guid: React.PropTypes.number,
-    errors: React.PropTypes.array,
     id: React.PropTypes.number,
+    errors: React.PropTypes.array,
     updated: React.PropTypes.func,
     updateOrder: React.PropTypes.func,
     deleted: React.PropTypes.func

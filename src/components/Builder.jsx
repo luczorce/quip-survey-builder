@@ -124,7 +124,6 @@ export default class Builder extends React.Component {
     let questions = this.props.questions;
 
     questions.push(question);
-
     this.props.updateQuestions(questions);
   }
 
@@ -161,21 +160,14 @@ export default class Builder extends React.Component {
     let questions = this.props.questions;
 
     questions.push(question);
-
     this.props.updateQuestions(questions);
   }
 
   addTextarea = () => {
-    const question = {
-      type: qatypes.textarea,
-      question: '',
-      helper: '',
-      guid: Date.now()
-    };
-
+    const question = new Question(qatypes.textarea);
     let questions = this.props.questions;
+    
     questions.push(question);
-
     this.props.updateQuestions(questions);
   }
 
@@ -214,10 +206,11 @@ export default class Builder extends React.Component {
       return <TextareaQ question={element.question} 
           helper={element.helper} 
           guid={element.guid} 
+          id={element.id} 
+          errors={element.errors} 
           updated={this.updateQuestion} 
           updateOrder={this.updateQuestionOrder} 
-          deleted={this.deleteQuestion} 
-          lock={this.props.lockQuestions} />;
+          deleted={this.deleteQuestion} />;
     } else if (optionTypes.includes(element.type)) {
       let options = this.props.options.find(o => o.guid === element.guid);
 
