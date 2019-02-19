@@ -120,16 +120,9 @@ export default class Builder extends React.Component {
   }
 
   addNumberInput = () => {
-    const question = {
-      type: qatypes.numberInput,
-      question: '',
-      helper: '',
-      min: null,
-      max: null,
-      guid: Date.now()
-    };
-
+    const question = new Question(qatypes.numberInput);
     let questions = this.props.questions;
+
     questions.push(question);
 
     this.props.updateQuestions(questions);
@@ -164,7 +157,7 @@ export default class Builder extends React.Component {
   }
 
   addTextInput = () => {
-    const question = new Question(qatypes.textInput); 
+    const question = new Question(qatypes.textInput);
     let questions = this.props.questions;
 
     questions.push(question);
@@ -191,22 +184,72 @@ export default class Builder extends React.Component {
   // the appropriate type of form data to render
   buildSurveyElements = (element, index) => {
     if (element.type === qatypes.header) {
-      return <HeaderInput value={element.value} guid={element.guid} updated={this.updateQuestion} deleted={this.deleteQuestion} lock={this.props.lockQuestions} updateOrder={this.updateQuestionOrder} />;
+      return <HeaderInput value={element.value} 
+          guid={element.guid} 
+          updated={this.updateQuestion} 
+          deleted={this.deleteQuestion} 
+          lock={this.props.lockQuestions} 
+          updateOrder={this.updateQuestionOrder} />;
     } else if (element.type === qatypes.textInput) {
-      return <TextInput question={element.question} helper={element.helper} guid={element.guid} errors={element.errors} id={element.id} updated={this.updateQuestion} deleted={this.deleteQuestion} updateOrder={this.updateQuestionOrder} />;
+      return <TextInput question={element.question} 
+          helper={element.helper} 
+          guid={element.guid} 
+          id={element.id} 
+          errors={element.errors} 
+          updated={this.updateQuestion} 
+          deleted={this.deleteQuestion} 
+          updateOrder={this.updateQuestionOrder} />;
     } else if (element.type === qatypes.numberInput) {
-      return <NumberInput question={element.question} helper={element.helper} min={element.min} max={element.max} guid={element.guid} updated={this.updateQuestion} updateOrder={this.updateQuestionOrder} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
+      return <NumberInput question={element.question} 
+          helper={element.helper} 
+          min={element.min} 
+          max={element.max} 
+          guid={element.guid} 
+          id={element.id} 
+          errors={element.errors} 
+          updated={this.updateQuestion} 
+          updateOrder={this.updateQuestionOrder} 
+          deleted={this.deleteQuestion} />;
     } else if (element.type === qatypes.textarea) {
-      return <TextareaQ question={element.question} helper={element.helper} guid={element.guid} updated={this.updateQuestion} updateOrder={this.updateQuestionOrder} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
+      return <TextareaQ question={element.question} 
+          helper={element.helper} 
+          guid={element.guid} 
+          updated={this.updateQuestion} 
+          updateOrder={this.updateQuestionOrder} 
+          deleted={this.deleteQuestion} 
+          lock={this.props.lockQuestions} />;
     } else if (optionTypes.includes(element.type)) {
       let options = this.props.options.find(o => o.guid === element.guid);
 
       if (element.type === qatypes.select) {
-        return <SelectQ question={element.question} helper={element.helper} optionsList={options} guid={element.guid} updateQuestion={this.updateQuestion} updateOptions={this.updateOption} updateOrder={this.updateQuestionOrder} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
+        return <SelectQ question={element.question} 
+            helper={element.helper} 
+            optionsList={options} 
+            uid={element.guid} 
+            updateQuestion={this.updateQuestion} 
+            updateOptions={this.updateOption} 
+            updateOrder={this.updateQuestionOrder} 
+            deleted={this.deleteQuestion} 
+            lock={this.props.lockQuestions} />;
       } else if (element.type === qatypes.radio) {
-        return <Radio question={element.question} helper={element.helper} optionsList={options} guid={element.guid} updateQuestion={this.updateQuestion} updateOptions={this.updateOption} updateOrder={this.updateQuestionOrder} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
+        return <Radio question={element.question} 
+            helper={element.helper} optionsList={options} 
+            guid={element.guid} 
+            updateQuestion={this.updateQuestion} 
+            updateOptions={this.updateOption} 
+            updateOrder={this.updateQuestionOrder} 
+            deleted={this.deleteQuestion} 
+            lock={this.props.lockQuestions} />;
       } else if (element.type === qatypes.checkbox) {
-        return <Checkbox question={element.question} helper={element.helper} optionsList={options} guid={element.guid} updateQuestion={this.updateQuestion} updateOptions={this.updateOption} updateOrder={this.updateQuestionOrder} deleted={this.deleteQuestion} lock={this.props.lockQuestions} />;
+        return <Checkbox question={element.question} 
+            helper={element.helper} 
+            optionsList={options} 
+            guid={element.guid} 
+            updateQuestion={this.updateQuestion} 
+            updateOptions={this.updateOption} 
+            updateOrder={this.updateQuestionOrder} 
+            deleted={this.deleteQuestion} 
+            lock={this.props.lockQuestions} />;
       }
     }
   }
