@@ -6,7 +6,12 @@ import SelectQ from './Select.jsx';
 import TextareaQ from './Textarea.jsx';
 import TextInput from './TextInput.jsx';
 
-import { saveSurveyName, saveSurveyQuestion, updateSurveyQuestion } from '../util/survey-communication.js';
+import { 
+  deleteQuestion,
+  saveSurveyName,
+  saveSurveyQuestion,
+  updateSurveyQuestion
+} from '../util/survey-communication.js';
 import { qatypes, optionTypes, purposes } from '../util/enums.js';
 import { Question, OptionList } from '../util/models.js';
 
@@ -171,7 +176,7 @@ export default class Builder extends React.Component {
           id={element.id} 
           errors={element.errors} 
           updated={this.updateQuestion} 
-          deleted={this.deleteQuestion} 
+          deleted={this.removeQuestion} 
           updateOrder={this.updateQuestionOrder} />;
     } else if (element.type === qatypes.textInput) {
       return <TextInput question={element.question} 
@@ -180,7 +185,7 @@ export default class Builder extends React.Component {
           id={element.id} 
           errors={element.errors} 
           updated={this.updateQuestion} 
-          deleted={this.deleteQuestion} 
+          deleted={this.removeQuestion} 
           updateOrder={this.updateQuestionOrder} />;
     } else if (element.type === qatypes.numberInput) {
       return <NumberInput question={element.question} 
@@ -192,7 +197,7 @@ export default class Builder extends React.Component {
           errors={element.errors} 
           updated={this.updateQuestion} 
           updateOrder={this.updateQuestionOrder} 
-          deleted={this.deleteQuestion} />;
+          deleted={this.removeQuestion} />;
     } else if (element.type === qatypes.textarea) {
       return <TextareaQ question={element.question} 
           helper={element.helper} 
@@ -201,7 +206,7 @@ export default class Builder extends React.Component {
           errors={element.errors} 
           updated={this.updateQuestion} 
           updateOrder={this.updateQuestionOrder} 
-          deleted={this.deleteQuestion} />;
+          deleted={this.removeQuestion} />;
     } else if (optionTypes.includes(element.type)) {
       let options = this.props.options.find(o => o.guid === element.guid);
 
@@ -215,7 +220,7 @@ export default class Builder extends React.Component {
             updateQuestion={this.updateQuestion} 
             updateOptions={this.updateOption} 
             updateOrder={this.updateQuestionOrder} 
-            deleted={this.deleteQuestion} />;
+            deleted={this.removeQuestion} />;
       } else if (element.type === qatypes.radio) {
         return <Radio question={element.question} 
             helper={element.helper} optionsList={options} 
@@ -225,7 +230,7 @@ export default class Builder extends React.Component {
             updateQuestion={this.updateQuestion} 
             updateOptions={this.updateOption} 
             updateOrder={this.updateQuestionOrder} 
-            deleted={this.deleteQuestion} />;
+            deleted={this.removeQuestion} />;
       } else if (element.type === qatypes.checkbox) {
         return <Checkbox question={element.question} 
             helper={element.helper} 
@@ -236,7 +241,7 @@ export default class Builder extends React.Component {
             updateQuestion={this.updateQuestion} 
             updateOptions={this.updateOption} 
             updateOrder={this.updateQuestionOrder} 
-            deleted={this.deleteQuestion} />;
+            deleted={this.removeQuestion} />;
       }
     }
   }
@@ -250,11 +255,25 @@ export default class Builder extends React.Component {
     });
   }
 
-  deleteQuestion = (questionGuid) => {
-    let questions = this.props.questions
-    questions = questions.filter(q => q.guid !== questionGuid);
+  removeQuestion = (guid, id = null, type = null) => {
+    let questions = this.props.questions;
+    
+    if (id !== null) {
+      deleteQuestion(id, type).then(response => {
+        if (response.ok) {
+          questions = questions.filter(q => q.guid !== guid);
+        } else {
+          let index = questions.findIndex(q => q.guid === guid);
+          questions[index].errors.push('there was an issue deleting this question, please try again');
+        }
 
-    this.props.updateQuestions(questions);
+        this.props.updateQuestions(questions);
+      });
+    } else {
+      questions = questions.filter(q => q.guid !== guid);
+      this.props.updateQuestions(questions);
+    }
+
     // TODO consider removing an associated optionList
   }
 

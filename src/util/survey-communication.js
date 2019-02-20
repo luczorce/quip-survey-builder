@@ -25,6 +25,18 @@ export function createAnswer(question, quipDocumentId) {
   });
 }
 
+export function deleteQuestion(id, type) {
+  const path = `${endpoint}/questions/${type}/${id}`;
+  const options = {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`
+    }
+  };
+
+  return combinedFetch(path, options);
+}
+
 export function deleteSurvey(id) {
   const path = `${endpoint}/surveys/${id}`;  
   const options = {

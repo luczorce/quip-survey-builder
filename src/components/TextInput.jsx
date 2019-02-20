@@ -17,8 +17,7 @@ export default class TextInput extends React.Component {
   }
 
   deleteQuestion = () => {
-    // TODO if question is on server, delete it TOO
-    this.props.deleted(this.props.guid);
+    this.props.deleted(this.props.guid, this.props.id, qatypes.textInput);
   }
 
   moveQuestionDown = () => {
