@@ -70,7 +70,7 @@ export default class SurveyList extends React.Component {
     } else {
       instructions = <div>
         <p>Choose all the questions you would like to delete.</p>
-        <p><em><strong>Beware!</strong> You can not undo this action.</em></p>
+        <p><em><strong>Beware!</strong> You cannot undo this action.</em></p>
       </div>;
     }
 
