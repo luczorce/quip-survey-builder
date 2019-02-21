@@ -1,3 +1,5 @@
+const uuidv1 = require('uuid/v1');
+
 import { qatypes } from './enums.js';
 
 export class Question {
@@ -6,7 +8,7 @@ export class Question {
     
     this.question = extraData.question || '';
     this.helper = extraData.helper     || '';
-    this.guid = extraData.guid         || Date.now();
+    this.guid = extraData.guid         || uuidv1();
     this.errors = extraData.errors     || [];
     this.id = extraData.id             || null;
 
@@ -31,5 +33,13 @@ export class OptionList {
   constructor(questionGuid, options = []) {
     this.guid = questionGuid;
     this.options = options;
+  }
+}
+
+export class Option {
+  constructor(data = {}) {
+    this.guid = data.guid     || uuidv1();
+    this.value = data.value   || '';
+    this.helper = data.helper || '';
   }
 }

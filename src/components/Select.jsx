@@ -1,6 +1,6 @@
 import SavedIcon from "./Indicators.jsx";
 import { qatypes } from '../util/enums.js';
-import { Question } from '../util/models.js';
+import { Question, Option } from '../util/models.js';
 import Style from "./Form.less";
 import GlobalStyle from "../App.less";
 
@@ -49,11 +49,7 @@ export default class SelectQ extends React.Component {
   questionOptionsAdd = () => {
     let updatedOptions = this.props.optionsList.options;
 
-    updatedOptions.push({
-      guid: Date.now(),
-      value: '',
-      helper: ''
-    });
+    updatedOptions.push(new Option());
 
     this.props.updateOptions(this.props.optionsList.guid, updatedOptions);
   }
