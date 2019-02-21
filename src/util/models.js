@@ -33,3 +33,11 @@ export class OptionList {
     this.options = options;
   }
 }
+
+export class Option {
+  constructor(data = {}) {
+    this.guid = data.guid     || Date.now();
+    this.value = data.value   || '';
+    this.helper = data.helper || '';
+  }
+}

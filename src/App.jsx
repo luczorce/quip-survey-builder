@@ -8,10 +8,12 @@ import ErrorMessage from './components/ErrorMessage.jsx';
 
 import {
   createAnswer,
+  getSavedSurvey,
   getSavedSurveys, 
   getSurveyQuestions
 } from './util/survey-communication.js';
 import { optionTypes, purposes, qatypes } from './util/enums.js';
+import { Question, OptionList, Option } from './util/models.js';
 
 import Style from "./App.less";
 
@@ -31,7 +33,8 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.record.get('purpose') === purposes.loading) {
+    const purpose = this.props.record.get('purpose');
+    if (purpose === purposes.loading) {
       const id = this.props.record.get('surveyId');
       
       if (id) {
@@ -39,8 +42,10 @@ export default class App extends React.Component {
       } else {
         this.loadSurveyForList();
       }
-    } else if (this.props.record.get('purpose') === purposes.deleting) {
+    } else if (purpose === purposes.deleting) {
       this.loadSurveyForDeleting();
+    } else if (purpose === purposes.loadForEdit) {
+      this.loadSurveyForEditing();
     }
   }
 
@@ -102,6 +107,46 @@ export default class App extends React.Component {
     }
   }
 
+  loadSingleSurveyForEditing = (surveyId) => {
+    if (surveyId === null) return false;
+
+    const { record } = this.props;
+
+    getSavedSurvey(surveyId).then(surveyResponse => {
+      if (surveyResponse.ok) {
+        record.set('surveyName', surveyResponse.data.name);
+
+        getSurveyQuestions(surveyId).then(questionResponse => {
+          if (!questionResponse.ok) {
+            console.log('there was an error loading the questions from the survey');
+            return false;
+          }
+
+          const {questions, options} = this.transformSurveyQuestionData(questionResponse.data);
+
+          record.set('questions', questions);
+          record.set('questionOptions', options);
+          record.set('surveyId', surveyId);
+          record.set('purpose', purposes.editing);
+
+          this.setState({
+            purpose: purposes.editing,
+            questions: questions,
+            options: options,
+            surveyId: surveyId,
+            surveyname: record.get('surveyName')
+          });
+        });
+      } else {
+        console.log('there was an issue with getting the survey data');
+      }
+    })
+  }
+
+  loadSurveyForEditing = () => {
+    this.loadSurveyOptions(purposes.loadForEdit);
+  }
+
   loadSurveyForDeleting = () => {
     this.loadSurveyOptions(purposes.deleting);
   }
@@ -132,6 +177,32 @@ export default class App extends React.Component {
     
     record.set('purpose', purposes.building);
     this.setState({purpose: purposes.building});
+  }
+
+  transformSurveyQuestionData = (questionData) => {
+    let questions = [];
+    let options = [];
+
+    questionData.forEach(data => {
+      const question = new Question(data.question_type, data);
+
+      if (optionTypes.includes(question.type)) {
+        let optionArray = [];
+
+        data.options.forEach((option, index) => {
+          optionArray.push(new Option({
+            value: option,
+            helper: data.option_helpers[index]
+          }));
+        });
+
+        options.push(new OptionList(question.guid, optionArray));
+      }
+
+      questions.push(question);
+    });
+
+    return { questions, options };
   }
 
   updateAnswerState = (id, type, value) => {
@@ -190,11 +261,13 @@ export default class App extends React.Component {
         updateQuestions={this.updateQuestionsState} 
         updateSurveyName={this.updateSurveyNameState} 
         onSurveySaved={this.changePurposeFromBuildToEdit} />;
-    } else if (this.state.purpose === purposes.loading) {
+    } else if (this.state.purpose === purposes.loading || this.state.purpose === purposes.loadForEdit) {
       if (this.props.record.get('surveyId')) {
         canvas = <SurveyForm questions={this.state.questions} answers={this.state.answers} updateAnswer={this.updateAnswerState} />;
-      } else {
+      } else if (this.state.purpose === purposes.loading) {
         canvas = <SurveyList surveys={this.state.availableSurveys} loadSurvey={this.loadSingleSurvey} />;
+      } else if (this.state.purpose === purposes.loadForEdit) {
+        canvas = <SurveyList surveys={this.state.availableSurveys} loadSurvey={this.loadSingleSurveyForEditing} />;
       }
     } else if (this.state.purpose === purposes.deleting) {
       canvas = <SurveyDeleter surveys={this.state.availableSurveys} />;
@@ -202,6 +275,7 @@ export default class App extends React.Component {
       // TODO add an "update a survey" option
       canvas = <nav className={Style.flexirow}>
         <quip.apps.ui.Button type="button" onClick={this.startBuildingSurvey} text="build a survey" />
+        <quip.apps.ui.Button type="button" onClick={this.loadSurveyForEditing} text="edit a survey" />
         <quip.apps.ui.Button type="button" onClick={this.loadSurveyForList} text="load a survey" />
         <quip.apps.ui.Button type="button" onClick={this.loadSurveyForDeleting} text="delete surveys" />
       </nav>;
