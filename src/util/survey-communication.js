@@ -49,8 +49,20 @@ export function deleteSurvey(id) {
   return combinedFetch(path, options);
 }
 
+export function getSavedSurvey(id) {
+  const path = `${endpoint}/surveys/${id}`;
+  const options = {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`
+    }
+  };
+
+  return combinedFetch(path, options);
+}
+
 export function getSavedSurveys() {
-  const path = `${endpoint}/surveys`;  
+  const path = `${endpoint}/surveys`;
   const options = {
     method: 'GET',
     headers: {
