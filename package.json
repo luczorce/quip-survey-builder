@@ -4,7 +4,6 @@
   "description": "eio.surveybuilder Quip App",
   "license": "UNLICENSED",
   "scripts": {
-    "start": "NODE_ENV=development webpack-dev-server --https",
     "watch": "NODE_ENV=development webpack --watch",
     "serve": "http-server app -p 8888 --ssl",
     "build": "NODE_ENV=production webpack; create-quip-app pack ./app",
@@ -19,6 +18,7 @@
     "replace-in-file-webpack-plugin": "^1.0.6"
   },
   "dependencies": {
-    "throttle-debounce": "^2.0.1"
+    "throttle-debounce": "^2.0.1",
+    "uuid": "^3.3.2"
   }
 }

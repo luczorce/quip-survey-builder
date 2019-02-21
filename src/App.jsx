@@ -125,8 +125,9 @@ export default class App extends React.Component {
           const {questions, options} = this.transformSurveyQuestionData(questionResponse.data);
 
           record.set('questions', questions);
+          record.clear('questionOptions');
           record.set('questionOptions', options);
-          record.set('surveyId', surveyId);
+          record.set('surveyId', Number(surveyId));
           record.set('purpose', purposes.editing);
 
           this.setState({
@@ -140,7 +141,7 @@ export default class App extends React.Component {
       } else {
         console.log('there was an issue with getting the survey data');
       }
-    })
+    });
   }
 
   loadSurveyForEditing = () => {
@@ -185,6 +186,7 @@ export default class App extends React.Component {
 
     questionData.forEach(data => {
       const question = new Question(data.question_type, data);
+      question.helper = data.question_helper;
 
       if (optionTypes.includes(question.type)) {
         let optionArray = [];
@@ -272,12 +274,18 @@ export default class App extends React.Component {
     } else if (this.state.purpose === purposes.deleting) {
       canvas = <SurveyDeleter surveys={this.state.availableSurveys} />;
     } else {
-      // TODO add an "update a survey" option
-      canvas = <nav className={Style.flexirow}>
-        <quip.apps.ui.Button type="button" onClick={this.startBuildingSurvey} text="build a survey" />
-        <quip.apps.ui.Button type="button" onClick={this.loadSurveyForEditing} text="edit a survey" />
-        <quip.apps.ui.Button type="button" onClick={this.loadSurveyForList} text="load a survey" />
-        <quip.apps.ui.Button type="button" onClick={this.loadSurveyForDeleting} text="delete surveys" />
+      canvas = <nav>
+        <p>Admins, manage your surveys:</p>
+        <p className={Style.flexirow}>
+          <quip.apps.ui.Button type="button" onClick={this.startBuildingSurvey} text="build a new survey" />
+          <quip.apps.ui.Button type="button" onClick={this.loadSurveyForEditing} text="edit an existing survey" />
+          <quip.apps.ui.Button type="button" onClick={this.loadSurveyForDeleting} text="delete surveys" />
+        </p>
+        
+        <p>Survey Responders, access the surveys:</p>
+        <p className={Style.flexirow}>
+          <quip.apps.ui.Button type="button" onClick={this.loadSurveyForList} text="answer a survey" />
+        </p>
       </nav>;
     }
 
