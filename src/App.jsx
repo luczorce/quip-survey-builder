@@ -9,9 +9,7 @@ import ErrorMessage from './components/ErrorMessage.jsx';
 import {
   createAnswer,
   getSavedSurveys, 
-  getSurveyQuestions, 
-  saveSurveyName, 
-  saveSurveyQuestion 
+  getSurveyQuestions
 } from './util/survey-communication.js';
 import { optionTypes, purposes, qatypes } from './util/enums.js';
 
@@ -21,21 +19,14 @@ export default class App extends React.Component {
   constructor(props) {
     super();
 
-    let saveSurveyDisabled = true;
-
-    if (props.record.get('surveyName') && !props.record.get('surveyId')) {
-      saveSurveyDisabled = false;
-    }
-
     this.state = {
+      answers: props.record.get('answers') || [],
+      availableSurveys: [],
       options: props.record.get('questionOptions').getRecords().map(r => r.getData()),
       purpose: props.record.get('purpose') || null,
       questions: props.record.get('questions') || [],
       surveyName: props.record.get('surveyName') || '',
-      saveSurveyDisabled: saveSurveyDisabled,
-      availableSurveys: [],
-      answers: props.record.get('answers') || [],
-      surveyErrors: null
+      surveyId: props.record.get('surveyId') || null,
     };
   }
 
@@ -51,6 +42,16 @@ export default class App extends React.Component {
     } else if (this.props.record.get('purpose') === purposes.deleting) {
       this.loadSurveyForDeleting();
     }
+  }
+
+  changePurposeFromBuildToEdit = (surveyId) => {
+    this.props.record.set('surveyId', surveyId);
+    this.props.record.set('purpose', purposes.editing);
+    
+    this.setState({
+      purpose: purposes.editing,
+      surveyId: surveyId
+    });
   }
 
   loadSingleSurvey = (surveyId) => {
@@ -126,47 +127,6 @@ export default class App extends React.Component {
     });
   }
 
-  saveSurvey = () => {
-    // TODO this may get removed as we enable editing for surveys
-    quip.apps.updateToolbar({
-      disabledCommandIds: ['addFormItem']
-    });
-
-    this.setState({saveSurveyDisabled: true}, () => {
-      saveSurveyName(this.state.surveyName, null)
-        .then(response => {
-          if (!response.ok) {
-            this.setState({surveyErrors: response});
-          } else {
-            this.props.record.set('surveyId', response.data.id);
-            this.saveQuestions(response.data.id);
-            this.forceUpdate();
-          }
-        });
-    });
-  }
-
-  saveQuestions = (surveyId) => {
-    let questionPromises = [];
-
-    this.state.questions.forEach((question, index) => {
-      if (optionTypes.includes(question.type)) {
-        let optionsList = this.state.options.find(o => o.guid === question.guid);
-        question.options = optionsList.options.map(o => o.value);
-        question.optionHelpers = optionsList.options.map(o => o.helper);
-      }
-
-      questionPromises.push(saveSurveyQuestion(surveyId, question, index));
-    });
-
-    Promise.all(questionPromises).then(responses => {
-      if (responses.some(r => !r.ok)) {
-        // TODO how to announce for errors, and help user around this?
-        console.log('found some errors');
-      }
-    });
-  }
-
   startBuildingSurvey = () => {
     const { record } = this.props;
     
@@ -210,28 +170,26 @@ export default class App extends React.Component {
 
   updateSurveyNameState = (name) => {
     const { record } = this.props;
-    const shouldDisable = record.get('surveyId') || !name.length;
 
     record.set('surveyName', name);
     this.setState({
-      surveyName: name,
-      saveSurveyDisabled: shouldDisable
+      surveyName: name
     });
   }
 
   render() {
     let canvas;
 
-    if (this.state.purpose === purposes.building) {
+    if (this.state.purpose === purposes.building || this.state.purpose === purposes.editing) {
       canvas = <Builder questions={this.state.questions} 
         options={this.state.options} 
-        lockQuestions={this.props.record.get('surveyId')} 
+        purpose={this.state.purpose} 
+        surveyId={this.state.surveyId} 
         surveyName={this.state.surveyName} 
-        disableSave={this.state.saveSurveyDisabled} 
         updateOptions={this.updateOptionsState} 
         updateQuestions={this.updateQuestionsState} 
         updateSurveyName={this.updateSurveyNameState} 
-        saveSurvey={this.saveSurvey} />;
+        onSurveySaved={this.changePurposeFromBuildToEdit} />;
     } else if (this.state.purpose === purposes.loading) {
       if (this.props.record.get('surveyId')) {
         canvas = <SurveyForm questions={this.state.questions} answers={this.state.answers} updateAnswer={this.updateAnswerState} />;
@@ -241,6 +199,7 @@ export default class App extends React.Component {
     } else if (this.state.purpose === purposes.deleting) {
       canvas = <SurveyDeleter surveys={this.state.availableSurveys} />;
     } else {
+      // TODO add an "update a survey" option
       canvas = <nav className={Style.flexirow}>
         <quip.apps.ui.Button type="button" onClick={this.startBuildingSurvey} text="build a survey" />
         <quip.apps.ui.Button type="button" onClick={this.loadSurveyForList} text="load a survey" />

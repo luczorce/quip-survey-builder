@@ -1,5 +1,6 @@
 import { deleteSurvey } from '../util/survey-communication.js';
 import Style from './Form.less';
+import GlobalStyle from '../App.less';
 
 export default class SurveyList extends React.Component {
   static propTypes = {
@@ -62,14 +63,14 @@ export default class SurveyList extends React.Component {
 
     if (this.state.hasFinished) {
       if (this.state.withErrors) {
-        instructions = <p>There were some errors with deleting. Reload the page and try again. :(</p>;
+        instructions = <p className={GlobalStyle.notificationMessage}>There were some errors with deleting. Reload the page and try again. :(</p>;
       } else {
-        instructions = <p>The surveys were deleted. Feel free to reload or delete this live app.</p>;
+        instructions = <p className={GlobalStyle.notificationMessage}>The surveys were deleted. Feel free to reload or delete this live app.</p>;
       }
     } else {
       instructions = <div>
         <p>Choose all the questions you would like to delete.</p>
-        <p><em><strong>Beware!</strong> You can not undo this action.</em></p>
+        <p><em><strong>Beware!</strong> You cannot undo this action.</em></p>
       </div>;
     }
 

@@ -1,6 +1,8 @@
+import SavedIcon from "./Indicators.jsx";
 import { qatypes } from '../util/enums.js';
+import { Question } from '../util/models.js';
 import Style from "./Form.less";
-import MainStyle from "../App.less";
+import GlobalStyle from "../App.less";
 
 export default class Radio extends React.Component {
   static propTypes = {
@@ -8,57 +10,38 @@ export default class Radio extends React.Component {
     helper: React.PropTypes.string,
     optionsList: React.PropTypes.object,
     guid: React.PropTypes.number,
+    id: React.PropTypes.number,
+    errors: React.PropTypes.array,
     updateQuestion: React.PropTypes.func,
     updateOptions: React.PropTypes.func,
     updateOrder: React.PropTypes.func,
-    deleted: React.PropTypes.func,
-    lock: React.PropTypes.bool
+    deleted: React.PropTypes.func
   }
 
   deleteQuestion = () => {
-    this.props.deleted(this.props.guid);
+    this.props.deleted(this.props.guid, this.props.id, qatypes.radio);
   }
 
   moveQuestionDown = () => {
-    let question = {
-      question: this.props.question,
-      helper: this.props.helper,
-      guid: this.props.guid,
-      type: qatypes.radio
-    };
-
+    const question = new Question(qatypes.radio, this.props);
     this.props.updateOrder(question, false);
   }
 
   moveQuestionUp = () => {
-    let question = {
-      question: this.props.question,
-      helper: this.props.helper,
-      guid: this.props.guid,
-      type: qatypes.radio
-    };
-
+    const question = new Question(qatypes.radio, this.props);
     this.props.updateOrder(question, true);
   }
 
   questionHelperValueUpdate = (event) => {
-    let updatedQuestion = {
-      question: this.props.question,
-      helper: event.target.value,
-      guid: this.props.guid,
-      type: qatypes.radio
-    };
+    let updatedQuestion = new Question(qatypes.radio, this.props);
+    updatedQuestion.helper = event.target.value;
 
     this.props.updateQuestion(updatedQuestion);
   }
 
   questionValueUpdate = (event) => {
-    let updatedQuestion = {
-      question: event.target.value,
-      helper: this.props.helper,
-      guid: this.props.guid,
-      type: qatypes.radio
-    };
+    let updatedQuestion = new Question(qatypes.radio, this.props);
+    updatedQuestion.question = event.target.value;
 
     this.props.updateQuestion(updatedQuestion);
   }
@@ -108,34 +91,46 @@ export default class Radio extends React.Component {
       </li>;
     });
 
-    return <li key={this.props.guid} className={Style.formSection}>
-      <p className={Style.sectionDescription}>
-        radios <em>(for listing out options where <strong>one</strong> can be picked)</em>
-        <button type="button" onClick={this.deleteQuestion} className={Style.sectionDeleter} disabled={this.props.lock}>delete question</button>
-      </p>
-      
-      <label className={Style.formInput}>
-        <span>question</span>
-        <input type="text" value={this.props.question} placeholder="(Who did you talk to last?)" onChange={this.questionValueUpdate} disabled={this.props.lock} />
-      </label>
+    let errors;
 
-      <label className={Style.formInput}>
-        <span>optional helper text</span>
-        <input type="text" value={this.props.helper} placeholder="(Choose the most appropriate answer)" onChange={this.questionHelperValueUpdate} disabled={this.props.lock} />
-      </label>
+    if (this.props.errors && this.props.errors.length) {
+      errors = <p className={GlobalStyle.errorMessage}>{this.props.errors.join('; ')}</p>;
+    }
 
-      <p className={MainStyle.flexirow}>
-        <span>options</span>
-        <quip.apps.ui.Button type="button" onClick={this.questionOptionsAdd} disabled={this.props.lock} text="add option" />
-      </p>
+    return <li key={this.props.guid}>
+      {errors}
 
-      { !this.props.optionsList.options.length && <p>no options yet...</p> }
-      { Boolean(this.props.optionsList.options.length) && <ol>{options}</ol> }
+      <div className={Style.formSection}>
+        <p className={Style.sectionDescription}>
+          radios <em>(for listing out options where <strong>one</strong> can be picked)</em>
+          <button type="button" onClick={this.deleteQuestion} className={Style.sectionDeleter} disabled={this.props.lock}>delete question</button>
 
-      <p className={Style.sectionFooter}>
-        <button type="button" onClick={this.moveQuestionUp} className={Style.sectionMover} disabled={this.props.lock}>move question up</button>
-        <button type="button" onClick={this.moveQuestionDown} className={Style.sectionMover} disabled={this.props.lock}>move question down</button>
-      </p>
+          { this.props.id !== null && <SavedIcon /> }
+        </p>
+        
+        <label className={Style.formInput}>
+          <span>question</span>
+          <input type="text" value={this.props.question} placeholder="(Who did you talk to last?)" onChange={this.questionValueUpdate} disabled={this.props.lock} />
+        </label>
+
+        <label className={Style.formInput}>
+          <span>optional helper text</span>
+          <input type="text" value={this.props.helper} placeholder="(Choose the most appropriate answer)" onChange={this.questionHelperValueUpdate} disabled={this.props.lock} />
+        </label>
+
+        <p className={GlobalStyle.flexirow}>
+          <span>options</span>
+          <quip.apps.ui.Button type="button" onClick={this.questionOptionsAdd} disabled={this.props.lock} text="add option" />
+        </p>
+
+        { !this.props.optionsList.options.length && <p>no options yet...</p> }
+        { Boolean(this.props.optionsList.options.length) && <ol>{options}</ol> }
+
+        <p className={Style.sectionFooter}>
+          <button type="button" onClick={this.moveQuestionUp} className={Style.sectionMover} disabled={this.props.lock}>move question up</button>
+          <button type="button" onClick={this.moveQuestionDown} className={Style.sectionMover} disabled={this.props.lock}>move question down</button>
+        </p>
+      </div>
     </li>;
   }
 }
