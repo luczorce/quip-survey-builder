@@ -13,5 +13,6 @@
       "https://localhost:3000",
       "https://eio-qi-surveys.herokuapp.com"
     ]
-  }
+  },
+  "allow_tiny_size": true
 }
