@@ -8,6 +8,7 @@ import TextInput from './TextInput.jsx';
 
 import { 
   deleteQuestion,
+  getSurveyResults,
   saveSurveyName,
   saveSurveyQuestion,
   updateSurveyQuestion
@@ -117,6 +118,8 @@ export default class Builder extends React.Component {
       ]
     };
 
+    // TODO when the first save happens, the purpose should update... 
+    // we need to detect when to enable the button (even though there are likely no results)
     if (this.props.purpose === purposes.building) {
       toolbar.disabledCommandIds = [ 'getFormAnswers' ];
     }
@@ -274,6 +277,7 @@ export default class Builder extends React.Component {
 
   getResultsAsExcel = () => {
     console.log('getting answers');
+    getSurveyResults(this.props.surveyId) {}
   }
 
   removeQuestion = (guid, id = null, type = null) => {

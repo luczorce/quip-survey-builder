@@ -85,6 +85,18 @@ export function getSurveyQuestions(surveyId) {
   return combinedFetch(path, options);
 }
 
+export function getSurveyResults(surveyId) {
+  const path = `${endpoint}/surveys/${surveyId}/results`;  
+  const options = {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`
+    }
+  };
+
+  return combinedFetch(path, options);
+}
+
 export function saveSurveyName(name, surveyId) {
   let path = `${endpoint}/surveys`;  
   let method = 'POST';
