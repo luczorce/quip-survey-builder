@@ -29,6 +29,8 @@ export default class App extends React.Component {
       questions: props.record.get('questions') || [],
       surveyName: props.record.get('surveyName') || '',
       surveyId: props.record.get('surveyId') || null,
+      globalMessage: [],
+      globalError: []
     };
   }
 
@@ -163,14 +165,27 @@ export default class App extends React.Component {
     getSavedSurveys().then(response => {
       if (!response.ok) {
         console.log('there was an error loading the surveys');
-        return false;
+        console.log(response);
+        this.setError('there was an issue loading the surveys, please reload and try again');
+      } else {
+        record.set('purpose', purpose);
+        this.setState({
+          purpose: purpose,
+          availableSurveys: response.data
+        });
       }
+    });
+  }
 
-      record.set('purpose', purpose);
-      this.setState({
-        purpose: purpose,
-        availableSurveys: response.data
-      });
+  setError = (message) => {
+    this.setState({
+      globalError: this.state.globalError.concat(message)
+    });
+  }
+
+  setMessage = (message) => {
+    this.setState({
+      globalMessage: this.state.globalMessage.concat(message)
     });
   }
 
@@ -253,6 +268,7 @@ export default class App extends React.Component {
 
   render() {
     let canvas;
+    let message, errorMessage;
 
     if (this.state.purpose === purposes.building || this.state.purpose === purposes.editing) {
       canvas = <Builder questions={this.state.questions} 
@@ -290,6 +306,19 @@ export default class App extends React.Component {
       </nav>;
     }
 
-    return <div>{ canvas }</div>;
+    if (this.state.globalMessage.length) {
+      message = <p className={Style.notificationMessage}>{this.state.globalMessage.join('; ')}</p>;
+    }
+
+    if (this.state.globalError.length) {
+      errorMessage = <p className={Style.errorMessage}>{this.state.globalError.join('; ')}</p>;
+    }
+
+
+    return <div>
+      { message }
+      { errorMessage }
+      { canvas }
+    </div>;
   }
 }
