@@ -50,36 +50,45 @@ export default class SurveyList extends React.Component {
   }
 
   render() {
-    const options = this.props.surveys.map(s => {
+    let options;
+    let instructions;
+    let content;
+    const optionGridStyle = this.props.surveys.length > 4 ? Style.checkboxGridColumns : Style.checkboxGrid;
+    
+    options = this.props.surveys.map(s => {
       return <label className={Style.formAnswerOption}>
         <input type="checkbox" disabled={this.state.hasFinished} name={s.id} onChange={this.choppingBlockUpdate} />
         <span>{s.name}</span>
       </label>;
     });
 
-    const optionGridStyle = options.length > 4 ? Style.checkboxGridColumns : Style.checkboxGrid;
-
-    let instructions;
-
     if (this.state.hasFinished) {
       if (this.state.withErrors) {
-        instructions = <p className={GlobalStyle.notificationMessage}>There were some errors with deleting. Reload the page and try again. :(</p>;
+        instructions = <p className={GlobalStyle.errorMessage}>There were some errors with deleting. Reload the page and try again. :(</p>;
       } else {
         instructions = <p className={GlobalStyle.notificationMessage}>The surveys were deleted. Feel free to reload or delete this live app.</p>;
       }
-    } else {
+    } else if (this.props.surveys.length) {
       instructions = <div>
         <p>Choose all the questions you would like to delete.</p>
         <p><em><strong>Beware!</strong> You cannot undo this action.</em></p>
       </div>;
     }
 
+    if (!this.props.surveys.length) {
+      content = <p>There are no surveys to delete...</p>;
+    } else {
+      content = <div>
+        <div className={optionGridStyle}>{options}</div>
+        <p>
+          <quip.apps.ui.Button type="button" onClick={this.deleteSelectedSurveys} text="delete selected surveys" disabled={this.state.hasFinished} />
+        </p>
+      </div>;
+    }
+
     return <section>
       {instructions}
-      <div className={optionGridStyle}>{options}</div>
-      <p>
-        <quip.apps.ui.Button type="button" onClick={this.deleteSelectedSurveys} text="delete selected surveys" disabled={this.state.hasFinished} />
-      </p>
+      {content}
     </section>;
   }
 }
