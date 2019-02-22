@@ -44,7 +44,8 @@ export default class Builder extends React.Component {
   componentDidMount = () => {
     let toolbar = {
       toolbarCommandIds: [
-        'addFormItem'
+        'addFormItem',
+        'getFormAnswers'
       ],
       menuCommands: [
         {
@@ -100,9 +101,25 @@ export default class Builder extends React.Component {
           handler: () => {
             this.addHeader();
           }
+        },
+        {
+          id: 'getFormAnswers',
+          label: 'get survey results',
+          subCommands: [ 'getExcelAnswers' ]
+        },
+        {
+          id: 'getExcelAnswers',
+          label: 'as excel file (xlsx)',
+          handler: () => {
+            this.getResultsAsExcel();
+          }
         }
       ]
     };
+
+    if (this.props.purpose === purposes.building) {
+      toolbar.disabledCommandIds = [ 'getFormAnswers' ];
+    }
 
     quip.apps.updateToolbar(toolbar);
   }
@@ -253,6 +270,10 @@ export default class Builder extends React.Component {
     this.setState({
       globalError: `name ${response.data.name}`
     });
+  }
+
+  getResultsAsExcel = () => {
+    console.log('getting answers');
   }
 
   removeQuestion = (guid, id = null, type = null) => {
