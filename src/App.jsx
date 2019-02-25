@@ -114,7 +114,8 @@ export default class App extends React.Component {
 
     getSavedSurvey(surveyId).then(surveyResponse => {
       if (surveyResponse.ok) {
-        record.set('surveyName', surveyResponse.data.name);
+        const surveyName = surveyResponse.data.name
+        record.set('surveyName', surveyName);
 
         getSurveyQuestions(surveyId).then(questionResponse => {
           if (!questionResponse.ok) {
@@ -135,7 +136,7 @@ export default class App extends React.Component {
             questions: questions,
             options: options,
             surveyId: surveyId,
-            surveyname: record.get('surveyName')
+            surveyName: surveyName
           });
         });
       } else {
