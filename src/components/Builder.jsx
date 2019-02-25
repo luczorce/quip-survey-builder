@@ -13,6 +13,7 @@ import {
   saveSurveyQuestion,
   updateSurveyQuestion
 } from '../util/survey-communication.js';
+import { generateXLSX } from '../util/survey-results-helper.js';
 import { qatypes, optionTypes, purposes } from '../util/enums.js';
 import { Question, OptionList } from '../util/models.js';
 
@@ -286,12 +287,13 @@ export default class Builder extends React.Component {
     }).then(surveyData => {
       if (surveyData === false) return false;
 
-      console.log(surveyData);
-      // if (surveyData.length) {
-      // } else {
-      //   // TODO no Data notification
-      // }
-    })
+      if (Object.keys(surveyData.answers).length) {
+        generateXLSX(this.props.surveyName, surveyData);
+        // TODO a file should have downloaded notification
+      } else {
+        // TODO no available answers notification
+      }
+    });
   }
 
   removeQuestion = (guid, id = null, type = null) => {
