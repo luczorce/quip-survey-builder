@@ -276,8 +276,22 @@ export default class Builder extends React.Component {
   }
 
   getResultsAsExcel = () => {
-    console.log('getting answers');
-    getSurveyResults(this.props.surveyId) {}
+    getSurveyResults(this.props.surveyId).then(response => {
+      if (response.ok) {
+        return response.data;
+      } else {
+        // TODO error message
+        return false;
+      }
+    }).then(surveyData => {
+      if (surveyData === false) return false;
+
+      console.log(surveyData);
+      // if (surveyData.length) {
+      // } else {
+      //   // TODO no Data notification
+      // }
+    })
   }
 
   removeQuestion = (guid, id = null, type = null) => {
