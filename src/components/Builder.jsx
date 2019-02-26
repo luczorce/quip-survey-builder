@@ -268,8 +268,7 @@ export default class Builder extends React.Component {
   }
 
   catchSurveyNameFailure = (response) => {
-    console.log('error with saving survey name');
-    console.log(response);
+    console.error('error with saving survey name');
     
     this.setState({
       globalError: `name ${response.data.name}`
@@ -281,7 +280,7 @@ export default class Builder extends React.Component {
       if (response.ok) {
         return response.data;
       } else {
-        // TODO error message
+        this.setGlobalError('there was an issue getting the responses for this survey, please try again');
         return false;
       }
     }).then(surveyData => {
@@ -289,9 +288,10 @@ export default class Builder extends React.Component {
 
       if (Object.keys(surveyData.answers).length) {
         generateXLSX(this.props.surveyName, surveyData);
-        // TODO a file should have downloaded notification
+        this.setGlobalMessage('an xlsx file has been generated and should have started to download');
       } else {
-        // TODO no available answers notification
+        // no available answers notification
+        this.setGlobalMessage('there were no survey answers available yet');
       }
     });
   }
@@ -389,23 +389,31 @@ export default class Builder extends React.Component {
       });
 
       if (responses.map(r => r.questionResponse).some(r => !r.ok)) {
-        console.log('found some errors in the Promise all finale');
-        this.setState({
-          globalError: 'there were issues saving, please double check all questions'
-        }, () => {
-          setTimeout(() => {
-            this.setState({ globalError: null });
-          }, 5000)
-        });
+        console.error('found some errors in saving all the questions');
+        this.setGlobalError('there were issues saving, please double check all questions');
       } else {
-        this.setState({
-          globalMessage: 'the survey and all questions saved successfully'
-        }, () => {
-          setTimeout(() => {
-            this.setState({ globalMessage: null });
-          }, 5000)
-        });
+        this.setGlobalMessage('the survey and all questions saved successfully');
       }
+    });
+  }
+
+  setGlobalError = (message) => {
+    this.setState({
+      globalError: message
+    }, () => {
+      window.setTimeout(() => {
+        this.setState({globalError: null});
+      }, 5000);
+    });
+  }
+
+  setGlobalMessage = (message) => {
+    this.setState({
+      globalMessage: message
+    }, () => {
+      window.setTimeout(() => {
+        this.setState({globalMessage: null});
+      }, 5000);
     });
   }
 
