@@ -475,7 +475,7 @@ export default class Builder extends React.Component {
         {this.props.questions.map(this.buildSurveyElements)}
       </ol>;
     } else {
-      builderCanvas = <p>add questions to the form...</p>;
+      builderCanvas = <p className={Style.emptyState}>add questions to the form...</p>;
     }
 
     return <section>
