@@ -230,6 +230,19 @@
   background: @color_default;
   margin: -5px -10px 10px;
   padding: 10px;
+  display: flex;
+  align-items: baseline;
+
+  .sectionControls {
+    display: flex;
+    justify-content: flex-end;
+    flex: 1 0 auto;
+
+    .icon {
+      margin-left: 10px;
+      display: flex;
+    }
+  }
 }
 
 .sectionFooter {
@@ -245,7 +258,6 @@
 }
 
 .sectionDeleter {
-  display: inline;
   font-size: 0.85em;
   .buttonLink();
 

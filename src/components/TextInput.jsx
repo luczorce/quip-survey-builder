@@ -1,4 +1,5 @@
-import SavedIcon from "./Indicators.jsx";
+import SavedIcon from './Indicators.jsx';
+import DeleteQuestion from './DeleteQuestion.jsx';
 import { qatypes } from '../util/enums.js';
 import { Question } from '../util/models.js';
 import Style from "./Form.less";
@@ -56,10 +57,12 @@ export default class TextInput extends React.Component {
 
       <div className={Style.formSection}>
         <p className={Style.sectionDescription}>
-          text input <em>(for short answers)</em>
-          <button type="button" onClick={this.deleteQuestion} className={Style.sectionDeleter}>delete question</button>
+          <span>text input <em>(for short answers)</em></span>
 
+          <span className={Style.sectionControls}>
+            <DeleteQuestion deleteFunc={this.deleteQuestion} />
             { this.props.id !== null && <SavedIcon /> }
+          </span>
         </p>
         
         <label className={Style.formInput}>
