@@ -2,6 +2,7 @@ import { debounce } from 'throttle-debounce';
 import { updateAnswer } from '../util/survey-communication.js';
 import { qatypes } from '../util/enums.js';
 import Style from "./Form.less";
+import GlobalStyle from '../App.less';
 
 export default class CheckboxAnswer extends React.Component {
   static propTypes = {
@@ -11,6 +12,14 @@ export default class CheckboxAnswer extends React.Component {
     optionHelpers: React.PropTypes.array,
     answer: React.PropTypes.object,
     update: React.PropTypes.func
+  }
+
+  constructor(props) {
+    super();
+
+    this.state = {
+      error: null
+    };
   }
 
   componentDidMount() {
@@ -29,6 +38,7 @@ export default class CheckboxAnswer extends React.Component {
       }
     }
 
+    this.setState({error: null});
     this.storeAnswer(value);
     this.props.update(this.props.answer.id, qatypes.checkbox, value);
   }
@@ -37,7 +47,9 @@ export default class CheckboxAnswer extends React.Component {
     updateAnswer(this.props.answer.id, qatypes.checkbox, value)
       .then(response => {
         if (!response.ok) {
-          console.log('something went wrong with updating the answer');
+          console.error('something went wrong with updating the answer');
+          console.error(response);
+          this.setState({error: 'this answer did not update'});
         }
       });
   }
@@ -61,12 +73,18 @@ export default class CheckboxAnswer extends React.Component {
     const optionGridStyle = options.length > 4 ? Style.checkboxGridColumns : Style.checkboxGrid;
 
     let questionHelper;
+    let error;
 
     if (this.props.helper && this.props.helper.length) {
       questionHelper = <p className={Style.surveyHelper}>{this.props.helper}</p>;
     }
 
+    if (this.state.error !== null && this.state.error.length) {
+      error = <p className={GlobalStyle.errorMessage}>{this.state.error}</p>;
+    }
+
     return <div key={this.props.answer.id} className={Style.answerCheckbox}>
+      {error}
       <p className={Style.surveyQuestion}>{this.props.question}</p>
       {questionHelper}
       <div className={optionGridStyle}>{options}</div>
