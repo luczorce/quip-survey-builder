@@ -2,6 +2,7 @@ import { debounce } from 'throttle-debounce';
 import { updateAnswer } from '../util/survey-communication.js';
 import { qatypes } from '../util/enums.js';
 import Style from "./Form.less";
+import GlobalStyle from '../App.less';
 
 export default class RadioAnswer extends React.Component {
   static propTypes = {
@@ -13,12 +14,22 @@ export default class RadioAnswer extends React.Component {
     update: React.PropTypes.func
   }
 
+  constructor(props) {
+    super();
+
+    this.state = {
+      error: null
+    };
+  }
+
   componentDidMount() {
     this.storeAnswer = debounce(1000, this.storeAnswer);
   }
 
   answerUpdate = (event) => {
     const value = event.target.value;
+
+    this.setState({error: null});
     this.storeAnswer(value);
     this.props.update(this.props.answer.id, qatypes.radio, value);
   }
@@ -27,7 +38,9 @@ export default class RadioAnswer extends React.Component {
     updateAnswer(this.props.answer.id, qatypes.radio, value)
       .then(response => {
         if (!response.ok) {
-          console.log('something went wrong with updating the answer');
+          console.error('something went wrong with updating the answer');
+          console.error(response);
+          this.setState({error: 'this answer did not update'});
         }
       });
   }
@@ -49,12 +62,18 @@ export default class RadioAnswer extends React.Component {
     });
 
     let questionHelper;
+    let error;
 
     if (this.props.helper && this.props.helper.length) {
       questionHelper = <p className={Style.surveyHelper}>{this.props.helper}</p>;
     }
 
+    if (this.state.error !== null && this.state.error.length) {
+      error = <p className={GlobalStyle.errorMessage}>{this.state.error}</p>;
+    }
+
     return <div key={this.props.answer.id} className={Style.answerRadio}>
+      {error}
       <p className={Style.surveyQuestion}>{this.props.question}</p>
       {questionHelper}
       {options}
