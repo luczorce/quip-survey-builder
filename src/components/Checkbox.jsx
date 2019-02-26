@@ -1,4 +1,4 @@
-import SavedIcon from "./Indicators.jsx";
+import QuestionHeader from './QuestionHeader.jsx';
 import { qatypes } from '../util/enums.js';
 import { Question, Option } from '../util/models.js';
 import Style from "./Form.less";
@@ -97,12 +97,7 @@ export default class Checkbox extends React.Component {
       {errors}
 
       <div className={Style.formSection}>
-        <p className={Style.sectionDescription}>
-          checkboxes <em>(for listing out options where <strong>many</strong> can be picked)</em>
-          <button type="button" onClick={this.deleteQuestion} className={Style.sectionDeleter} disabled={this.props.lock}>delete question</button>
-
-          { this.props.id !== null && <SavedIcon /> }
-        </p>
+        <QuestionHeader name="checkboxes" description="for listing out options where many can be picked" id={this.props.id} deleteFunc={this.deleteQuestion} />
         
         <label className={Style.formInput}>
           <span>question</span>

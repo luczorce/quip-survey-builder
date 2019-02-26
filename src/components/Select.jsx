@@ -1,4 +1,4 @@
-import SavedIcon from "./Indicators.jsx";
+import QuestionHeader from './QuestionHeader.jsx';
 import { qatypes } from '../util/enums.js';
 import { Question, Option } from '../util/models.js';
 import Style from "./Form.less";
@@ -97,12 +97,7 @@ export default class SelectQ extends React.Component {
       {errors}
 
       <div className={Style.formSection}>
-        <p className={Style.sectionDescription}>
-          select box <em>(for a dropdown of many available answers)</em>
-          <button type="button" onClick={this.deleteQuestion} className={Style.sectionDeleter} disabled={this.props.lock}>delete question</button>
-
-          { this.props.id !== null && <SavedIcon /> }
-        </p>
+        <QuestionHeader name="select box" description="for a dropdown of many available answers" id={this.props.id} deleteFunc={this.deleteQuestion} />
         
         <label className={Style.formInput}>
           <span>question</span>

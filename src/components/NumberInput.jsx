@@ -1,4 +1,4 @@
-import SavedIcon from "./Indicators.jsx";
+import QuestionHeader from './QuestionHeader.jsx';
 import { qatypes } from '../util/enums.js';
 import { Question } from '../util/models.js';
 import Style from "./Form.less";
@@ -83,12 +83,7 @@ export default class NumberInput extends React.Component {
       {errors}
 
       <div className={Style.formSection}>
-        <p className={Style.sectionDescription}>
-          number input <em>(for number-only answers)</em>
-          <button type="button" onClick={this.deleteQuestion} className={Style.sectionDeleter}>delete question</button>
-
-          { this.props.id !== null && <SavedIcon /> }
-        </p>
+        <QuestionHeader name="number input" description="for number-only answers" id={this.props.id} deleteFunc={this.deleteQuestion} />
         
         <label className={Style.formInput}>
           <span>question</span>
