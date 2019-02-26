@@ -173,8 +173,8 @@ export default class App extends React.Component {
     
     getSavedSurveys().then(response => {
       if (!response.ok) {
-        console.log('there was an error loading the surveys');
-        console.log(response);
+        console.error('there was an error loading the surveys');
+        console.error(response);
         this.setError('there was an issue loading the surveys, please reload and try again');
       } else {
         record.set('purpose', purpose);
