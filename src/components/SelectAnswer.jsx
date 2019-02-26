@@ -38,7 +38,7 @@ export default class SelectAnswer extends React.Component {
       let helper;
 
       if (this.props.optionHelpers[index] && this.props.optionHelpers[index].length) {
-        helper = ` (${helper})`;
+        helper = ` (${this.props.optionHelpers[index]})`;
       }
       
       return <option value={option} selected={selected}>{option}{helper}</option>;
