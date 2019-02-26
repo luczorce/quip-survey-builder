@@ -71,40 +71,45 @@ export default class App extends React.Component {
       
       getSurveyQuestions(surveyId).then(questionResponse => {
         if (!questionResponse.ok) {
-          console.log('there was an error loading the questions');
-          return Promise.reject();
+          return Promise.reject(questionResponse);
+        } else {
+          let answerPromises = [];
+          let quipDocumentId = quip.apps.getThreadId();
+
+          questions = questionResponse.data;
+          record.set('questions', questions);
+
+          questions.forEach((question, index) => {
+            if (question.question_type === qatypes.header) {
+              return false;
+            } else {
+              answerPromises.push(createAnswer(question, quipDocumentId));
+            }
+          });
+
+          return Promise.all(answerPromises);
         }
-
-        let answerPromises = [];
-        let quipDocumentId = quip.apps.getThreadId();
-
-        questions = questionResponse.data;
-        record.set('questions', questions);
-
-        questions.forEach((question, index) => {
-          if (question.question_type === qatypes.header) {
-            return false;
-          } else {
-            answerPromises.push(createAnswer(question, quipDocumentId));
-          }
-        });
-
-        return Promise.all(answerPromises);
       }).then(answerResponse => {
         answers = answerResponse.map(a => a.data);
-        
+
         if (answerResponse.some(a => !a.ok)) {
-          console.log('there are some errors with the answers');
-          return Promise.reject();
+          console.error('there was an error creating the answers');
+          console.error(answerResponse);
+          this.setError('there was an error creating the answers, please delete this document and try again');
+          // TODO on document delete, we still need to delete any answers that were successfully created
         } else {
           record.set('answers', answers);
+          record.set('surveyId', Number(surveyId));
+          
+          this.setState({
+            questions,
+            answers
+          });
         }
-      }).then(() => {
-        record.set('surveyId', Number(surveyId));
-        this.setState({
-          questions,
-          answers
-        });
+      }, questionError => {
+        console.error('there was an error loading the questions');
+        console.error(questionError);
+        this.setError('there was an error loading the questions');
       });
     }
   }
