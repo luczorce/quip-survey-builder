@@ -8,10 +8,12 @@ import TextInput from './TextInput.jsx';
 
 import { 
   deleteQuestion,
+  getSurveyResults,
   saveSurveyName,
   saveSurveyQuestion,
   updateSurveyQuestion
 } from '../util/survey-communication.js';
+import { generateXLSX } from '../util/survey-results-helper.js';
 import { qatypes, optionTypes, purposes } from '../util/enums.js';
 import { Question, OptionList } from '../util/models.js';
 
@@ -44,7 +46,8 @@ export default class Builder extends React.Component {
   componentDidMount = () => {
     let toolbar = {
       toolbarCommandIds: [
-        'addFormItem'
+        'addFormItem',
+        'getFormAnswers'
       ],
       menuCommands: [
         {
@@ -100,9 +103,27 @@ export default class Builder extends React.Component {
           handler: () => {
             this.addHeader();
           }
+        },
+        {
+          id: 'getFormAnswers',
+          label: 'get survey results',
+          subCommands: [ 'getExcelAnswers' ]
+        },
+        {
+          id: 'getExcelAnswers',
+          label: 'as excel file (xlsx)',
+          handler: () => {
+            this.getResultsAsExcel();
+          }
         }
       ]
     };
+
+    // TODO when the first save happens, the purpose should update... 
+    // we need to detect when to enable the button (even though there are likely no results)
+    if (this.props.purpose === purposes.building) {
+      toolbar.disabledCommandIds = [ 'getFormAnswers' ];
+    }
 
     quip.apps.updateToolbar(toolbar);
   }
@@ -247,11 +268,31 @@ export default class Builder extends React.Component {
   }
 
   catchSurveyNameFailure = (response) => {
-    console.log('error with saving survey name');
-    console.log(response);
+    console.error('error with saving survey name');
     
     this.setState({
       globalError: `name ${response.data.name}`
+    });
+  }
+
+  getResultsAsExcel = () => {
+    getSurveyResults(this.props.surveyId).then(response => {
+      if (response.ok) {
+        return response.data;
+      } else {
+        this.setGlobalError('there was an issue getting the responses for this survey, please try again');
+        return false;
+      }
+    }).then(surveyData => {
+      if (surveyData === false) return false;
+
+      if (Object.keys(surveyData.answers).length) {
+        generateXLSX(this.props.surveyName, surveyData);
+        this.setGlobalMessage('an xlsx file has been generated and should have started to download');
+      } else {
+        // no available answers notification
+        this.setGlobalMessage('there were no survey answers available yet');
+      }
     });
   }
 
@@ -348,23 +389,31 @@ export default class Builder extends React.Component {
       });
 
       if (responses.map(r => r.questionResponse).some(r => !r.ok)) {
-        console.log('found some errors in the Promise all finale');
-        this.setState({
-          globalError: 'there were issues saving, please double check all questions'
-        }, () => {
-          setTimeout(() => {
-            this.setState({ globalError: null });
-          }, 5000)
-        });
+        console.error('found some errors in saving all the questions');
+        this.setGlobalError('there were issues saving, please double check all questions');
       } else {
-        this.setState({
-          globalMessage: 'the survey and all questions saved successfully'
-        }, () => {
-          setTimeout(() => {
-            this.setState({ globalMessage: null });
-          }, 5000)
-        });
+        this.setGlobalMessage('the survey and all questions saved successfully');
       }
+    });
+  }
+
+  setGlobalError = (message) => {
+    this.setState({
+      globalError: message
+    }, () => {
+      window.setTimeout(() => {
+        this.setState({globalError: null});
+      }, 5000);
+    });
+  }
+
+  setGlobalMessage = (message) => {
+    this.setState({
+      globalMessage: message
+    }, () => {
+      window.setTimeout(() => {
+        this.setState({globalMessage: null});
+      }, 5000);
     });
   }
 
