@@ -126,7 +126,9 @@ export default class App extends React.Component {
 
         getSurveyQuestions(surveyId).then(questionResponse => {
           if (!questionResponse.ok) {
-            console.log('there was an error loading the questions from the survey');
+            console.error('there was an error loading the questions from the survey');
+            console.error(questionResponse);
+            this.setError('there was an error loading the questions from the survey');
             return false;
           }
 
@@ -147,7 +149,9 @@ export default class App extends React.Component {
           });
         });
       } else {
-        console.log('there was an issue with getting the survey data');
+        console.error('there was an issue with getting the survey data');
+        console.error(surveyResponse);
+        this.setError('there was an issue with getting the survey data');
       }
     });
   }
