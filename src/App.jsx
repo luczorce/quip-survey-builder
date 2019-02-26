@@ -29,6 +29,8 @@ export default class App extends React.Component {
       questions: props.record.get('questions') || [],
       surveyName: props.record.get('surveyName') || '',
       surveyId: props.record.get('surveyId') || null,
+      globalMessage: [],
+      globalError: []
     };
   }
 
@@ -69,40 +71,45 @@ export default class App extends React.Component {
       
       getSurveyQuestions(surveyId).then(questionResponse => {
         if (!questionResponse.ok) {
-          console.log('there was an error loading the questions');
-          return Promise.reject();
+          return Promise.reject(questionResponse);
+        } else {
+          let answerPromises = [];
+          let quipDocumentId = quip.apps.getThreadId();
+
+          questions = questionResponse.data;
+          record.set('questions', questions);
+
+          questions.forEach((question, index) => {
+            if (question.question_type === qatypes.header) {
+              return false;
+            } else {
+              answerPromises.push(createAnswer(question, quipDocumentId));
+            }
+          });
+
+          return Promise.all(answerPromises);
         }
-
-        let answerPromises = [];
-        let quipDocumentId = quip.apps.getThreadId();
-
-        questions = questionResponse.data;
-        record.set('questions', questions);
-
-        questions.forEach((question, index) => {
-          if (question.question_type === qatypes.header) {
-            return false;
-          } else {
-            answerPromises.push(createAnswer(question, quipDocumentId));
-          }
-        });
-
-        return Promise.all(answerPromises);
       }).then(answerResponse => {
         answers = answerResponse.map(a => a.data);
-        
+
         if (answerResponse.some(a => !a.ok)) {
-          console.log('there are some errors with the answers');
-          return Promise.reject();
+          console.error('there was an error creating the answers');
+          console.error(answerResponse);
+          this.setError('there was an error creating the answers, please delete this document and try again');
+          // TODO on document delete, we still need to delete any answers that were successfully created
         } else {
           record.set('answers', answers);
+          record.set('surveyId', Number(surveyId));
+          
+          this.setState({
+            questions,
+            answers
+          });
         }
-      }).then(() => {
-        record.set('surveyId', Number(surveyId));
-        this.setState({
-          questions,
-          answers
-        });
+      }, questionError => {
+        console.error('there was an error loading the questions');
+        console.error(questionError);
+        this.setError('there was an error loading the questions');
       });
     }
   }
@@ -119,7 +126,9 @@ export default class App extends React.Component {
 
         getSurveyQuestions(surveyId).then(questionResponse => {
           if (!questionResponse.ok) {
-            console.log('there was an error loading the questions from the survey');
+            console.error('there was an error loading the questions from the survey');
+            console.error(questionResponse);
+            this.setError('there was an error loading the questions from the survey');
             return false;
           }
 
@@ -140,7 +149,9 @@ export default class App extends React.Component {
           });
         });
       } else {
-        console.log('there was an issue with getting the survey data');
+        console.error('there was an issue with getting the survey data');
+        console.error(surveyResponse);
+        this.setError('there was an issue with getting the survey data');
       }
     });
   }
@@ -162,15 +173,28 @@ export default class App extends React.Component {
     
     getSavedSurveys().then(response => {
       if (!response.ok) {
-        console.log('there was an error loading the surveys');
-        return false;
+        console.error('there was an error loading the surveys');
+        console.error(response);
+        this.setError('there was an issue loading the surveys, please reload and try again');
+      } else {
+        record.set('purpose', purpose);
+        this.setState({
+          purpose: purpose,
+          availableSurveys: response.data
+        });
       }
+    });
+  }
 
-      record.set('purpose', purpose);
-      this.setState({
-        purpose: purpose,
-        availableSurveys: response.data
-      });
+  setError = (message) => {
+    this.setState({
+      globalError: this.state.globalError.concat(message)
+    });
+  }
+
+  setMessage = (message) => {
+    this.setState({
+      globalMessage: this.state.globalMessage.concat(message)
     });
   }
 
@@ -253,6 +277,7 @@ export default class App extends React.Component {
 
   render() {
     let canvas;
+    let message, errorMessage;
 
     if (this.state.purpose === purposes.building || this.state.purpose === purposes.editing) {
       canvas = <Builder questions={this.state.questions} 
@@ -276,20 +301,33 @@ export default class App extends React.Component {
       canvas = <SurveyDeleter surveys={this.state.availableSurveys} />;
     } else {
       canvas = <nav>
-        <p>Admins, manage your surveys:</p>
+        <p>manage your surveys:</p>
         <p className={Style.flexirow}>
           <quip.apps.ui.Button type="button" onClick={this.startBuildingSurvey} text="build a new survey" />
           <quip.apps.ui.Button type="button" onClick={this.loadSurveyForEditing} text="edit an existing survey" />
           <quip.apps.ui.Button type="button" onClick={this.loadSurveyForDeleting} text="delete surveys" />
         </p>
         
-        <p>Survey Responders, access the surveys:</p>
+        <p>load the survey for responders:</p>
         <p className={Style.flexirow}>
           <quip.apps.ui.Button type="button" onClick={this.loadSurveyForList} text="answer a survey" />
         </p>
       </nav>;
     }
 
-    return <div>{ canvas }</div>;
+    if (this.state.globalMessage.length) {
+      message = <p className={Style.notificationMessage}>{this.state.globalMessage.join('; ')}</p>;
+    }
+
+    if (this.state.globalError.length) {
+      errorMessage = <p className={Style.errorMessage}>{this.state.globalError.join('; ')}</p>;
+    }
+
+
+    return <div>
+      { message }
+      { errorMessage }
+      { canvas }
+    </div>;
   }
 }

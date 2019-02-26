@@ -52,7 +52,7 @@ export default class Builder extends React.Component {
       menuCommands: [
         {
           id: 'addFormItem',
-          label: 'Add to Form',
+          label: 'select question to add',
           subCommands: ['shortText', 'longText', 'number', 'selectBox', 'radio', 'checkbox', 'header']
         },
         {
