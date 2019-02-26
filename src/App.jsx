@@ -301,14 +301,14 @@ export default class App extends React.Component {
       canvas = <SurveyDeleter surveys={this.state.availableSurveys} />;
     } else {
       canvas = <nav>
-        <p>Admins, manage your surveys:</p>
+        <p>manage your surveys:</p>
         <p className={Style.flexirow}>
           <quip.apps.ui.Button type="button" onClick={this.startBuildingSurvey} text="build a new survey" />
           <quip.apps.ui.Button type="button" onClick={this.loadSurveyForEditing} text="edit an existing survey" />
           <quip.apps.ui.Button type="button" onClick={this.loadSurveyForDeleting} text="delete surveys" />
         </p>
         
-        <p>Survey Responders, access the surveys:</p>
+        <p>load the survey for responders:</p>
         <p className={Style.flexirow}>
           <quip.apps.ui.Button type="button" onClick={this.loadSurveyForList} text="answer a survey" />
         </p>
