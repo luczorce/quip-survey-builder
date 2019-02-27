@@ -1,4 +1,6 @@
 import QuestionHeader from './QuestionHeader.jsx';
+import QuestionFooterMemo from './QuestionFooterMemo.jsx';
+import Required from './Required.jsx';
 import { qatypes } from '../util/enums.js';
 import { Question } from '../util/models.js';
 import Style from "./Form.less";
@@ -86,7 +88,7 @@ export default class NumberInput extends React.Component {
         <QuestionHeader name="number input" description="for number-only answers" id={this.props.id} deleteFunc={this.deleteQuestion} />
         
         <label className={Style.formInput}>
-          <span>question <span className={Style.bigger} title="required">*</span></span>
+          <span>question <Required /></span>
           <input type="text" value={this.props.question} placeholder="(How many days since your last sneeze?)" onChange={this.questionValueUpdate} />
         </label>
 
@@ -109,9 +111,7 @@ export default class NumberInput extends React.Component {
           <button type="button" onClick={this.moveQuestionUp} className={Style.sectionMover}>move question up</button>
           <button type="button" onClick={this.moveQuestionDown} className={Style.sectionMover}>move question down</button>
           
-          <span className={Style.footerMemo}>
-            <span className={Style.bigger}>*</span> is required
-          </span>
+          <QuestionFooterMemo />
         </p>
       </div>
     </li>;

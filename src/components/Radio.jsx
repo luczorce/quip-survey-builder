@@ -1,4 +1,6 @@
 import QuestionHeader from './QuestionHeader.jsx';
+import QuestionFooterMemo from './QuestionFooterMemo.jsx';
+import Required from './Required.jsx';
 import { qatypes } from '../util/enums.js';
 import { Question, Option } from '../util/models.js';
 import Style from "./Form.less";
@@ -100,17 +102,17 @@ export default class Radio extends React.Component {
         <QuestionHeader name="radios" description="for listing out options where one can be picked" id={this.props.id} deleteFunc={this.deleteQuestion} />
         
         <label className={Style.formInput}>
-          <span>question</span>
+          <span>question <Required /></span>
           <input type="text" value={this.props.question} placeholder="(Who did you talk to last?)" onChange={this.questionValueUpdate} disabled={this.props.lock} />
         </label>
 
         <label className={Style.formInput}>
-          <span>optional helper text</span>
+          <span>helper text</span>
           <input type="text" value={this.props.helper} placeholder="(Choose the most appropriate answer)" onChange={this.questionHelperValueUpdate} disabled={this.props.lock} />
         </label>
 
         <p className={GlobalStyle.flexirow}>
-          <span>options</span>
+          <span>options <Required /></span>
           <quip.apps.ui.Button type="button" onClick={this.questionOptionsAdd} disabled={this.props.lock} text="add option" />
         </p>
 
@@ -120,6 +122,8 @@ export default class Radio extends React.Component {
         <p className={Style.sectionFooter}>
           <button type="button" onClick={this.moveQuestionUp} className={Style.sectionMover} disabled={this.props.lock}>move question up</button>
           <button type="button" onClick={this.moveQuestionDown} className={Style.sectionMover} disabled={this.props.lock}>move question down</button>
+
+          <QuestionFooterMemo />
         </p>
       </div>
     </li>;
