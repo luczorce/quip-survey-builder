@@ -1,4 +1,6 @@
-import SavedIcon from "./Indicators.jsx";
+import QuestionHeader from './QuestionHeader.jsx';
+import QuestionFooterMemo from './QuestionFooterMemo.jsx';
+import Required from './Required.jsx';
 import { qatypes } from '../util/enums.js';
 import { Question } from '../util/models.js';
 import Style from "./Form.less";
@@ -83,20 +85,15 @@ export default class NumberInput extends React.Component {
       {errors}
 
       <div className={Style.formSection}>
-        <p className={Style.sectionDescription}>
-          number input <em>(for number-only answers)</em>
-          <button type="button" onClick={this.deleteQuestion} className={Style.sectionDeleter}>delete question</button>
-
-          { this.props.id !== null && <SavedIcon /> }
-        </p>
+        <QuestionHeader name="number input" description="for number-only answers" id={this.props.id} deleteFunc={this.deleteQuestion} />
         
         <label className={Style.formInput}>
-          <span>question</span>
+          <span>question <Required /></span>
           <input type="text" value={this.props.question} placeholder="(How many days since your last sneeze?)" onChange={this.questionValueUpdate} />
         </label>
 
         <label className={Style.formInput}>
-          <span>optional helper text</span>
+          <span>helper text</span>
           <input type="text" value={this.props.helper} placeholder="(If you can't remember, then please give your best estimate)" onChange={this.questionHelperValueUpdate} />
         </label>
 
@@ -113,6 +110,8 @@ export default class NumberInput extends React.Component {
         <p className={Style.sectionFooter}>
           <button type="button" onClick={this.moveQuestionUp} className={Style.sectionMover}>move question up</button>
           <button type="button" onClick={this.moveQuestionDown} className={Style.sectionMover}>move question down</button>
+          
+          <QuestionFooterMemo />
         </p>
       </div>
     </li>;

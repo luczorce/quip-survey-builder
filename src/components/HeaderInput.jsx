@@ -1,4 +1,6 @@
-import SavedIcon from "./Indicators.jsx";
+import QuestionHeader from './QuestionHeader.jsx';
+import QuestionFooterMemo from './QuestionFooterMemo.jsx';
+import Required from './Required.jsx';
 import { qatypes } from '../util/enums.js';
 import { Question } from '../util/models.js';
 import Style from "./Form.less";
@@ -49,21 +51,18 @@ export default class HeaderInput extends React.Component {
       {errors}
 
       <div className={Style.formSection}>
-        <p className={Style.sectionDescription}>
-          header <em>(for separating sections of questions)</em>
-          <button type="button" onClick={this.deleteQuestion} className={Style.sectionDeleter}>delete question</button>
-
-          { this.props.id !== null && <SavedIcon /> }
-        </p>
+        <QuestionHeader name="header" description="for separating sections of questions" id={this.props.id} deleteFunc={this.deleteQuestion} isHeader="true" />
         
         <label className={Style.formInput}>
-          <span>text</span>
+          <span>text <Required /></span>
           <input type="text" value={this.props.value} placeholder="(Industry Specific Questions)" onChange={this.questionValueUpdate} />
         </label>
 
         <p className={Style.sectionFooter}>
           <button type="button" onClick={this.moveQuestionUp} className={Style.sectionMover}>move header up</button>
           <button type="button" onClick={this.moveQuestionDown} className={Style.sectionMover}>move header down</button>
+
+          <QuestionFooterMemo />
         </p>
       </div>
     </li>;
