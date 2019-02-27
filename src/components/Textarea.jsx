@@ -61,7 +61,7 @@ export default class TextareaQ extends React.Component {
         
         <label className={Style.formInput}>
           <span>question <Required /></span>
-          <input type="text" value={this.props.question} placeholder="(Who did you talk to last?)" onChange={this.questionValueUpdate} />
+          <input type="text" value={this.props.question} placeholder="(Who did you talk to last?)" onChange={this.questionValueUpdate} className={Style.questionInput} />
         </label>
 
         <label className={Style.formInput}>

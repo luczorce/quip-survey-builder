@@ -55,7 +55,7 @@ export default class HeaderInput extends React.Component {
         
         <label className={Style.formInput}>
           <span>text <Required /></span>
-          <input type="text" value={this.props.value} placeholder="(Industry Specific Questions)" onChange={this.questionValueUpdate} />
+          <input type="text" value={this.props.value} placeholder="(Industry Specific Questions)" onChange={this.questionValueUpdate} className={Style.questionInput} />
         </label>
 
         <p className={Style.sectionFooter}>
