@@ -13,7 +13,7 @@ export default class QuestionHeader extends React.Component {
 
   render() {
     return <p className={Style.sectionDescription}>
-      <span>{this.props.name} <em>({this.props.description})</em></span>
+      <span><span style={{fontWeight: 'bold', textTransform: 'uppercase'}}>{this.props.name}</span> ({this.props.description})</span>
 
       <span className={Style.sectionControls}>
         <DeleteQuestion deleteFunc={this.props.deleteFunc} isHeader={this.props.isHeader} />

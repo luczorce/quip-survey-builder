@@ -89,7 +89,7 @@ export default class NumberInput extends React.Component {
         
         <label className={Style.formInput}>
           <span>question <Required /></span>
-          <input type="text" value={this.props.question} placeholder="(How many days since your last sneeze?)" onChange={this.questionValueUpdate} className={Style.questionInput} />
+          <input type="text" value={this.props.question} placeholder="(How many days since your last sneeze?)" onChange={this.questionValueUpdate} />
         </label>
 
         <label className={Style.formInput}>

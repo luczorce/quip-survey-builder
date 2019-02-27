@@ -103,7 +103,7 @@ export default class Checkbox extends React.Component {
         
         <label className={Style.formInput}>
           <span>question <Required /></span>
-          <input type="text" value={this.props.question} placeholder="(Who did you talk to last?)" onChange={this.questionValueUpdate} disabled={this.props.lock} className={Style.questionInput} />
+          <input type="text" value={this.props.question} placeholder="(Who did you talk to last?)" onChange={this.questionValueUpdate} disabled={this.props.lock} />
         </label>
 
         <label className={Style.formInput}>
