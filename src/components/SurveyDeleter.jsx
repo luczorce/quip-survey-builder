@@ -11,10 +11,17 @@ export default class SurveyList extends React.Component {
     super();
 
     this.state = {
+      confirm: false,
       deleteMe: [],
       hasFinished: false,
       withErrors: false
     }
+  }
+
+  cancelEverything = () => {
+    this.setState({
+      confirm: false
+    });
   }
 
   choppingBlockUpdate = (event) => {
@@ -36,6 +43,10 @@ export default class SurveyList extends React.Component {
     }
   }
 
+  doubleChecking = () => {
+    this.setState({confirm: true});
+  }
+
   deleteSelectedSurveys = () => {
     const deletePromises = this.state.deleteMe.map(id => {
       return deleteSurvey(id);
@@ -53,6 +64,7 @@ export default class SurveyList extends React.Component {
     let options;
     let instructions;
     let content;
+    let makinSure;
     const optionGridStyle = this.props.surveys.length > 4 ? Style.checkboxGridColumns : Style.checkboxGrid;
     
     options = this.props.surveys.map(s => {
@@ -81,14 +93,23 @@ export default class SurveyList extends React.Component {
       content = <div>
         <div className={optionGridStyle}>{options}</div>
         <p>
-          <quip.apps.ui.Button type="button" onClick={this.deleteSelectedSurveys} text="delete selected surveys" disabled={this.state.hasFinished} />
+          <quip.apps.ui.Button type="button" onClick={this.doubleChecking} text="delete selected surveys" disabled={this.state.hasFinished} />
         </p>
       </div>;
+    }
+
+    if (this.state.confirm) {
+      makinSure = <p>
+        <strong>Are you sure?</strong> &nbsp;
+        <quip.apps.ui.Button type="button" onClick={this.deleteSelectedSurveys} text="yes, delete them" disabled={this.state.hasFinished} /> &nbsp;
+        <quip.apps.ui.Button type="button" onClick={this.cancelEverything} text="no! don't delete" disabled={this.state.hasFinished} />
+      </p>;
     }
 
     return <section>
       {instructions}
       {content}
+      {makinSure}
     </section>;
   }
 }
