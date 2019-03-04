@@ -45,7 +45,7 @@ export default class App extends React.Component {
       if (id) {
         this.loadSingleSurvey(id);
         let rootRecord = quip.apps.getRootRecord();
-        this.recordListener = rootRecord.listen(() => this.getUpdatedRecord());
+        this.recordListener = rootRecord.listen(() => this.getUpdatedAnswerRecord());
       } else {
         this.loadSurveyForList();
       }
@@ -63,12 +63,6 @@ export default class App extends React.Component {
     }
   }
 
-  getUpdatedRecord() {
-    const record = quip.apps.getRootRecord();
-    const answers = record.get('answers');
-    this.setState({answers});
-  }
-
   changePurposeFromBuildToEdit = (surveyId) => {
     this.props.record.set('surveyId', surveyId);
     this.props.record.set('purpose', purposes.editing);
@@ -79,13 +73,18 @@ export default class App extends React.Component {
     });
   }
 
+  getUpdatedAnswerRecord() {
+    const record = quip.apps.getRootRecord();
+    const answers = record.get('answers');
+    this.setState({answers});
+  }
+
   loadSingleSurvey = (surveyId) => {
     if (surveyId === null) return false;
 
     const { record } = this.props;
 
     if (!record.get('surveyId')) {
-      console.log('sdfjsdkfskdjfh');
       let questions, answers;
       
       getSurveyQuestions(surveyId).then(questionResponse => {
@@ -259,7 +258,7 @@ export default class App extends React.Component {
 
     answers[index].answer = value;
     this.props.record.set('answers', answers);
-    this.setState({answers: answers});
+    // this.setState({answers: answers});
   }
 
   updateOptionsState = (optionList, optionalIndex) => {
