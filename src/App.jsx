@@ -34,13 +34,18 @@ export default class App extends React.Component {
     };
   }
 
+  recordListener = null;
+
   componentDidMount() {
     const purpose = this.props.record.get('purpose');
+
     if (purpose === purposes.loading) {
       const id = this.props.record.get('surveyId');
       
       if (id) {
         this.loadSingleSurvey(id);
+        let rootRecord = quip.apps.getRootRecord();
+        this.recordListener = rootRecord.listen(() => this.getUpdatedRecord());
       } else {
         this.loadSurveyForList();
       }
@@ -49,6 +54,19 @@ export default class App extends React.Component {
     } else if (purpose === purposes.loadForEdit) {
       this.loadSurveyForEditing();
     }
+  }
+
+  componentWillUnmount() {
+    if (this.recordListener !== null) {
+      let rootRecord = quip.apps.getRootRecord();
+      rootRecord.unlisten(this.recordListener);
+    }
+  }
+
+  getUpdatedRecord() {
+    const record = quip.apps.getRootRecord();
+    const answers = record.get('answers');
+    this.setState({answers});
   }
 
   changePurposeFromBuildToEdit = (surveyId) => {
@@ -67,6 +85,7 @@ export default class App extends React.Component {
     const { record } = this.props;
 
     if (!record.get('surveyId')) {
+      console.log('sdfjsdkfskdjfh');
       let questions, answers;
       
       getSurveyQuestions(surveyId).then(questionResponse => {
