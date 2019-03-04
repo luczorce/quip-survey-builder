@@ -24,14 +24,20 @@ export default class RadioAnswer extends React.Component {
 
   componentDidMount() {
     this.storeAnswer = debounce(1000, this.storeAnswer);
+    this.logDocumentActivity = debounce(5000, this.logDocumentActivity);
   }
 
   answerUpdate = (event) => {
     const value = event.target.value;
 
     this.setState({error: null});
+    this.logDocumentActivity();
     this.storeAnswer(value);
     this.props.update(this.props.answer.id, qatypes.radio, value);
+  }
+
+  logDocumentActivity = () => {
+    quip.apps.sendMessage(`updated the answer to the question: ${this.props.question}`);
   }
 
   storeAnswer = (value) => {

@@ -22,12 +22,18 @@ export default class TextInputAnswer extends React.Component {
 
   componentDidMount() {
     this.storeAnswer = debounce(1000, this.storeAnswer);
+    this.logDocumentActivity = debounce(5000, this.logDocumentActivity);
   }
 
   answerUpdate = (event) => {
     this.setState({error: null});
     this.storeAnswer(event.target.value);
+    this.logDocumentActivity();
     this.props.update(this.props.answer.id, qatypes.textInput, event.target.value);
+  }
+
+  logDocumentActivity = () => {
+    quip.apps.sendMessage(`updated the answer to the question: ${this.props.question}`);
   }
 
   storeAnswer = (value) => {

@@ -25,6 +25,7 @@ export default class NumberInputAnswer extends React.Component {
 
   componentDidMount() {
     this.storeAnswer = debounce(1000, this.storeAnswer);
+    this.logDocumentActivity = debounce(5000, this.logDocumentActivity);
 
     let answer = this.props.answer.answer;
     if (answer !== null && answer.length) {
@@ -40,6 +41,7 @@ export default class NumberInputAnswer extends React.Component {
     this.props.update(this.props.answer.id, qatypes.numberInput, value);
     
     if (this.isValidAnswer(value)) {
+      this.logDocumentActivity();
       this.storeAnswer(value);
     }
   }
@@ -70,6 +72,10 @@ export default class NumberInputAnswer extends React.Component {
     });
 
     return isValid;
+  }
+
+  logDocumentActivity = () => {
+    quip.apps.sendMessage(`updated the answer to the question: ${this.props.question}`);
   }
 
   storeAnswer = (value) => {
