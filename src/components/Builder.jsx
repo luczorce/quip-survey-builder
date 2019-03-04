@@ -326,9 +326,8 @@ export default class Builder extends React.Component {
       this.saveSurveyName()
         .then((surveyId) => {
           this.props.onSurveySaved(surveyId);
-          return surveyId;
-        }, this.catchSurveyNameFailure)
-        .then(this.saveSurveyQuestions);
+          this.saveSurveyQuestions(surveyId);
+        }, this.catchSurveyNameFailure);
     });
   }
 
