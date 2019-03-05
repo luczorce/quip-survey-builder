@@ -34,13 +34,18 @@ export default class App extends React.Component {
     };
   }
 
+  recordListener = null;
+
   componentDidMount() {
     const purpose = this.props.record.get('purpose');
+
     if (purpose === purposes.loading) {
       const id = this.props.record.get('surveyId');
       
       if (id) {
         this.loadSingleSurvey(id);
+        let rootRecord = quip.apps.getRootRecord();
+        this.recordListener = rootRecord.listen(() => this.getUpdatedAnswerRecord());
       } else {
         this.loadSurveyForList();
       }
@@ -48,6 +53,13 @@ export default class App extends React.Component {
       this.loadSurveyForDeleting();
     } else if (purpose === purposes.loadForEdit) {
       this.loadSurveyForEditing();
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.recordListener !== null) {
+      let rootRecord = quip.apps.getRootRecord();
+      rootRecord.unlisten(this.recordListener);
     }
   }
 
@@ -59,6 +71,12 @@ export default class App extends React.Component {
       purpose: purposes.editing,
       surveyId: surveyId
     });
+  }
+
+  getUpdatedAnswerRecord() {
+    const record = quip.apps.getRootRecord();
+    const answers = record.get('answers');
+    this.setState({answers});
   }
 
   loadSingleSurvey = (surveyId) => {
@@ -240,7 +258,7 @@ export default class App extends React.Component {
 
     answers[index].answer = value;
     this.props.record.set('answers', answers);
-    this.setState({answers: answers});
+    // this.setState({answers: answers});
   }
 
   updateOptionsState = (optionList, optionalIndex) => {
