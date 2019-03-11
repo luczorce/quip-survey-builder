@@ -7,6 +7,7 @@
     "watch": "NODE_ENV=development webpack --watch",
     "serve": "http-server app -p 8888 --ssl",
     "build": "NODE_ENV=production webpack; create-quip-app pack ./app",
+    "build-demo": "NODE_ENV=production DEMO_APP=true webpack; create-quip-app pack ./demo-app",
     "prepssl": "openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem"
   },
   "author": "",
