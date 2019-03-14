@@ -10,6 +10,9 @@ export default class SurveyList extends React.Component {
   choice = null;
 
   chooseSurvey = () => {
+    const chosen = this.props.surveys.find(s => s.id === Number(this.choice));
+    quip.apps.getRootRecord().set('surveyName', chosen.name);
+    
     this.props.loadSurvey(this.choice);
   }
 
