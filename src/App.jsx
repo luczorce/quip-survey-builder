@@ -43,8 +43,25 @@ export default class App extends React.Component {
       const id = this.props.record.get('surveyId');
       
       if (id) {
-        let rootRecord = quip.apps.getRootRecord();
-        this.recordListener = rootRecord.listen(() => this.getUpdatedAnswerRecord());
+        const answers = this.state.answers;
+
+        if (answers.length && answers[0].quip_id === quip.apps.getThreadId()) {
+          // this is an original document for these answers, carry on
+          let rootRecord = quip.apps.getRootRecord();
+          this.recordListener = rootRecord.listen(() => this.getUpdatedAnswerRecord());
+        } else {
+          // these answers have been copied over from another document,
+          // so we're assuming that's from copying the whole doc or live app for duplication purposes
+          // we're gonna clear out the current answers and make new ones (not affecting the original)
+          console.log('found survey answer duplication, resetting and making new answers for this document');
+          this.props.record.set('answers', []);
+          this.props.record.set('surveyId', null);
+          this.loadSingleSurvey(id).then(() => {
+            let rootRecord = quip.apps.getRootRecord();
+            this.recordListener = rootRecord.listen(() => this.getUpdatedAnswerRecord());
+          });
+        }
+
       } else {
         this.loadSurveyForList();
       }
@@ -79,13 +96,14 @@ export default class App extends React.Component {
   }
 
   loadSingleSurvey = (surveyId) => {
-    if (surveyId === null) return false;
-
     const { record } = this.props;
+    
+    if (surveyId === null || record.get('surveyId')) return false;
 
-    if (!record.get('surveyId')) {
-      let questions, answers;
-      
+    console.log('making new answers');
+    
+    let questions, answers;
+    return new Promise((resolve, reject) => {
       getSurveyQuestions(surveyId).then(questionResponse => {
         if (!questionResponse.ok) {
           return Promise.reject(questionResponse);
@@ -113,7 +131,8 @@ export default class App extends React.Component {
           console.error('there was an error creating the answers');
           console.error(answerResponse);
           this.setError('there was an error creating the answers, please delete this document and try again');
-          // TODO on document delete, we still need to delete any answers that were successfully created
+          
+          reject();
         } else {
           record.set('answers', answers);
           record.set('surveyId', Number(surveyId));
@@ -121,14 +140,19 @@ export default class App extends React.Component {
           this.setState({
             questions,
             answers
+          }, () => {
+            resolve();
           });
         }
       }, questionError => {
         console.error('there was an error loading the questions');
         console.error(questionError);
         this.setError('there was an error loading the questions');
+
+        reject();
       });
-    }
+    })
+    
   }
 
   loadSingleSurveyForEditing = (surveyId) => {
@@ -257,7 +281,10 @@ export default class App extends React.Component {
 
     answers[index].answer = value;
     this.props.record.set('answers', answers);
+    // while in every other situation this makes sense to call here
     // this.setState({answers: answers});
+    // because we've got a record listener, it's redundant here.
+    // the listener is handling the state update
   }
 
   updateOptionsState = (optionList, optionalIndex) => {
