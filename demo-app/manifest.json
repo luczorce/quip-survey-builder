@@ -1,7 +1,7 @@
 {
   "id": "KfJAjAAxO0A",
   "manifest_version": 1,
-  "name": "deio.surveybuilder",
+  "name": "eio.demoSurveyBuilder",
   "version_name": "1.0",
   "version_number": 1,
   "sizing_mode": "fill_container",
