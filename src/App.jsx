@@ -43,8 +43,20 @@ export default class App extends React.Component {
       const id = this.props.record.get('surveyId');
       
       if (id) {
-        let rootRecord = quip.apps.getRootRecord();
-        this.recordListener = rootRecord.listen(() => this.getUpdatedAnswerRecord());
+        const answers = this.state.answers;
+
+        if (answers.length && answers[0].quip_id === quip.apps.getThreadId()) {
+          // this is an original document for these answers, carry on
+          console.log('origin of the answers');
+          let rootRecord = quip.apps.getRootRecord();
+          this.recordListener = rootRecord.listen(() => this.getUpdatedAnswerRecord());
+        } else {
+          // these answers have been copied over from another document,
+          // so we're assuming that's from copying the whole doc or live app for duplication purposes
+          // we're gonna clear out the current answers and make new ones (not affecting the original)
+          console.log('found a duplication, resetting');
+        }
+
       } else {
         this.loadSurveyForList();
       }
