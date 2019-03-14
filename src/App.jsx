@@ -43,7 +43,6 @@ export default class App extends React.Component {
       const id = this.props.record.get('surveyId');
       
       if (id) {
-        this.loadSingleSurvey(id);
         let rootRecord = quip.apps.getRootRecord();
         this.recordListener = rootRecord.listen(() => this.getUpdatedAnswerRecord());
       } else {

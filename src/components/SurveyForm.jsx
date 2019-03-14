@@ -14,12 +14,32 @@ export default class SurveyForm extends React.Component {
     updateAnswer: React.PropTypes.func
   };
 
+  componentDidMount = () => {
+    const name = quip.apps.getRootRecord().get('surveyName');
+
+    if (name !== undefined && name.length) {
+      let toolbar = {
+        toolbarCommandIds: [
+          'surveyName'
+        ],
+        menuCommands: [
+          {
+            id: 'surveyName',
+            label: name,
+            isHeader: true
+          },
+        ]
+      };
+
+      quip.apps.updateToolbar(toolbar);
+    } 
+  }
+
   buildForm = () => {
     if (!this.props.questions.length) return <p>no questions</p>;
 
     return this.props.questions.map(q => {
       if (q.question_type === qatypes.header) {
-        // TODO add spacing? add quip text class?
         return <h3 className={Style.formHeader}>{q.value}</h3>;
       } else if (q.question_type === qatypes.textInput) {
         let answer = this.props.answers.find(a => a.input_text_question_id === q.id);
