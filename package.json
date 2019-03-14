@@ -1,6 +1,6 @@
 {
   "name": "quip-survey-builder",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "eio.surveybuilder Quip App",
   "license": "UNLICENSED",
   "scripts": {
