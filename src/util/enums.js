@@ -8,10 +8,11 @@ export const qatypes = {
   select: 'select',
   radio: 'radio',
   checkbox: 'checkbox',
+  ranked: 'ranked',
   header: 'header'
 };
 
-export const optionTypes = ['select', 'radio', 'checkbox'];
+export const optionTypes = ['select', 'radio', 'checkbox', 'ranked'];
 
 // TODO change loading to loading for Answering
 export const purposes = {

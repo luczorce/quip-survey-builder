@@ -53,7 +53,7 @@ export default class Builder extends React.Component {
         {
           id: 'addFormItem',
           label: 'select question to add',
-          subCommands: ['shortText', 'longText', 'number', 'selectBox', 'radio', 'checkbox', 'header']
+          subCommands: ['shortText', 'longText', 'number', 'selectBox', 'radio', 'checkbox', 'ranked', 'header']
         },
         {
           id: 'shortText',
@@ -95,6 +95,13 @@ export default class Builder extends React.Component {
           label: 'checkbox',
           handler: () => {
             this.addCheckbox();
+          }
+        },
+        {
+          id: 'ranked',
+          label: 'ranked',
+          handler: () => {
+            this.addRanked();
           }
         },
         {
@@ -163,6 +170,10 @@ export default class Builder extends React.Component {
 
   addRadio = () => {
     this.addOption(qatypes.radio);
+  }
+
+  addRanked = () => {
+    console.log('ksjdfhsdkfjsdkjfh');
   }
 
   addSelect = () => {
