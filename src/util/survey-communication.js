@@ -163,11 +163,17 @@ export function updateSurveyQuestion(question, index) {
 //////
 
 function buildNewAnswerBody(question, quipDocumentId) {
-  return {
+  let answer = {
     answer_type: question.question_type,
     quip_id: quipDocumentId,
     answer: ''
   };
+  
+  if (question.question_type === qatypes.ranked) {
+    answer.answer = question.options.join('~~~');
+  }
+ 
+  return answer;
 }
 
 function buildQuestionBody(question, index) {
@@ -202,7 +208,7 @@ function buildQuestionBody(question, index) {
 }
 
 function buildUpdatedAnswerBody(type, value) {
-  if (type === qatypes.checkbox && typeof value !== 'string') {
+  if ([qatypes.checkbox, qatypes.ranked].includes(type) && typeof value !== 'string') {
     value = value.join('~~~');
   }
 

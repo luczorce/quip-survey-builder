@@ -27,6 +27,7 @@
   font-size: 1em;
   font-weight: bold;
   margin: 0 0 0.5em;
+  color: #353535;
 }
 
 .surveyHelper {
@@ -110,7 +111,8 @@
   .answerSelect,
   .answerTextarea,
   .answerCheckbox,
-  .answerRadio {
+  .answerRadio,
+  .answerRanked {
     margin-bottom: 1.5em;
   }
 }
@@ -153,7 +155,9 @@
   }
 }
 
-.formAnswerInput INPUT, .formAnswerNumber INPUT, .formAnswerTextarea TEXTAREA {
+.formAnswerInput input, 
+.formAnswerNumber input, 
+.formAnswerTextarea textarea {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -186,6 +190,28 @@
   }
 }
 
+.answerRanked .options {
+  padding-left: 0;
+  list-style-position: inside;
+
+  li {
+    padding: 4px 6px;
+    border: 1px solid @color_default;
+    border-bottom: none;
+  }
+
+  li:first-of-type {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+
+  li:last-of-type {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom: 1px solid @color_default;
+  }
+}
+
 .answerRow {
   display: flex;
   align-items: baseline;
@@ -195,7 +221,8 @@
   background: lighten(red, 35%);
 }
 
-.checkboxGrid, .checkboxGridColumns {
+.checkboxGrid, 
+.checkboxGridColumns {
   margin-top: 1em;
 }
 
@@ -259,7 +286,6 @@
     font-style: italic;
     color: lighten(@default_text_color, 20%);
   }
-
 }
 
 .bigger {
