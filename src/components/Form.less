@@ -194,23 +194,56 @@
   padding-left: 0;
   list-style-position: inside;
 
-  li {
+  .rankOption {
     padding: 4px 6px;
     border: 1px solid @color_default;
     border-bottom: none;
+    position: relative;
   }
 
-  li:first-of-type {
+  .rankOption:first-of-type {
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
   }
 
-  li:last-of-type {
+  .rankOption:last-of-type {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     border-bottom: 1px solid @color_default;
   }
+  
+  .rankedControls {
+    position: absolute;
+    top: 2px;
+    right: 6px;
+  }
+
+  button {
+    display: inline;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding: 0;
+    transition: border-color 0.2s ease-in;
+
+    svg {
+      transform: translateY(3px);
+      transition: stroke 0.2s ease-in;
+    }
+
+    &:hover,
+    &:focus {
+      svg {
+        stroke: #5c6470;
+      }
+    }
+
+    &:focus {
+      border-color: @color_highlight;
+    }
+  }
 }
+
 
 .answerRow {
   display: flex;

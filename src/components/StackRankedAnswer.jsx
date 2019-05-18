@@ -27,26 +27,41 @@ export default class StackRankedAnswer extends React.Component {
     this.logDocumentActivity = debounce(5000, this.logDocumentActivity);
   }
 
-  answerUpdate = (event) => {
-    let value = this.props.answer.answer;
-
-    if (event.target.checked) {
-      value.push(event.target.name);
-    } else {
-      let index = value.indexOf(event.target.name);
-      if (index > -1) {
-        value.splice(index, 1);
-      }
-    }
-
-    // this.setState({error: null});
+  answerUpdate = (answer) => {
+    this.setState({error: null});
     // this.logDocumentActivity();
     // this.storeAnswer(value);
-    // this.props.update(this.props.answer.id, qatypes.ranked, value);
+    this.props.update(this.props.answer.id, qatypes.ranked, answer);
   }
 
   logDocumentActivity = () => {
     quip.apps.sendMessage(`updated the answer to the question: ${this.props.question}`);
+  }
+
+  moveOptionDown = (event) => {
+    const target = Number(event.currentTarget.dataset.index);
+    let answer = this.props.answer.answer;
+    let moving = answer[target];
+    
+    // remove it from the array first
+    answer.splice(target, 1);
+    // add it back in it's (new) spot
+    answer.splice(target + 1, 0, moving);
+
+    this.answerUpdate(answer);
+  }
+
+  moveOptionUp = (event) => {
+    const target = Number(event.currentTarget.dataset.index);
+    let answer = this.props.answer.answer;
+    let moving = answer[target];
+
+    // remove it from the array first
+    answer.splice(target, 1);
+    // add it back in it's new spot
+    answer.splice(target - 1, 0, moving);
+
+    this.answerUpdate(answer);
   }
 
   storeAnswer = (value) => {
@@ -60,17 +75,23 @@ export default class StackRankedAnswer extends React.Component {
     //   });
   }
 
-  render() {
-    const options = this.props.options.map((option, index) => {
+  render() {   
+    const options = this.props.answer.answer.map((option, index) => {
+      const key = option.replace(' ', '-');
       let helper;
 
       if (this.props.optionHelpers[index] && this.props.optionHelpers[index].length) {
         helper = <span className={Style.surveyOptionHelper}>{this.props.optionHelpers[index]}</span>
       }
-      
-      return <li>
+
+      return <li className={Style.rankOption} key={key}>
         <span>{option}</span>
         {helper}
+
+        <div className={Style.rankedControls}>
+          <button type="button" onClick={this.moveOptionUp} data-index={index} title="move option up ranking"><UpArrowIcon /></button>
+          <button type="button" onClick={this.moveOptionDown} data-index={index} title="move option down ranking"><DownArrowIcon /></button>
+        </div>
       </li>;
     });
 
@@ -92,4 +113,12 @@ export default class StackRankedAnswer extends React.Component {
       <ol className={Style.options}>{options}</ol>
     </div>;
   }
+}
+
+function DownArrowIcon() {
+  return <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a6a6a6" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+}
+
+function UpArrowIcon() {
+  return <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a6a6a6" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
 }
