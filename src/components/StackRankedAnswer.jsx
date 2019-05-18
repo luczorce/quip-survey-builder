@@ -29,8 +29,8 @@ export default class StackRankedAnswer extends React.Component {
 
   answerUpdate = (answer) => {
     this.setState({error: null});
-    // this.logDocumentActivity();
-    // this.storeAnswer(value);
+    this.logDocumentActivity();
+    this.storeAnswer(answer);
     this.props.update(this.props.answer.id, qatypes.ranked, answer);
   }
 
@@ -65,14 +65,14 @@ export default class StackRankedAnswer extends React.Component {
   }
 
   storeAnswer = (value) => {
-    // updateAnswer(this.props.answer.id, qatypes.ranked, value)
-    //   .then(response => {
-    //     if (!response.ok) {
-    //       console.error('something went wrong with updating the answer');
-    //       console.error(response);
-    //       this.setState({error: 'this answer did not update'});
-    //     }
-    //   });
+    updateAnswer(this.props.answer.id, qatypes.ranked, value)
+      .then(response => {
+        if (!response.ok) {
+          console.error('something went wrong with updating the answer');
+          console.error(response);
+          this.setState({error: 'this answer did not update'});
+        }
+      });
   }
 
   render() {   
