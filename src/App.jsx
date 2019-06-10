@@ -137,10 +137,7 @@ export default class App extends React.Component {
           record.set('answers', answers);
           record.set('surveyId', Number(surveyId));
           
-          this.setState({
-            questions,
-            answers
-          }, () => {
+          this.setState({questions, answers}, () => {
             resolve();
           });
         }

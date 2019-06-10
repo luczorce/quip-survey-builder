@@ -3,6 +3,7 @@ import HeaderInput from './HeaderInput.jsx';
 import NumberInput from './NumberInput.jsx';
 import Radio from './Radio.jsx';
 import SelectQ from './Select.jsx';
+import StackRanked from './StackRanked.jsx';
 import TextareaQ from './Textarea.jsx';
 import TextInput from './TextInput.jsx';
 
@@ -53,7 +54,7 @@ export default class Builder extends React.Component {
         {
           id: 'addFormItem',
           label: 'select question to add',
-          subCommands: ['shortText', 'longText', 'number', 'selectBox', 'radio', 'checkbox', 'header']
+          subCommands: ['shortText', 'longText', 'number', 'selectBox', 'radio', 'checkbox', 'ranked', 'header']
         },
         {
           id: 'shortText',
@@ -95,6 +96,13 @@ export default class Builder extends React.Component {
           label: 'checkbox',
           handler: () => {
             this.addCheckbox();
+          }
+        },
+        {
+          id: 'ranked',
+          label: 'ranked',
+          handler: () => {
+            this.addRanked();
           }
         },
         {
@@ -163,6 +171,10 @@ export default class Builder extends React.Component {
 
   addRadio = () => {
     this.addOption(qatypes.radio);
+  }
+
+  addRanked = () => {
+    this.addOption(qatypes.ranked);
   }
 
   addSelect = () => {
@@ -254,6 +266,17 @@ export default class Builder extends React.Component {
             deleted={this.removeQuestion} />;
       } else if (element.type === qatypes.checkbox) {
         return <Checkbox question={element.question} 
+            helper={element.helper} 
+            optionsList={options} 
+            guid={element.guid} 
+            id={element.id} 
+            errors={element.errors} 
+            updateQuestion={this.updateQuestion} 
+            updateOptions={this.updateOption} 
+            updateOrder={this.updateQuestionOrder} 
+            deleted={this.removeQuestion} />;
+      } else if (element.type === qatypes.ranked) {
+        return <StackRanked question={element.question} 
             helper={element.helper} 
             optionsList={options} 
             guid={element.guid} 

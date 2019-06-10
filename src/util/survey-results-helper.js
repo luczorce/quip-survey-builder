@@ -37,6 +37,9 @@ export function getAnswerKey(question) {
     case qatypes.checkbox:
       answerKey = 'option_question_id';
       break;
+    case qatypes.ranked:
+      answerKey = 'ranked_question_id';
+      break;
     default:
       answerKey = false;
   }

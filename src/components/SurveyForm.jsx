@@ -2,6 +2,7 @@ import CheckboxAnswer from './CheckboxAnswer.jsx';
 import NumberInputAnswer from './NumberInputAnswer.jsx';
 import RadioAnswer from './RadioAnswer.jsx';
 import SelectAnswer from './SelectAnswer.jsx';
+import StackRankedAnswer from './StackRankedAnswer.jsx';
 import TextInputAnswer from './TextInputAnswer.jsx';
 import TextareaAnswer from './TextareaAnswer.jsx';
 import { qatypes } from '../util/enums.js';
@@ -67,6 +68,16 @@ export default class SurveyForm extends React.Component {
                 helper={q.question_helper}
                 answer={answer}
                 update={this.props.updateAnswer} />;
+      } else if (q.question_type === qatypes.ranked) {
+        let answer = this.props.answers.find(a => a.ranked_question_id === q.id);
+        
+        return <StackRankedAnswer 
+                  question={q.question}
+                  helper={q.question_helper}
+                  answer={answer}
+                  options={q.options}
+                  optionHelpers={q.option_helpers}
+                  update={this.props.updateAnswer} />;
       } else {
         let answer = this.props.answers.find(a => a.option_question_id === q.id);
 
