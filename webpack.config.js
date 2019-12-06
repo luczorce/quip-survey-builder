@@ -9,6 +9,7 @@ let key, route, directoryToTarget;
 
 const isDevelopment = checkIfDevelopment();
 const isDemoBuild = checkIfDemoBuild();
+const isSteamBuild = checkIfSteamBuild();
 const isProductionBuild = checkIfProductionBuild();
 
 // change secret values in generated app files
@@ -20,6 +21,10 @@ if (isDevelopment) {
   key = `${process.env.DEMO_API_KEY}`;
   route = `${process.env.DEMO_ROUTE}`;
   directoryToTarget = 'demo-app/dist';
+} else if (isSteamBuild) {
+  key = `${process.env.STEAM_API_KEY}`;
+  route = `${process.env.STEAM_ROUTE}`;
+  directoryToTarget = 'steam-app/dist';
 } else if (isProductionBuild) {
   key = `${process.env.PROD_API_KEY}`;
   route = `${process.env.PROD_ROUTE}`;
@@ -51,7 +56,16 @@ if (isDemoBuild) {
   };
   
   config.output = differentOutput;
+} else if (isSteamBuild) {
+  const differentOutput = {
+    path: path.resolve(cwd, "./steam-app/dist"),
+    filename: "app.js",
+    publicPath: "dist"
+  };
+  
+  config.output = differentOutput;
 }
+
 
 module.exports = config;
 
@@ -67,4 +81,8 @@ function checkIfDemoBuild() {
 
 function checkIfProductionBuild() {
   return (process.env.NODE_ENV === 'production')
+}
+
+function checkIfSteamBuild() {
+  return (process.env.NODE_ENV === 'production' && process.env.STEAM_APP === 'true');
 }
