@@ -4,6 +4,8 @@ app/**
 !app/manifest.json
 demo-app/**
 !demo-app/manifest.json
+steam-app/**
+!steam-app/manifest.json
 
 .env
 
