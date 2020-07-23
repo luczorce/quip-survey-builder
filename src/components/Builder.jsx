@@ -14,7 +14,6 @@ import {
   saveSurveyQuestion,
   updateSurveyQuestion
 } from '../util/survey-communication.js';
-import { generateXLSX } from '../util/survey-results-helper.js';
 import { qatypes, optionTypes, purposes } from '../util/enums.js';
 import { Question, OptionList } from '../util/models.js';
 
@@ -115,13 +114,13 @@ export default class Builder extends React.Component {
         {
           id: 'getFormAnswers',
           label: 'get survey results',
-          subCommands: [ 'getExcelAnswers' ]
+          subCommands: [ 'getCsvAnswers' ]
         },
         {
-          id: 'getExcelAnswers',
-          label: 'as excel file (xlsx)',
+          id: 'getCsvAnswers',
+          label: 'as csv file',
           handler: () => {
-            this.getResultsAsExcel();
+            this.getResultsInNewWindow();
           }
         }
       ]
@@ -298,25 +297,9 @@ export default class Builder extends React.Component {
     });
   }
 
-  getResultsAsExcel = () => {
-    getSurveyResults(this.props.surveyId).then(response => {
-      if (response.ok) {
-        return response.data;
-      } else {
-        this.setGlobalError('there was an issue getting the responses for this survey, please try again');
-        return false;
-      }
-    }).then(surveyData => {
-      if (surveyData === false) return false;
-
-      if (Object.keys(surveyData.answers).length) {
-        generateXLSX(this.props.surveyName, surveyData);
-        this.setGlobalMessage('an xlsx file has been generated and should have started to download');
-      } else {
-        // no available answers notification
-        this.setGlobalMessage('there were no survey answers available yet');
-      }
-    });
+  getResultsInNewWindow = () => {
+    const url = `%%api_route%%/surveys/${this.props.surveyId}/download-results.csv`;
+    quip.apps.openLink(url);
   }
 
   removeQuestion = (guid, id = null, type = null) => {
