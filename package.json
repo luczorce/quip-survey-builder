@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "throttle-debounce": "^2.0.1",
-    "uuid": "^3.3.2",
-    "xlsx": "^0.14.1"
+    "uuid": "^3.3.2"
   }
 }
