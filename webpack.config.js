@@ -40,7 +40,7 @@ const replacer = new ReplaceInFilePlugin([
         replace: key
       },
       {
-        search: '%%api_route%%',
+        search: /%%api_route%%/g,
         replace: route
       }
     ]
